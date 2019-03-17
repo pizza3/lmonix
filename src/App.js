@@ -1,0 +1,128 @@
+import React, { Component } from 'react';
+import TitleBar from './components/TitleBar';
+import VrRenderer from './components/VrRenderer';
+import SceneEditor from './components/SceneEditor';
+// import Code from './components/Code';
+import {AddCubeGroup, AddGroupObj}  from './components/MenuBar/AddModel';
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+
+const electron =  window.require('electron');
+
+class App extends Component {
+    state = {
+        location:null,
+        scene:null,
+        title:'untitled*',
+        transformControls:null,
+        activeObj:null,
+        objPresent:[],
+        assetStack:[]
+    }
+
+    componentDidMount(){
+        electron.ipcRenderer.on('ipcRenderer', function (e, val) {
+            switch (val['option']) {
+                case 'extractThreeData':
+                    console.log(this.state.objPresent);
+                    
+                    electron.ipcRenderer.send("reciveThreeData",{data:this.state.objPresent, state:this.state});
+                    break;
+                case 'updateProject':
+                    let data = [];
+                    val['obj']['data'].forEach((val) => {
+                        let a = AddGroupObj(val.objName,this.state.scene,val.position,val.rotation,val.scale);
+                        data.push(a)
+                    })
+                    this.setState({
+                        objPresent:data,
+                        activeObj:0,
+                        title:val['title']
+                    },()=>{
+                        this.state.transformControls.attach(this.state.objPresent[this.state.activeObj]);
+                        this.state.scene.add(this.state.transformControls);
+                    })
+                    break;
+                case 'changeTitle':
+                    this.setState({
+                        title:val['title']
+                    })
+                    break;
+                case 'addGroupObj':
+                    let datas = this.state.objPresent;
+                    let a = AddCubeGroup(this.state.objPresent[this.state.activeObj]);
+                    datas.push(a);
+                    this.setState({
+                        objPresent:datas,
+                        activeObj:datas.length-1,
+                    })
+                    break;
+                case 'setAssetStack':
+                    this.setState({
+                        assetStack:val['assets']
+                    },()=>{
+                        // console.log(this.state.assetStack);
+                    })
+                    break;
+                default:
+                    console.log('default');
+                    break;
+            }
+        }.bind(this))
+    }
+
+    setSceneObject = (scene,transformControls) => {
+        this.setState({scene,transformControls})    
+    }
+
+    addInScene = (obj) => {
+        let l = this.state.objPresent.length;
+        let objPresent = this.state.objPresent;
+        objPresent.push(obj);
+        this.setState({
+            activeObj:l,
+            objPresent
+        },()=>{
+            this.state.transformControls.attach(this.state.objPresent[this.state.activeObj]);
+            this.state.scene.add(this.state.transformControls);
+        })
+    }
+
+    addInSceneOpen = (obj) => {
+        let l = this.state.objPresent.length;
+        let objPresent = this.state.objPresent;
+        objPresent.push(obj);
+        this.setState({
+            activeObj:l,
+            objPresent
+        },()=>{
+            this.state.transformControls.attach(this.state.objPresent[this.state.activeObj]);
+            this.state.scene.add(this.state.transformControls);
+        })
+    }
+
+    setActiveObj = (activeObj) => {
+        this.setState({
+            activeObj
+        },()=>{
+            this.state.transformControls.attach(this.state.objPresent[this.state.activeObj]);
+            this.state.scene.add(this.state.transformControls);
+            document.getElementById('obj'+this.state.activeObj).addEventListener("contextmenu", function(e) {
+                electron.ipcRenderer.send("show-context-menu",{dataNo:this.state.activeObj});
+            }.bind(this));
+        });
+    }
+
+    render() {
+        return (
+            <Router>
+                <React.Fragment>
+                    <TitleBar title ={this.state.title}/>
+                    <Route exact path="/" render={()=> <SceneEditor {...this.state} setSceneObject={this.setSceneObject} addInScene={this.addInScene} setActiveObj={this.setActiveObj} />}/>
+                    <Route  path="/code" render={()=> <VrRenderer {...this.state} />} />
+                </React.Fragment>
+            </Router>
+        );
+    }
+}
+
+export default App;
