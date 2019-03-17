@@ -1,6 +1,7 @@
 
 const electron = require('electron');
 const app = electron.app;
+const protocol = electron.protocol;
 const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
@@ -27,6 +28,12 @@ app.on('ready', ()=>{
   // installExtension(installExtension.REACT_DEVELOPER_TOOLS)
   // .then((name) => console.log(`Added Extension:  ${name}`))
   // .catch((err) => console.log('An error occurred: ', err));
+  protocol.registerFileProtocol('atom', (request, callback) => {
+    const url = request.url.substr(7)
+    callback({ path: path.normalize(`${__dirname}/${url}`) })
+  }, (error) => {
+    if (error) console.error('Failed to register protocol')
+  })
 });
 
 app.on('window-all-closed', () => {

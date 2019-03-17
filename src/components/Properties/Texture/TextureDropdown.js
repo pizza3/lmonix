@@ -2,15 +2,19 @@ import React,{Component} from 'react'
 import styled from 'styled-components'
 // import {AddCube,AddSphere,AddPlane}  from '../../MenuBar/AddModel';
 import * as THREE from '../../ThreeLibManager';
+// import {remote} from 'electron
+const fs =  window.require('fs');
+// var fs= require('fs') 
 // import img from '../../../../../wood2.jpg'
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
-        console.log('../../../assets/project/Assets/'+this.props.assetStack[i].name);
+        console.log(fs);
+        let data = "data:image/png;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
         let texture = new THREE.TextureLoader().load(
-            '../../../../../wood2.jpg',
+            data,
             function ( texture ) {
                 // do something with the texture
                 // material = new THREE.MeshBasicMaterial( {
@@ -38,7 +42,10 @@ export default class MenuDropdown extends Component{
             console.log(val.texture);
             
             return(
-                <ObjButton key={i} style={{width:'100%'}} onClick={()=>{this.handleTexture(i)}}><img src={'../../../../../wood2.jpg'} style={{width:'20px',height:'20px'}}/>{val.name}</ObjButton>
+                <ObjButton key={i} style={{width:'100%'}} onClick={()=>{this.handleTexture(i)}}>
+                    <Img src={this.props.assetStack[i].base}/>
+                    <Text>{val.name}</Text>
+                </ObjButton>
             )
         })
         return(
@@ -62,7 +69,7 @@ const Container = styled.div`
 
 const ObjButton = styled.button`
     width:100%;
-    height: 27px;
+    height: 46px;
     border: none;
     border-bottom: 1px solid #DBDBDB;
     background: none;
@@ -80,4 +87,18 @@ const ObjButton = styled.button`
         background: #DBDBDB;
         color: #2F79EF;
     }
+`
+
+const Img = styled.img`
+    width: auto;
+    height: 34px;
+    float: left;
+    position: relative;
+`
+
+const Text = styled.span`
+    top: 10px;
+    position: relative;
+    margin-left: 11px;
+
 `

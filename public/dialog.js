@@ -2,7 +2,6 @@ const {dialog, app} = require('electron');
 const fs = require('fs');
 const path = require('path');
 const fsx = require('fs-extra');
-const THREE = require('three')
 module.exports = {showSaveDialog,showOpenDialog,showAddDialog,saveState};
 
 function showSaveDialog(browserWindow,threeData){
@@ -54,7 +53,7 @@ function showOpenDialog(browserWindow) {
                             })
                         });
                         browserWindow.webContents.send("ipcRenderer",{option:"setAssetStack",assets:fileArr}); 
-                        fsx.copySync(path.resolve(filepaths[0]),'src/assets/project');
+                        // fsx.copySync(path.resolve(filepaths[0]),'src/assets/project');
                       });                        
                 }
             });
@@ -79,11 +78,10 @@ function showAddDialog(browserWindow,arg){
         fs.readdir(arg.location[0]+'/Assets/', (err, files) => {
             let fileArr = []
             files.forEach(file => {
-            console.log(path.extname(filepaths[0]+'/Assets/'+file));
               fileArr.push({
                  name:file,
                  path:filepaths[0]+'/Assets/'+file,
-                 ext:path.extname(filepaths[0]+'/Assets/'+file)
+                 ext:path.extname(filepaths[0]+'/Assets/'+file),
                 })
             });
             // console.log(arg.location[0]);
