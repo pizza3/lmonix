@@ -62,18 +62,13 @@ function showOpenDialog(browserWindow) {
 }
 
 function showAddDialog(browserWindow,arg){
-    // browserWindow.webContents.send("ipcRenderer",{option:"getLocation"});
     dialog.showOpenDialog(browserWindow,{
         defaultPath:app.getPath('documents'),
         filters:[
             { name: 'Images', extensions: arg.filter }
         ]
     },(filepaths)=>{
-        // const fileExtension = path.extname(filepaths[0]);
         const fileName = path.basename(filepaths[0])
-        // fs.readdirSync(filepaths[0]).forEach(file => {
-        //     console.log(file);
-        //   });
         fsx.copySync(path.resolve(filepaths[0]),arg.location[0]+'/Assets/'+fileName);
         fs.readdir(arg.location[0]+'/Assets/', (err, files) => {
             let fileArr = []
@@ -84,7 +79,6 @@ function showAddDialog(browserWindow,arg){
                  ext:path.extname(filepaths[0]+'/Assets/'+file),
                 })
             });
-            // console.log(arg.location[0]);
             fs.writeFile(arg.location[0]+'/index.html',aframeTemplate(fileArr),'utf8',(err)=>{
                 if(err){
                     dialog.showErrorBox('Save Failed',err.message);
@@ -96,7 +90,6 @@ function showAddDialog(browserWindow,arg){
 }
 
 function saveState(threeData){
-    let data = JSON.stringify(threeData)
     fs.writeFile(threeData.state.title[0]+'/index.html',aframeTemplate(threeData.state.assetStack,threeData.data),'utf8',(err)=>{
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
