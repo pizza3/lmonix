@@ -274,6 +274,27 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
             objPlane.scale.set(sca.x,sca.y,sca.z);
             return objPlane;
         break;
+        case "Sky":
+            let skygeometry = new THREE.SphereBufferGeometry( 5000, 64, 32);
+            let skymaterial = new THREE.MeshBasicMaterial({
+                color: 0xceecf0,
+                side: THREE.BackSide,
+                map: null,
+            });
+        
+            let objsky = new THREE.Object3D();
+            objsky["objName"] = "Sky";
+            objsky["objType"] = "Mesh";
+            objsky["objPrimitive"] = "sky";
+            objsky["hashColor"] = "#ceecf0";
+            objsky.add(new THREE.Mesh(skygeometry, skymaterial));
+            scene.add(objsky);
+
+            objsky.position.set(pos.x,pos.y,pos.z);
+            objsky.rotation.set(rot._x,rot._y,rot._z)
+            objsky.scale.set(sca.x,sca.y,sca.z);
+            return objsky;
+        break;
         default:
         break;
     }

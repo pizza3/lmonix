@@ -94,6 +94,13 @@ function saveState(threeData){
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
         }
+       
+    })
+    let data = JSON.stringify(threeData)
+    fs.writeFile(threeData.state.title[0]+'/data.json',data,'utf8',(err)=>{
+        if(err){
+            dialog.showErrorBox('Save Failed',err.message);
+        }
     })
 }
 
@@ -108,7 +115,7 @@ function createAssets(arr=[]){
 function createScene(threeData=[], state={}){
     let dataString = ""
     threeData.map((val) => {
-        dataString+= `<a-entity geometry="primitive: ${val.objPrimitive};" material="color: red" position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
+        dataString+= `<a-entity geometry="primitive: ${val.objPrimitive};" material="color: ${val.hashColor}" position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
     })
     return dataString
 }

@@ -110,51 +110,53 @@ export default class Transform extends Component{
     render(){
         return(
             <Fragment>
-                <Container>
-                    <Title>Translate</Title>
-                    <Prop>
-                        Z:
-                        <Input name='traZ' type='number'  value={this.state.traZ} onChange={this.handleChange}/>
-                    </Prop>
-                    <Prop>
-                        Y:
-                        <Input name='traY' type='number'  value={this.state.traY} onChange={this.handleChange}/>
-                    </Prop>
-                    <Prop>
-                        X:
-                        <Input name='traX' type='number' value={this.state.traX} onChange={this.handleChange}/>
-                    </Prop>
-                </Container>
+                <Overlay>
                     <Container>
-                    <Title>Rotation</Title>
-                    <Prop>
-                        Z:
-                        <Input name='rotZ' type='number' value={this.state.rotZ} onChange={this.handleChange} />
-                    </Prop>
-                    <Prop>
-                        Y:
-                        <Input name='rotY' type='number' value={this.state.rotY} onChange={this.handleChange}/>
-                    </Prop>
-                    <Prop>
-                        X:
-                        <Input name='rotX' type='number'  value={this.state.rotX} onChange={this.handleChange}/>
-                    </Prop>
-                </Container>
-                <Container>
-                    <Title>Scale</Title>
-                    <Prop>
-                        Z:
-                        <Input name='scaZ' type='number' value={this.state.scaZ} onChange={this.handleChange} />
-                    </Prop>
-                    <Prop>
-                        Y:
-                        <Input name='scaY' type='number' value={this.state.scaY} onChange={this.handleChange}/>
-                    </Prop>
-                    <Prop>
-                        X:
-                        <Input name='scaX' type='number'  value={this.state.scaX} onChange={this.handleChange}/>
-                    </Prop>
-                </Container>
+                        <Title>Translate</Title>
+                        <Prop>
+                            Z:
+                            <Input name='traZ' type='number'  value={this.state.traZ} onChange={this.handleChange}/>
+                        </Prop>
+                        <Prop>
+                            Y:
+                            <Input name='traY' type='number'  value={this.state.traY} onChange={this.handleChange}/>
+                        </Prop>
+                        <Prop>
+                            X:
+                            <Input name='traX' type='number' value={this.state.traX} onChange={this.handleChange}/>
+                        </Prop>
+                    </Container>
+                        <Container>
+                        <Title>Rotation</Title>
+                        <Prop>
+                            Z:
+                            <Input name='rotZ' type='number' value={this.state.rotZ} onChange={this.handleChange} />
+                        </Prop>
+                        <Prop>
+                            Y:
+                            <Input name='rotY' type='number' value={this.state.rotY} onChange={this.handleChange}/>
+                        </Prop>
+                        <Prop>
+                            X:
+                            <Input name='rotX' type='number'  value={this.state.rotX} onChange={this.handleChange}/>
+                        </Prop>
+                    </Container>
+                    <Container>
+                        <Title>Scale</Title>
+                        <Prop>
+                            Z:
+                            <Input name='scaZ' type='number' value={this.state.scaZ} onChange={this.handleChange} />
+                        </Prop>
+                        <Prop>
+                            Y:
+                            <Input name='scaY' type='number' value={this.state.scaY} onChange={this.handleChange}/>
+                        </Prop>
+                        <Prop>
+                            X:
+                            <Input name='scaX' type='number'  value={this.state.scaX} onChange={this.handleChange}/>
+                        </Prop>
+                    </Container>
+                </Overlay>
             </Fragment>
         )
     }
@@ -166,7 +168,7 @@ const Container = styled.div`
     float:left;
     width:100%;
     height:auto;
-    padding-bottom: 10px;
+    padding-bottom: 18px;
 `
 const Title = styled.div`
     position: relative;
@@ -176,19 +178,29 @@ const Title = styled.div`
     margin-left: 9px;
     margin-top: 4px;
 `
-
 const Prop = styled.div`
     float: right;
     font-size: 11px;
     color: #9D9D9D;
-    margin-right: 8px;
-
+    margin-right: 6px;
 `
-
 const Input = styled.input`
-    width: 32px;
+    width: 36px;
     height: 25px;
     border: 2px solid #DBDBDB;
     background: #DBDBDB;
     border-radius: 3px;
+    font-size: 9px;
+    &:focus{
+        outline: none;
+        background: #5F9DFF;
+        color: #fff;
+        border: 2px solid #5F9DFF;
+    }
+`
+const Overlay = styled.div`
+    position: relative;
+    width: 100%;
+    border-bottom: 2px solid #DBDBDB;
+    margin-bottom: 20px;
 `

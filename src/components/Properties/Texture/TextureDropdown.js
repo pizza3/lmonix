@@ -1,46 +1,49 @@
 import React,{Component} from 'react'
 import styled from 'styled-components'
-// import {AddCube,AddSphere,AddPlane}  from '../../MenuBar/AddModel';
 import * as THREE from '../../ThreeLibManager';
-// import {remote} from 'electron
 const fs =  window.require('fs');
-// var fs= require('fs') 
-// import img from '../../../../../wood2.jpg'
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
-        console.log(fs);
-        let data = "data:image/png;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
-        let texture = new THREE.TextureLoader().load(
-            data,
-            function ( texture ) {
-                // do something with the texture
-                // material = new THREE.MeshBasicMaterial( {
-                //     map: texture
-                //  } );
-            },
-            // Function called when download progresses
-            function ( xhr ) {
-                console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-            },
-            // Function called when download errors
-            function ( xhr ) {
-                console.log( 'An error happened' );
-            }
-        );
-
-        // let texture =new THREE.TextureLoader().load('../../../assets/project/Assets/'+this.props.assetStack[i].name) 
-        this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
-        this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;        
+        let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
+        if(this.props.assetStack[i].ext==='.webm'){
+            let video = document.createElement( 'video' );
+            video.src = data;
+            video.width = 640;
+            video.height = 360;
+            video.loop = true;
+            video.muted = true;
+            video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+            video.play();
+            var texture = new THREE.VideoTexture( video );
+            this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
+            this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;        
+        }
+        else{
+            let texture = new THREE.TextureLoader().load(
+                data,
+                function ( texture ) {
+                },
+                // Function called when download progresses
+                function ( xhr ) {
+                    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                },
+                // Function called when download errors
+                function ( xhr ) {
+                    console.log( 'An error happened' );
+                }
+            );
+            this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
+            this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;
+            this.props.objPresent[this.props.activeObj].children[0].objTexture = texture
+        }
     }
 
     render(){
         const { assetStack } = this.props;
         const Textures = assetStack.map((val,i)=>{
-            console.log(val.texture);
-            
             return(
                 <ObjButton key={i} style={{width:'100%'}} onClick={()=>{this.handleTexture(i)}}>
                     <Img src={this.props.assetStack[i].base}/>

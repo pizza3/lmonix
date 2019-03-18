@@ -7,11 +7,9 @@ const electron =  window.require('electron');
 
 
 export default class Images extends Component{
-
     handleAddAsset=()=>{
         electron.ipcRenderer.send("open-asset-modal",{location:this.props.location, filter:this.props.filterBy})
     }
-
     render(){
         const {assetStack}= this.props
         const filterAssets = assetStack.filter((val,i)=>{

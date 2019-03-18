@@ -7,9 +7,6 @@ export default class Texture extends Component{
     state = {
         currentTexture:'Add Texture'
     }
-    componentDidMount(){
-
-    }
     render(){
         return(
             <Container>
@@ -28,13 +25,12 @@ export default class Texture extends Component{
     }
 }
 
-
 const Container = styled.div`
     position:relative;
     float:left;
     width:100%;
     height:auto;
-    padding-bottom: 10px;
+    padding-bottom: 18px;
 `
 const Title = styled.div`
     position: relative;
@@ -44,16 +40,15 @@ const Title = styled.div`
     margin-left: 9px;
     margin-top: 4px;
 `
-
 const Input = styled.div`
     position: relative;
     float: right;
-    width: 138px;
+    width: 141px;
     height: 25px;
     border: 2px solid #DBDBDB;
     background: #DBDBDB;
     border-radius: 3px;
-    margin-right: 18px;
+    margin-right: 6px;
     font-size: 10px;
     padding: 4px;
     color: #969696;

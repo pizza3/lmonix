@@ -1,39 +1,38 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
 
-export default class Visible extends Component{
+export default class CastShadow extends Component{
     state = {
-        visible:false
+        castShadow:false
     }
     
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].visible || false
+                let val = this.props.objPresent[this.props.activeObj].castShadow || false
                 this.setState({
-                    visible:val
+                    castShadow:val
                 })
             }
         }
-        
     }
 
     handleInputChange=()=>{
-        const {visible} = this.state
+        const {castShadow} = this.state
         this.setState({
-            visible:!visible
+            castShadow:!castShadow
         },()=>{
             if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].visible = !visible
+                this.props.objPresent[this.props.activeObj].castShadow = !castShadow
             }
         })
     }
     render(){
         return(
             <Container>
-                <Title>Visible</Title>
+                <Title>Cast Shadow</Title>
                 <label class="form-switch">
-                    <input type="checkbox" checked={this.state.visible} onChange={this.handleInputChange} />
+                    <input type="checkbox" checked={this.state.castShadow} onChange={this.handleInputChange} />
                     <i></i>
                 </label>
             </Container>

@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 const electron =  window.require('electron');
 
 class App extends Component {
+   
     state = {
         location:null,
         scene:null,
@@ -18,7 +19,7 @@ class App extends Component {
         objPresent:[],
         assetStack:[]
     }
-
+   
     componentDidMount(){
         electron.ipcRenderer.on('ipcRenderer', function (e, val) {
             switch (val['option']) {

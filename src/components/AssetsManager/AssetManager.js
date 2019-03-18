@@ -9,7 +9,7 @@ export default class AssetManager extends Component{
             <AssetManagerContainer>
                 <Title>Assets</Title>
                 <Images titleName='Images' {...this.props} location={this.props.title} filterBy={['jpg', 'png']}/>
-                <Images titleName='Videos' {...this.props} location={this.props.title} filterBy={['mp4']}/>
+                <Images titleName='Videos' {...this.props} location={this.props.title} filterBy={['mp4','webm']}/>
                 <Images titleName='Models' {...this.props} location={this.props.title} filterBy={['obj']}/>
             </AssetManagerContainer>
         )

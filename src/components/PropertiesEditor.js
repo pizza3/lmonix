@@ -4,6 +4,8 @@ import Texture from './Properties/Texture/Texture'
 import ColorPicker from './Properties/ColorPicker'
 import Visible from './Properties/Visible'
 import Transform from './Properties/Transform'
+import CastShadow from './Properties/CastShadow'
+import ReceiveShadow from './Properties/ReceiveShadow'
 export default class PropertiesEditor extends Component{
     state={
     }
@@ -19,6 +21,8 @@ export default class PropertiesEditor extends Component{
                 <Texture {...this.props}/>
                 <ColorPicker {...this.props}/>
                 <Visible {...this.props}/>
+                <CastShadow {...this.props}/>
+                <ReceiveShadow {...this.props}/>
             </PropertiesEditorContainer>
         )
     }
