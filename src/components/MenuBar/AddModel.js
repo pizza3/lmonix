@@ -35,6 +35,7 @@ const AddCubeGroup = (active,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y:0,z:
     obj["objName"] = "Cube";
     obj["objType"] = "Mesh";
     obj["objPrimitive"] = "box";
+    obj["hashColor"] = "#ef2d5e";
     obj.add(new THREE.Mesh(geometry, material));
     active.add(obj);
     
@@ -221,12 +222,30 @@ const AddSky = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y:0,z:0})=>{
     return obj;
 }
 
-const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,y:0,z:0})=>{
+const AddModel = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y:0,z:0})=>{
+    let obj = new THREE.Object3D();
+    obj["objName"] = "3DModel";
+    obj["objType"] = "Mesh";
+    obj["objPrimitive"] = "3DModel";
+    scene.add(obj);
+    obj.position.set(pos.x,pos.y,pos.z);
+    obj.rotation._x=rot.x;
+    obj.rotation._y=rot.y;
+    obj.rotation._z=rot.z;
+    // obj.scale.x=sca.x;
+    // obj.scale.y=sca.y;
+    // obj.scale.z=sca.z
+    // obj.scale.set(sca.x,sca.y,sca.z);
+    return obj;
+}
+
+const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,y:0,z:0})=>{
     switch(type){
         case "Cube":
             let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
             let material = new THREE.MeshPhongMaterial({
-                color: 0xef2d5e
+                color: 0xef2d5e,
+                // map:obj.objTexture.data
             });
             let objCube = new THREE.Object3D();
             objCube["objName"] = "Cube";
@@ -238,6 +257,8 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
             objCube.position.set(pos.x,pos.y,pos.z);
             objCube.rotation.set(rot._x,rot._y,rot._z)
             objCube.scale.set(sca.x,sca.y,sca.z);
+            objCube.visible=obj.visible
+            objCube.receiveShadow=obj.receiveShadow
             return objCube;
         break;
         case "Sphere":
@@ -255,6 +276,8 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
             objSphere.position.set(pos.x,pos.y,pos.z);
             objSphere.rotation.set(rot._x,rot._y,rot._z)
             objSphere.scale.set(sca.x,sca.y,sca.z);
+            objSphere.visible=obj.visible
+            objSphere.receiveShadow=obj.receiveShadow
             return objSphere;
         break;
         case "Plane":
@@ -272,6 +295,8 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
             objPlane.position.set(pos.x,pos.y,pos.z);
             objPlane.rotation.set(rot._x,rot._y,rot._z)
             objPlane.scale.set(sca.x,sca.y,sca.z);
+            objPlane.visible=obj.visible
+            objPlane.receiveShadow=obj.receiveShadow
             return objPlane;
         break;
         case "Sky":
@@ -281,7 +306,6 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
                 side: THREE.BackSide,
                 map: null,
             });
-        
             let objsky = new THREE.Object3D();
             objsky["objName"] = "Sky";
             objsky["objType"] = "Mesh";
@@ -289,10 +313,11 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
             objsky["hashColor"] = "#ceecf0";
             objsky.add(new THREE.Mesh(skygeometry, skymaterial));
             scene.add(objsky);
-
             objsky.position.set(pos.x,pos.y,pos.z);
             objsky.rotation.set(rot._x,rot._y,rot._z)
             objsky.scale.set(sca.x,sca.y,sca.z);
+            objsky.visible=obj.visible
+            objsky.receiveShadow=obj.receiveShadow
             return objsky;
         break;
         default:
@@ -300,4 +325,4 @@ const AddGroupObj = (type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,
     }
 }
 
-export { AddCube, AddCubeGroup, AddSphere, AddPlane, AddPointLight, AddSpotLight, AddHemisphereLight, AddDirectionalLight, AddSky, AddGroupObj }
+export { AddCube, AddCubeGroup, AddSphere, AddPlane, AddPointLight, AddSpotLight, AddHemisphereLight, AddDirectionalLight, AddSky,AddModel, AddGroupObj,  }

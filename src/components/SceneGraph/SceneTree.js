@@ -11,7 +11,7 @@ export default class SceneTree extends Component{
     }
 
     componentDidMount(){
-        console.log(this.props.obj.children.length);
+        console.log(this.props.obj.children);
         
     }
     showGroup = () => {
@@ -48,16 +48,17 @@ export default class SceneTree extends Component{
                         null
                     }
                 </SceneGraphEl>
-                {
-                    this.props.obj.children.length>=2?
+                {/* {
+                    this.props.obj.children.length>=2 && this.state.showGroup?
                     // this.props.obj.children.map((obj,i)=>{
-                        <SceneTreeContainer num={1} name={this.props.obj.children[1].objName} obj={this.props.obj.children[1]} active={true} {...this.props} objPresent={this.props.objPresent}  check={false} />
-                        // <div>{this.props.obj.children[1].objName}</div>
-                        
+                        // <SceneTreeContainer num={1} name={this.props.obj.children[1].objName} obj={this.props.obj.children[1]} active={true} {...this.props} objPresent={this.props.objPresent}  check={false} />
+                        <SceneGraphEl id={'obj'+this.props.num} onClick={()=>{this.props.setActiveObj(this.props.num)}}>
+                        </SceneGraphEl>
+
                     // })                    
                     :
                     null
-                }
+                } */}
             </Container>
         )
     }

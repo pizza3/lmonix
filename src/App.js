@@ -24,14 +24,12 @@ class App extends Component {
         electron.ipcRenderer.on('ipcRenderer', function (e, val) {
             switch (val['option']) {
                 case 'extractThreeData':
-                    console.log(this.state.objPresent);
-                    
                     electron.ipcRenderer.send("reciveThreeData",{data:this.state.objPresent, state:this.state});
                     break;
                 case 'updateProject':
                     let data = [];
                     val['obj']['data'].forEach((val) => {
-                        let a = AddGroupObj(val.objName,this.state.scene,val.position,val.rotation,val.scale);
+                        let a = AddGroupObj(val,val.objName,this.state.scene,val.position,val.rotation,val.scale);
                         data.push(a)
                     })
                     this.setState({
@@ -60,8 +58,6 @@ class App extends Component {
                 case 'setAssetStack':
                     this.setState({
                         assetStack:val['assets']
-                    },()=>{
-                        // console.log(this.state.assetStack);
                     })
                     break;
                 default:

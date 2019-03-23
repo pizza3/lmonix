@@ -2,44 +2,43 @@ import React,{Component} from 'react'
 import styled from 'styled-components'
 import * as THREE from '../../ThreeLibManager';
 const fs =  window.require('fs');
+const Loader = new THREE.OBJLoader();
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
         let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
-        if(this.props.assetStack[i].ext==='.webm'){
-            let video = document.createElement( 'video' );
-            video.src = data;
-            video.width = 640;
-            video.height = 360;
-            video.loop = true;
-            video.muted = true;
-            video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-            video.play();
-            var texture = new THREE.VideoTexture( video );
-            this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
-            this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;        
-        }
-        else{
-            let texture = new THREE.TextureLoader().load(
+        console.log(this.props.assetStack[i].ext);
+        if(this.props.assetStack[i].ext==='.obj'){
+            let objPresent = this.props.objPresent[this.props.activeObj]
+            // load a resource
+            Loader.load(
+                // resource URL
                 data,
-                function ( texture ) {
+                // called when resource is loaded
+                function ( object ) {
+                    objPresent.add(object)
+                    objPresent.objModel = {
+                        type: '.obj',
+                        data: object
+                    }
                 },
-                // Function called when download progresses
+                // called when loading is in progresses
                 function ( xhr ) {
-                    console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+
+                    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
                 },
-                // Function called when download errors
-                function ( xhr ) {
+                // called when loading has errors
+                function ( error ) {
+
                     console.log( 'An error happened' );
+
                 }
-            );
-            this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
-            this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;
-            this.props.objPresent[this.props.activeObj].objTexture = {data:texture,type:'image'}
-            console.log(this.props.objPresent[this.props.activeObj]);
-            
+            );      
+            // this.props.objPresent[this.props.activeObj].add( model );
+            console.log(this.props.objPresent[this.props.activeObj]);      
         }
     }
 

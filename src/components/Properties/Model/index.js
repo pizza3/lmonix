@@ -1,17 +1,17 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
 import Trigger from 'rc-trigger'
-import TextureDropdown from './TextureDropdown'
+import ModelDropdown from './ModelDropdown'
 
-export default class Texture extends Component{
+export default class Model extends Component{
     state = {
-        currentTexture:'Add Texture'
+        currentTexture:'Add Model'
     }
     render(){
         return(
             <Container>
-                <Title>Texture</Title>
-                <Trigger action={['click']} popup={<div><TextureDropdown {...this.props} addInScene={this.props.addInScene}/></div>} prefixCls='dropdown' 
+                <Title>Model</Title>
+                <Trigger action={['click']} popup={<div><ModelDropdown {...this.props} addInScene={this.props.addInScene}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                         points: ["tr", "bl"],
                         offset: [-280, -20],

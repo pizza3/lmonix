@@ -6,12 +6,34 @@ import Visible from './Properties/Visible'
 import Transform from './Properties/Transform'
 import CastShadow from './Properties/CastShadow'
 import ReceiveShadow from './Properties/ReceiveShadow'
+import Model from './Properties/Model'
 export default class PropertiesEditor extends Component{
     state={
     }
 
+    checkColor = () => {
+        if(this.props.objPresent.length>0){
+            if(this.props.objPresent[this.props.activeObj].objPrimitive==="3DModel"){
+                return false
+            }
+            return true
+        }
+        return false
+    }
+
+    checkModel = () => {
+        if(this.props.objPresent.length>0){
+            if(this.props.objPresent[this.props.activeObj].objPrimitive==="3DModel"){
+                return true
+            }
+            return false
+        }
+        return false
+    }
     render(){
-        console.log(this.props.objPresent.length);
+        console.log(this.props.objPresent[this.props.activeObj]);
+        const isColor = this.checkColor()
+        const isModel = this.checkModel()
         return(
             <PropertiesEditorContainer>
                 <PropertiesEditorTitle>
@@ -19,7 +41,12 @@ export default class PropertiesEditor extends Component{
                 </PropertiesEditorTitle>
                 <Transform {...this.props}/>
                 <Texture {...this.props}/>
-                <ColorPicker {...this.props}/>
+                {isColor?
+                    <ColorPicker {...this.props}/>:null
+                }
+                {isModel?
+                    <Model {...this.props}/>:null
+                }
                 <Visible {...this.props}/>
                 <CastShadow {...this.props}/>
                 <ReceiveShadow {...this.props}/>

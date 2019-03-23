@@ -13,6 +13,7 @@ import sun from '../../assets/sun.svg';
 import MenuDropdownBasic from './MenuDropdown/MenuDropdownBasic'
 import MenuDropdownLight from './MenuDropdown/MenuDropdownLight'
 import MenuDropdownEnv from './MenuDropdown/MenuDropdownEnv'
+import MenuDropdownObj from './MenuDropdown/MenuDropdownObj'
 import Trigger from 'rc-trigger'
 
 
@@ -47,7 +48,13 @@ export default class MenuBar extends Component{
                 </Trigger>
                 <ImgContainer src={text} alt='General'/>
                 <ImgContainer src={image} alt='General'/>
-                <ImgContainer src={model} alt='General'/>
+                <Trigger action={['click']} popup={<div><MenuDropdownObj scene={scene} addInScene={this.props.addInScene}/></div>} prefixCls='dropdown' 
+                    popupAlign={{
+                    points: ["br", "tr"],
+                    offset: [10, -3],
+                }}>
+                    <ImgContainer src={model} alt='General'/>
+                </Trigger>        
                 <ImgContainerAbs src={!this.props.setMode?generalBlue:general} alt='General' bottom={53} onClick={()=>{this.props.changeSetMode(false)}}/>
                 <ImgContainerAbs src={this.props.setMode?boxBlue:box} alt='Scene' bottom={14} onClick={()=>{this.props.changeSetMode(true)}}/>
             </MenuContainer>

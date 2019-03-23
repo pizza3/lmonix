@@ -53,7 +53,8 @@ const Title = styled.div`
     position: relative;
     float: left;
     color: #969696;
-    font-size: 12px;
+    font-size: 10px;
     margin-left: 9px;
     margin-top: 4px;
+    font-weight: 700;
 `
