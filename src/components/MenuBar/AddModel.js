@@ -1,4 +1,6 @@
 import * as THREE from '../ThreeLibManager';
+import textureLoader from '../Helpers/textureLoader'
+import videoLoader from '../Helpers/videoLoader'
 
 
 const AddCube = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y:0,z:0})=>{
@@ -243,9 +245,22 @@ const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={
     switch(type){
         case "Cube":
             let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
+
+            let mapData 
+            console.log(obj.objTexture);
+            
+            if(obj.objTexture && obj.objTexture.type==='image'){
+                mapData = textureLoader(obj.objTexture.data)
+            }
+            else if(obj.objTexture && obj.objTexture.type==='video'){
+                mapData = videoLoader(obj.objTexture.data)
+            }
+            else{
+                mapData = null
+            }
             let material = new THREE.MeshPhongMaterial({
                 color: 0xef2d5e,
-                // map:obj.objTexture.data
+                map: mapData
             });
             let objCube = new THREE.Object3D();
             objCube["objName"] = "Cube";

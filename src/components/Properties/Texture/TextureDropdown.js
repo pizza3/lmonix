@@ -19,7 +19,8 @@ export default class MenuDropdown extends Component{
             video.play();
             var texture = new THREE.VideoTexture( video );
             this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
-            this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;        
+            this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;      
+            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'video'}  
         }
         else{
             let texture = new THREE.TextureLoader().load(
@@ -37,12 +38,9 @@ export default class MenuDropdown extends Component{
             );
             this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
             this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;
-            this.props.objPresent[this.props.activeObj].objTexture = {data:texture,type:'image'}
-            console.log(this.props.objPresent[this.props.activeObj]);
-            
+            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'image'}
         }
     }
-
     render(){
         const { assetStack } = this.props;
         const Textures = assetStack.map((val,i)=>{

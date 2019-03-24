@@ -37,6 +37,7 @@ export default class MenuDropdown extends Component{
 
                 }
             );      
+            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'model'}
             // this.props.objPresent[this.props.activeObj].add( model );
             console.log(this.props.objPresent[this.props.activeObj]);      
         }
