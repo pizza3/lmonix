@@ -41,7 +41,7 @@ function showOpenDialog(browserWindow) {
                 if (err){
                     console.log(err);
                 } else {
-                    let obj = JSON.parse(data); //now it an object
+                    let obj = JSON.parse(data); //now it is an object
                     browserWindow.webContents.send("ipcRenderer",{option:"updateProject", obj,title:filepaths}); 
                     fs.readdir(filepaths[0]+'/Assets/', (err, files) => {
                         let fileArr = []             
@@ -69,17 +69,17 @@ function showAddDialog(browserWindow,arg){
         ]
     },(filepaths)=>{
         const fileName = path.basename(filepaths[0])
-        fsx.copySync(path.resolve(filepaths[0]),arg.location[0]+'/Assets/'+fileName);
-        fs.readdir(arg.location[0]+'/Assets/', (err, files) => {
+        fsx.copySync(path.resolve(filepaths[0]),arg.location+'/Assets/'+fileName);
+        fs.readdir(arg.location+'/Assets/', (err, files) => {
             let fileArr = []
             files.forEach(file => {
               fileArr.push({
                  name:file,
-                 path:filepaths[0]+'/Assets/'+file,
+                 path:filepaths[0],
                  ext:path.extname(filepaths[0]+'/Assets/'+file),
                 })
             });
-            fs.writeFile(arg.location[0]+'/index.html',aframeTemplate(fileArr),'utf8',(err)=>{
+            fs.writeFile(arg.location+'/index.html',aframeTemplate(fileArr),'utf8',(err)=>{
                 if(err){
                     dialog.showErrorBox('Save Failed',err.message);
                 }
@@ -90,14 +90,14 @@ function showAddDialog(browserWindow,arg){
 }
 
 function saveState(threeData){
-    fs.writeFile(threeData.state.title[0]+'/index.html',aframeTemplate(threeData.state.assetStack,threeData.data),'utf8',(err)=>{
+    fs.writeFile(threeData.state.title+'/index.html',aframeTemplate(threeData.state.assetStack,threeData.data),'utf8',(err)=>{
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
         }
        
     })
     let data = JSON.stringify(threeData)
-    fs.writeFile(threeData.state.title[0]+'/data.json',data,'utf8',(err)=>{
+    fs.writeFile(threeData.state.title+'/data.json',data,'utf8',(err)=>{
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
         }
@@ -107,7 +107,16 @@ function saveState(threeData){
 function createAssets(arr=[]){
     let assetString="";
     arr.forEach((val)=>{
-        assetString+=`<img id="${val.name}" src="./Assets/${val.name}"> \n`
+        let name  = val.name.replace(/[\W_]+/g,"");
+        if(val.ext==='.png'||val.ext==='.jpg'){
+            assetString+=`<img id="${name}" src="./Assets/${val.name}"> \n`
+        }
+        else if(val.ext==='.obj'||val.ext==='.mtl'){
+            assetString+=`<a-asset-item id="${name}" src="./Assets/${val.name}"></a-asset-item> \n`
+        }
+        else{
+            assetString+=`<video id="${name}" src="./Assets/${val.name}"></video> \n`
+        }
     })
     return assetString
 }
@@ -115,9 +124,27 @@ function createAssets(arr=[]){
 function createScene(threeData=[], state={}){
     let dataString = ""
     threeData.map((val) => {
-        dataString+= `<a-entity geometry="primitive: ${val.objPrimitive};" material="color: ${val.hashColor}" position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
+        if(val.objPrimitive === "sky"){
+            dataString+= `<a-sky color="${val.hashColor}" src="${val.objTexture?"#"+val.objTexture.name:""}" position="${val.position.x} ${val.position.y} ${val.position.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-sky> \n`
+        }
+        else if(val.objPrimitive==="3DModel"){
+            dataString+= `<a-entity obj-model="obj: ${val.objModel?"#"+val.objModel.name:""};"  position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
+        }
+        else{
+            dataString+= `<a-entity geometry="primitive: ${val.objPrimitive};" material="color: ${val.hashColor}; src: ${val.objTexture?"#"+val.objTexture.name:""}" position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
+        }
     })
     return dataString
+}
+
+
+function checkObjPrimitive(obj){
+    if(obj.objPrimitive === "sky"){
+        return `<a-sky color= ${obj.hashColor} src= ${obj.objTexture?obj.objTexture.name:null}></a-sky>`
+    }
+    else{
+
+    }
 }
 
 function aframeTemplate(assetArr,sceneArr){

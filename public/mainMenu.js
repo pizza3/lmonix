@@ -15,6 +15,7 @@ function saveAs(mainWindow) {
 
 function save(params) {
     ipcMain.on("reciveThreeData", (event,arg) => {
+        console.log('arg',arg);
         saveState(arg)
     });
 }

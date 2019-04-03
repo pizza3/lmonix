@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import TitleBar from './components/TitleBar';
+import TitleBar from './components/TitleBar/TitleBar';
 import VrRenderer from './components/VrRenderer';
 import SceneEditor from './components/SceneEditor';
 // import Code from './components/Code';
 import {AddCubeGroup, AddGroupObj}  from './components/MenuBar/AddModel';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-
 const electron =  window.require('electron');
 
 class App extends Component {
@@ -29,13 +28,15 @@ class App extends Component {
                 case 'updateProject':
                     let data = [];
                     val['obj']['data'].forEach((val) => {
-                        let a = AddGroupObj(val,val.objName,this.state.scene,val.position,val.rotation,val.scale);
+                        let a = AddGroupObj(val,val.objPrimitive,this.state.scene,val.position,val.rotation,val.scale);
                         data.push(a)
                     })
+                    console.log('val',val);
+                    
                     this.setState({
                         objPresent:data,
                         activeObj:0,
-                        title:val['title']
+                        title:val['title'][0]
                     },()=>{
                         this.state.transformControls.attach(this.state.objPresent[this.state.activeObj]);
                         this.state.scene.add(this.state.transformControls);
@@ -43,7 +44,7 @@ class App extends Component {
                     break;
                 case 'changeTitle':
                     this.setState({
-                        title:val['title']
+                        title:val['title'][0]
                     })
                     break;
                 case 'addGroupObj':

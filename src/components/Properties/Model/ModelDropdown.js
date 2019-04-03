@@ -19,10 +19,6 @@ export default class MenuDropdown extends Component{
                 // called when resource is loaded
                 function ( object ) {
                     objPresent.add(object)
-                    objPresent.objModel = {
-                        type: '.obj',
-                        data: object
-                    }
                 },
                 // called when loading is in progresses
                 function ( xhr ) {
@@ -37,9 +33,9 @@ export default class MenuDropdown extends Component{
 
                 }
             );      
-            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'model'}
+            this.props.objPresent[this.props.activeObj].objModel = {data:data,type:'.obj',name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}
             // this.props.objPresent[this.props.activeObj].add( model );
-            console.log(this.props.objPresent[this.props.activeObj]);      
+            // console.log(this.props.objPresent[this.props.activeObj]);      
         }
     }
 

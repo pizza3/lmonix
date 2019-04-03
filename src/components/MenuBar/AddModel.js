@@ -1,6 +1,7 @@
 import * as THREE from '../ThreeLibManager';
 import textureLoader from '../Helpers/textureLoader'
 import videoLoader from '../Helpers/videoLoader'
+import modelLoader from '../Helpers/modelLoader'
 
 
 const AddCube = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y:0,z:0})=>{
@@ -242,33 +243,31 @@ const AddModel = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y:0,z:0})=>
 }
 
 const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={x:0,y:0,z:0})=>{
+    let mapData 
+    if(obj.objTexture && obj.objTexture.type==='image'){
+        mapData = textureLoader(obj.objTexture.data)
+    }
+    else if(obj.objTexture && obj.objTexture.type==='video'){
+        mapData = videoLoader(obj.objTexture.data)
+    }
+    else{
+        mapData = null
+    }
     switch(type){
-        case "Cube":
+        case "box":
             let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
-
-            let mapData 
-            console.log(obj.objTexture);
-            
-            if(obj.objTexture && obj.objTexture.type==='image'){
-                mapData = textureLoader(obj.objTexture.data)
-            }
-            else if(obj.objTexture && obj.objTexture.type==='video'){
-                mapData = videoLoader(obj.objTexture.data)
-            }
-            else{
-                mapData = null
-            }
             let material = new THREE.MeshPhongMaterial({
-                color: 0xef2d5e,
+                color: obj.hashColor?parseInt(obj.hashColor.replace(/^#/, ""), 16):0xef2d5e,                
                 map: mapData
             });
             let objCube = new THREE.Object3D();
             objCube["objName"] = "Cube";
             objCube["objType"] = "Mesh";
             objCube["objPrimitive"] = "box";
-            objCube["hashColor"] = "#ef2d5e";
+            objCube["hashColor"] =obj.hashColor|| "#ef2d5e";
             objCube.add(new THREE.Mesh(geometry, material));
             scene.add(objCube);
+            objCube.objTexture = obj.objTexture
             objCube.position.set(pos.x,pos.y,pos.z);
             objCube.rotation.set(rot._x,rot._y,rot._z)
             objCube.scale.set(sca.x,sca.y,sca.z);
@@ -276,18 +275,20 @@ const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={
             objCube.receiveShadow=obj.receiveShadow
             return objCube;
         break;
-        case "Sphere":
+        case "sphere":
             let geometrySphere = new THREE.SphereBufferGeometry( 1, 32, 32 );
             let materialSphere = new THREE.MeshPhongMaterial({
-                color: 0xef2d5e
+                color: obj.hashColor?parseInt(obj.hashColor.replace(/^#/, ""), 16):0xef2d5e,
+                map: mapData
             });
             let objSphere = new THREE.Object3D();
             objSphere["objName"] = "Sphere";
             objSphere["objType"] = "Mesh";
-            objSphere["hashColor"] = "#ef2d5e";
+            objSphere["hashColor"] = obj.hashColor|| "#ef2d5e";
             objSphere["objPrimitive"] = "sphere";
             objSphere.add(new THREE.Mesh(geometrySphere, materialSphere));
             scene.add(objSphere);
+            objSphere.objTexture = obj.objTexture
             objSphere.position.set(pos.x,pos.y,pos.z);
             objSphere.rotation.set(rot._x,rot._y,rot._z)
             objSphere.scale.set(sca.x,sca.y,sca.z);
@@ -295,18 +296,21 @@ const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={
             objSphere.receiveShadow=obj.receiveShadow
             return objSphere;
         break;
-        case "Plane":
+        case "plane":
             let geometryPlane = new THREE.PlaneBufferGeometry( 1, 1, 32, 32 )
             let materialPlane = new THREE.MeshPhongMaterial({
-                color: 0xef2d5e
+                color: obj.hashColor?parseInt(obj.hashColor.replace(/^#/, ""), 16):0xef2d5e,
+                map: mapData
+
             });
             let objPlane = new THREE.Object3D();
             objPlane["objName"] = "Plane";
             objPlane["objType"] = "Mesh";
             objPlane["objPrimitive"] = "plane";
-            objPlane["hashColor"] = "#ef2d5e";
+            objPlane["hashColor"] = obj.hashColor|| "#ef2d5e";
             objPlane.add(new THREE.Mesh(geometryPlane, materialPlane));
             scene.add(objPlane);
+            objPlane.objTexture = obj.objTexture
             objPlane.position.set(pos.x,pos.y,pos.z);
             objPlane.rotation.set(rot._x,rot._y,rot._z)
             objPlane.scale.set(sca.x,sca.y,sca.z);
@@ -314,26 +318,44 @@ const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={
             objPlane.receiveShadow=obj.receiveShadow
             return objPlane;
         break;
-        case "Sky":
+        case "sky":
             let skygeometry = new THREE.SphereBufferGeometry( 5000, 64, 32);
             let skymaterial = new THREE.MeshBasicMaterial({
-                color: 0xceecf0,
+                color: obj.hashColor?parseInt(obj.hashColor.replace(/^#/, ""), 16):0xceecf0,
                 side: THREE.BackSide,
-                map: null,
+                map: mapData
             });
             let objsky = new THREE.Object3D();
             objsky["objName"] = "Sky";
             objsky["objType"] = "Mesh";
             objsky["objPrimitive"] = "sky";
-            objsky["hashColor"] = "#ceecf0";
+            objsky["hashColor"] = obj.hashColor|| "#ceecf0";
             objsky.add(new THREE.Mesh(skygeometry, skymaterial));
             scene.add(objsky);
+            objsky.objTexture = obj.objTexture
             objsky.position.set(pos.x,pos.y,pos.z);
             objsky.rotation.set(rot._x,rot._y,rot._z)
             objsky.scale.set(sca.x,sca.y,sca.z);
             objsky.visible=obj.visible
             objsky.receiveShadow=obj.receiveShadow
             return objsky;
+        break;
+        case "3DModel":
+            let threeDobj = new THREE.Object3D();
+            threeDobj["objName"] = "3DModel";
+            threeDobj["objType"] = "Mesh";
+            threeDobj["objPrimitive"] = "3DModel";
+            scene.add(threeDobj);
+            threeDobj.position.set(pos.x,pos.y,pos.z);
+            threeDobj.rotation.set(rot._x,rot._y,rot._z)
+            threeDobj.scale.set(sca.x,sca.y,sca.z);
+            threeDobj.visible=obj.visible
+            threeDobj.receiveShadow=obj.receiveShadow
+            if(obj.objModel){
+                threeDobj.objModel = obj.objModel
+                modelLoader(threeDobj.objModel.data,threeDobj)
+            }
+            return threeDobj;
         break;
         default:
         break;

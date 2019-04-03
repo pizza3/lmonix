@@ -7,7 +7,7 @@ export default class MenuDropdown extends Component{
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
-        let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
+        let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')        
         if(this.props.assetStack[i].ext==='.webm'){
             let video = document.createElement( 'video' );
             video.src = data;
@@ -20,7 +20,10 @@ export default class MenuDropdown extends Component{
             var texture = new THREE.VideoTexture( video );
             this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
             this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;      
-            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'video'}  
+            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'video', name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}  
+        }
+        else if(this.props.assetStack[i].ext==='.mtl'){
+
         }
         else{
             let texture = new THREE.TextureLoader().load(
@@ -38,7 +41,7 @@ export default class MenuDropdown extends Component{
             );
             this.props.objPresent[this.props.activeObj].children[0].material.map = texture;
             this.props.objPresent[this.props.activeObj].children[0].material.needsUpdate = true;
-            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'image'}
+            this.props.objPresent[this.props.activeObj].objTexture = {data:data,type:'image',name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}
         }
     }
     render(){
