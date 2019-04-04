@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import CodeMirror from 'codemirror'
 import "codemirror/mode/javascript/javascript.js";
-import "../codemirror.css"
+// import "../codemirror.css"
 export default class VrRenderer extends Component{
     state={
         show:false
@@ -11,17 +11,22 @@ export default class VrRenderer extends Component{
         this.setState({
             show:true
         })
-        let cm = CodeMirror(document.getElementById('containerCode'), {
-            value: "function myScript(){return 100;}\n",
-            theme:"base16-dark",
+        let editor = CodeMirror(document.getElementById('containerCode'), {
             mode:  "javascript",
             indentUnit: 4,
-            lineNumbers: true
-          });
+            lineNumbers: true,
+            matchBrackets: true,
+            value: `function myScript(){
+                return 100;
+            }\n`,
+            // theme:"base16-dark",
+         });
+
+        // setTimeout(function() {
+        //     editor.refresh();
+        // },10000);
     }
-    render(){
-        console.log('file://'+this.props.title+'/index.html');
-        
+    render(){        
         return(
             <div>
                 <div id="containerCode" style={{height:"calc(100vh - 37px)",width:"50%",marginTop:"37px",float:"left"}}>

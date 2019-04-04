@@ -16,9 +16,9 @@ class App extends Component {
         transformControls:null,
         activeObj:null,
         objPresent:[],
-        assetStack:[]
+        assetStack:[],
+        code:''
     }
-   
     componentDidMount(){
         electron.ipcRenderer.on('ipcRenderer', function (e, val) {
             switch (val['option']) {
@@ -30,9 +30,7 @@ class App extends Component {
                     val['obj']['data'].forEach((val) => {
                         let a = AddGroupObj(val,val.objPrimitive,this.state.scene,val.position,val.rotation,val.scale);
                         data.push(a)
-                    })
-                    console.log('val',val);
-                    
+                    })                    
                     this.setState({
                         objPresent:data,
                         activeObj:0,

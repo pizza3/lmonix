@@ -17,6 +17,12 @@ function showSaveDialog(browserWindow,threeData){
                     dialog.showErrorBox('Save Failed',err.message);
                 }
             })
+            fs.mkdirSync(filename+'/scripts')
+            fs.writeFile(filename+'/scripts/index.js','','utf8',(err)=>{
+                if(err){
+                    dialog.showErrorBox('Save Failed',err.message);
+                }
+            })
             fs.mkdirSync(filename+'/Assets')
             let data = JSON.stringify(threeData)
             fs.writeFile(filename+'/data.json',data,'utf8',(err)=>{
@@ -137,15 +143,14 @@ function createScene(threeData=[], state={}){
     return dataString
 }
 
+// function checkObjPrimitive(obj){
+//     if(obj.objPrimitive === "sky"){
+//         return `<a-sky color= ${obj.hashColor} src= ${obj.objTexture?obj.objTexture.name:null}></a-sky>`
+//     }
+//     else{
 
-function checkObjPrimitive(obj){
-    if(obj.objPrimitive === "sky"){
-        return `<a-sky color= ${obj.hashColor} src= ${obj.objTexture?obj.objTexture.name:null}></a-sky>`
-    }
-    else{
-
-    }
-}
+//     }
+// }
 
 function aframeTemplate(assetArr,sceneArr){
     // a new template is only been made on when assets are added, a new project got created, project got saved.
@@ -163,6 +168,7 @@ function aframeTemplate(assetArr,sceneArr){
                     </a-assets>
                         ${createScene(sceneArr)}
                 </a-scene>
+                <script type='text/javascript' src='./scripts/index.js'></script>
             </body>
         </html>
     `

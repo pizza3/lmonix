@@ -25,6 +25,7 @@
     "monaco-editor": "^0.16.0",
     "rc-trigger": "^2.6.2",
     "react": "^16.8.3",
+    "react-codemirror": "^1.0.0",
     "react-dom": "^16.8.3",
     "react-monaco-editor": "^0.25.1",
     "react-router-dom": "^4.3.1",

@@ -1,6 +1,8 @@
 const {app, BrowserWindow, Menu, ipcMain, MenuItem} =  require('electron');
 const isWindows = process.platform === 'win32';
 const {showSaveDialog, showOpenDialog, showAddDialog, saveState} = require('./dialog');
+const http = require('http');
+const fs = require('fs');
 
 module.exports = {
     setMainMenu,
@@ -171,5 +173,21 @@ function SetPopMenu(mainWindow, win){
         const location = arg
         // BrowserWindow.webContents.send("ipcRenderer",{option:"getLocation"});
         showAddDialog(mainWindow,location)
+    })
+
+    ipcMain.on("startlocal",(event, arg)=>{
+        const {location} = arg
+        // BrowserWindow.webContents.send("ipcRenderer",{option:"getLocation"});
+        const PORT=9999; 
+        fs.readFile(`${location}/index.html`, function (err, html) {
+
+            if (err) throw err;    
+
+            http.createServer(function(request, response) {  
+                response.writeHeader(200, {"Content-Type": "text/html"});  
+                response.write(html);  
+                response.end();  
+            }).listen(PORT);
+        });
     })
 }
