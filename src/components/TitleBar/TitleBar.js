@@ -19,7 +19,7 @@ export default class TitleBar extends Component{
             <TitleContainer id="titleBar">
                 <TitleOverlay/>
                 <Link to="/"><TitleLink>Design</TitleLink></Link>
-                <Link to="/code"><TitleLink>Code</TitleLink></Link>
+                <Link to="/code"><TitleLinkCode>Code</TitleLinkCode></Link>
                 <Title>{this.props.title}</Title>
                 <Trigger action={['click']} popup={<div><CloudExport/></div>} prefixCls='dropdown' 
                     popupAlign={{
@@ -28,7 +28,7 @@ export default class TitleBar extends Component{
                 }}>
                     <ImgContainer src={cloud} alt='Upload'/>
                 </Trigger>
-                <Trigger action={['click']} defaultPopupVisible={true} popup={<div><LocalServer location={this.props.title}/></div>} prefixCls='dropdown' 
+                <Trigger action={['click']} popup={<div><LocalServer location={this.props.title}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                     points: ["bc", "tl"],
                     offset: [-210, 30],
@@ -90,4 +90,16 @@ const TitleLink = styled.div`
     border-bottom: 3px solid #707070;
     margin-top: 10px;
     margin-left: 85px;
+`
+const TitleLinkCode = styled.div`
+    position: relative;
+    float: left;
+    font-weight: 500;
+    color: #707070;
+    font-size: 13px;
+    margin-right: 15px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid #707070;
+    margin-top: 10px;
+    margin-left: 1px;
 `

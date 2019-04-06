@@ -204,4 +204,5 @@ const Overlay = styled.div`
     width: 100%;
     border-bottom: 2px solid #DBDBDB;
     margin-bottom: 20px;
+    overflow: hidden;
 `

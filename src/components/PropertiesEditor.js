@@ -7,6 +7,7 @@ import Transform from './Properties/Transform'
 import CastShadow from './Properties/CastShadow'
 import ReceiveShadow from './Properties/ReceiveShadow'
 import Model from './Properties/Model'
+import Intensity from './Properties/Intensity'
 export default class PropertiesEditor extends Component{
     state={
     }
@@ -30,26 +31,44 @@ export default class PropertiesEditor extends Component{
         }
         return false
     }
+    checkLight = ()=>{
+        if(this.props.objPresent.length>0){
+            if(this.props.objPresent[this.props.activeObj].objType==="Light"){
+                return true
+            }
+            return false
+        }
+        return false
+    }
     render(){
         console.log(this.props.objPresent[this.props.activeObj]);
         const isColor = this.checkColor()
         const isModel = this.checkModel()
+        const isLight = this.checkLight()
         return(
             <PropertiesEditorContainer>
                 <PropertiesEditorTitle>
                     Properties
                 </PropertiesEditorTitle>
                 <Transform {...this.props}/>
-                <Texture {...this.props}/>
-                {isColor?
-                    <ColorPicker {...this.props}/>:null
+                {!isLight?
+                <Texture {...this.props}/>:null
                 }
-                {isModel?
-                    <Model {...this.props}/>:null
+                {isColor?
+                <ColorPicker {...this.props}/>:null
+                }
+                {isModel && !isLight?
+                <Model {...this.props}/>:null
+                }
+                {isLight?
+                <Intensity {...this.props}/>:null
                 }
                 <Visible {...this.props}/>
                 <CastShadow {...this.props}/>
-                <ReceiveShadow {...this.props}/>
+                {
+                !isLight?
+                <ReceiveShadow {...this.props}/>:null 
+                }
             </PropertiesEditorContainer>
         )
     }

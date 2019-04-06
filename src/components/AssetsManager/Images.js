@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import add from '../../assets/add.svg';
 import trash from '../../assets/trash.svg';
 import _ from 'lodash'
+import Trigger from 'rc-trigger'
+import Poly from './Poly'
+import logo from '../../assets/polylogo.svg'
 const electron =  window.require('electron');
-
 
 export default class Images extends Component{
     handleAddAsset=()=>{
@@ -29,6 +31,15 @@ export default class Images extends Component{
                     <Title>{this.props.titleName}</Title>
                     <Add src={add} onClick={this.handleAddAsset}/>
                 </Header>
+                {this.props.titleName==='Models'?
+                    <Trigger action={['click']} popup={<div><Poly/></div>} prefixCls='dropdown' 
+                        popupAlign={{
+                        points: ["br", "tr"],
+                        offset: [10, -3],
+                    }}>
+                        <Button>Add from Poly<Logo src={logo}/></Button>                
+                    </Trigger>                    
+                :null}
                 {Images}
             </Wrapper>
         )
@@ -39,6 +50,7 @@ const Wrapper = styled.div`
     position:relative;
     width:100%;
     height:auto;
+    float: left;
     padding: 15px 7px 0px 7px;
 `
 
@@ -59,6 +71,12 @@ const Add = styled.img`
     position:relative;
     float:right;
     width: 14px;
+    padding: 3px;
+    background: #e0e0e0;
+    border-radius: 2px;
+        &:hover{
+        background: #c7c7c7;
+    }
 `
 
 const Name = styled.span`
@@ -89,4 +107,27 @@ const Trash = styled.img`
     float:right;
     width: 8px;
     margin-top: 1px;
+`
+
+const Button = styled.button`
+    position: relative;
+    width: 100%;
+    height: 25px;
+    border-radius: 3px;
+    background: #2F79EF;
+    color: #fff;
+    font-weight: 700;
+    font-size: 10px;
+    border: none;
+    margin-top: 2px;
+    margin-bottom: 12px;
+    &:hover{
+        background: #186AEB;
+    }
+`
+const Logo = styled.img`
+    width: 12px;
+    position: absolute;
+    margin-left: 3px;
+
 `

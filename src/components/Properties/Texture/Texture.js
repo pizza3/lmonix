@@ -8,6 +8,11 @@ export default class Texture extends Component{
         currentTexture:'Add Texture'
     }
     render(){
+        let content =this.props.objPresent[this.props.activeObj]? 
+        this.props.objPresent[this.props.activeObj].objTexture?
+        this.props.objPresent[this.props.activeObj].objTexture.name
+        :this.state.currentTexture
+        :this.state.currentTexture
         return(
             <Container>
                 <Title>Texture</Title>
@@ -17,7 +22,7 @@ export default class Texture extends Component{
                         offset: [-280, -20],
                 }}>
                     <Input>
-                        {this.state.currentTexture}
+                        {content}
                     </Input>
                 </Trigger>
             </Container>
