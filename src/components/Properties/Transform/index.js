@@ -192,11 +192,13 @@ const Input = styled.input`
     background: #DBDBDB;
     border-radius: 3px;
     font-size: 9px;
+    font-weight: 600;
+    color: #737373;
     &:focus{
         outline: none;
-        background: #5F9DFF;
+        background: #2F79EF;
         color: #fff;
-        border: 2px solid #5F9DFF;
+        border: 2px solid #2F79EF;
     }
 `
 const Overlay = styled.div`

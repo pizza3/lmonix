@@ -56,7 +56,8 @@ class App extends Component {
                     break;
                 case 'setAssetStack':
                     this.setState({
-                        assetStack:val['assets']
+                        assetStack:val['assets'],
+                        code:val['code']
                     })
                     break;
                 default:
@@ -65,11 +66,14 @@ class App extends Component {
             }
         }.bind(this))
     }
-
     setSceneObject = (scene,transformControls) => {
         this.setState({scene,transformControls})    
     }
-
+    updateCode=(val)=>{
+        this.setState({
+            code:val
+        })
+    }
     addInScene = (obj) => {
         let l = this.state.objPresent.length;
         let objPresent = this.state.objPresent;
@@ -114,7 +118,7 @@ class App extends Component {
                 <React.Fragment>
                     <TitleBar title ={this.state.title}/>
                     <Route exact path="/" render={()=> <SceneEditor {...this.state} setSceneObject={this.setSceneObject} addInScene={this.addInScene} setActiveObj={this.setActiveObj} />}/>
-                    <Route  path="/code" render={()=> <VrRenderer {...this.state} />} />
+                    <Route  path="/code" render={()=> <VrRenderer {...this.state} updateCode={this.updateCode} />} />
                 </React.Fragment>
             </Router>
         );

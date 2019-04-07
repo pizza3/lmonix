@@ -43,6 +43,8 @@ function showOpenDialog(browserWindow) {
         ]
     },(filepaths)=>{
         if(filepaths){
+            let fileArr = []     
+            let scriptCode = ``        
             fs.readFile(filepaths[0]+'/data.json', 'utf8', function readFileCallback(err, data){
                 if (err){
                     console.log(err);
@@ -50,7 +52,6 @@ function showOpenDialog(browserWindow) {
                     let obj = JSON.parse(data); //now it is an object
                     browserWindow.webContents.send("ipcRenderer",{option:"updateProject", obj,title:filepaths}); 
                     fs.readdir(filepaths[0]+'/Assets/', (err, files) => {
-                        let fileArr = []             
                         files.forEach(file => {
                           fileArr.push({
                             name:file,
@@ -58,11 +59,18 @@ function showOpenDialog(browserWindow) {
                              ext:path.extname(filepaths[0]+'/Assets/'+file),
                             })
                         });
-                        browserWindow.webContents.send("ipcRenderer",{option:"setAssetStack",assets:fileArr}); 
                         // fsx.copySync(path.resolve(filepaths[0]),'src/assets/project');
                       });                        
                 }
             });
+            fs.readFile(filepaths[0]+'/scripts/index.js', 'utf8', function readFileCallback(err, data){
+                if (err){
+                    console.log(err);
+                } else {
+                    scriptCode = data
+                    browserWindow.webContents.send("ipcRenderer",{option:"setAssetStack",assets:fileArr, code:scriptCode}); 
+                }
+            })
         }
     })
 }
@@ -96,14 +104,18 @@ function showAddDialog(browserWindow,arg){
 }
 
 function saveState(threeData){
+    let data = JSON.stringify(threeData)
     fs.writeFile(threeData.state.title+'/index.html',aframeTemplate(threeData.state.assetStack,threeData.data),'utf8',(err)=>{
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
         }
-       
     })
-    let data = JSON.stringify(threeData)
     fs.writeFile(threeData.state.title+'/data.json',data,'utf8',(err)=>{
+        if(err){
+            dialog.showErrorBox('Save Failed',err.message);
+        }
+    })
+    fs.writeFile(threeData.state.title+'/scripts/index.js',threeData.state.code,'utf8',(err)=>{
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
         }

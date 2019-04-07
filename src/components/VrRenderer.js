@@ -1,36 +1,24 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import CodeMirror from 'codemirror'
+import CodeMirror from 'react-codemirror'
 import "codemirror/mode/javascript/javascript.js";
 // import "../codemirror.css"
 export default class VrRenderer extends Component{
     state={
-        show:false
+        code:`function myScript(){return 100;}\n`
     }
-    componentDidMount(){
-        this.setState({
-            show:true
-        })
-        let editor = CodeMirror(document.getElementById('containerCode'), {
+    render(){        
+        const options = {
             mode:  "javascript",
             indentUnit: 4,
             lineNumbers: true,
             matchBrackets: true,
-            value: `function myScript(){
-                return 100;
-            }\n`,
-            // theme:"base16-dark",
-         });
-
-        // setTimeout(function() {
-        //     editor.refresh();
-        // },10000);
-    }
-    render(){        
+        }
         return(
             <div>
-                <div id="containerCode" style={{height:"calc(100vh - 37px)",width:"50%",marginTop:"37px",float:"left"}}>
-                </div>
+                <ContainerCode id="containerCode">
+                    <CodeMirror value={this.props.code} onChange={this.props.updateCode} options={options} />
+                </ContainerCode>
                 <webview src={'file://'+this.props.title+'/index.html'} disablewebsecurity='true'
                     style={{
                         height:'calc(100vh - 37px)',
@@ -45,9 +33,10 @@ export default class VrRenderer extends Component{
     }
 }
 
-const ContainerCode = styled.textarea`
+const ContainerCode = styled.div`
     height:calc(100vh - 37px);
     width:50%;
     margin-top:37px;
     float:left;
+    border-right: 2px solid #e0e0e0;
 `
