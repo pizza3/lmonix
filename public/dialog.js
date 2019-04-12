@@ -43,8 +43,7 @@ function showOpenDialog(browserWindow) {
         ]
     },(filepaths)=>{
         if(filepaths){
-            let fileArr = []     
-            let scriptCode = ``        
+            let fileArr = [];  
             fs.readFile(filepaths[0]+'/data.json', 'utf8', function readFileCallback(err, data){
                 if (err){
                     console.log(err);
@@ -58,7 +57,9 @@ function showOpenDialog(browserWindow) {
                              path:filepaths[0]+'/Assets/'+file,
                              ext:path.extname(filepaths[0]+'/Assets/'+file),
                             })
+                            console.log('file',fileArr);
                         });
+                        browserWindow.webContents.send("ipcRenderer",{option:"setAssetStack",assets:fileArr}); 
                         // fsx.copySync(path.resolve(filepaths[0]),'src/assets/project');
                       });                        
                 }
@@ -67,8 +68,8 @@ function showOpenDialog(browserWindow) {
                 if (err){
                     console.log(err);
                 } else {
-                    scriptCode = data
-                    browserWindow.webContents.send("ipcRenderer",{option:"setAssetStack",assets:fileArr, code:scriptCode}); 
+                    console.log('code',data);
+                    browserWindow.webContents.send("ipcRenderer",{option:"updateCode", code:data}); 
                 }
             })
         }
@@ -105,7 +106,7 @@ function showAddDialog(browserWindow,arg){
 
 function saveState(threeData){
     let data = JSON.stringify(threeData)
-    fs.writeFile(threeData.state.title+'/index.html',aframeTemplate(threeData.state.assetStack,threeData.data),'utf8',(err)=>{
+    fs.writeFile(threeData.state.title+'/index.html',aframeTemplate(threeData.state.assetStack,threeData.data,threeData.state.isCursor),'utf8',(err)=>{
         if(err){
             dialog.showErrorBox('Save Failed',err.message);
         }
@@ -148,6 +149,9 @@ function createScene(threeData=[], state={}){
         else if(val.objPrimitive==="3DModel"){
             dataString+= `<a-entity obj-model="obj: ${val.objModel?"#"+val.objModel.name:""};"  position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
         }
+        else if(val.objType==='Light'){
+            dataString+=`<a-entity light="type: ${val.objPrimitive}; color: ${val.hashColor}" position="${val.position.x} ${val.position.y} ${val.position.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity>`
+        }
         else{
             dataString+= `<a-entity geometry="primitive: ${val.objPrimitive};" material="color: ${val.hashColor}; src: ${val.objTexture?"#"+val.objTexture.name:""}" position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x* (180 / 3.14)} ${val.rotation._y* (180 / 3.14)} ${val.rotation._z* (180 / 3.14)}"></a-entity> \n`
         }
@@ -155,16 +159,7 @@ function createScene(threeData=[], state={}){
     return dataString
 }
 
-// function checkObjPrimitive(obj){
-//     if(obj.objPrimitive === "sky"){
-//         return `<a-sky color= ${obj.hashColor} src= ${obj.objTexture?obj.objTexture.name:null}></a-sky>`
-//     }
-//     else{
-
-//     }
-// }
-
-function aframeTemplate(assetArr,sceneArr){
+function aframeTemplate(assetArr,sceneArr,isCursor){
     // a new template is only been made on when assets are added, a new project got created, project got saved.
     return(
     `   <html>
@@ -175,6 +170,9 @@ function aframeTemplate(assetArr,sceneArr){
             </head>
             <body>
                 <a-scene>
+                    <a-camera>
+                        ${isCursor?`<a-cursor></a-cursor>`:''}
+                    </a-camera>
                     <a-assets>
                         ${createAssets(assetArr)}
                     </a-assets>

@@ -2,7 +2,6 @@ import React ,{Component} from 'react';
 import styled from 'styled-components';
 import arrowWhite from '../../assets/arrowWhite.svg';
 import arrow from '../../assets/arrow.svg';
-import SceneTreeContainer from '../SceneTreeContainer';
 
 export default class SceneTree extends Component{
     state={
@@ -11,11 +10,9 @@ export default class SceneTree extends Component{
     }
 
     componentDidMount(){
-        console.log(this.props.obj.children);
         
     }
     showGroup = () => {
-        console.log('showing group inside of '+this.props.num )
         this.setState({
             showGroup:!this.state.showGroup
         })

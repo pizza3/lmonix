@@ -2,15 +2,15 @@ import React,{Component} from 'react'
 import styled from 'styled-components';
 
 
-export default class DefaultLights extends Component{
+export default class Cursor extends Component{
 
     render(){
         return(
             <Wrapper>
                 <Header>
-                    <Title>Default Lights</Title>
+                    <Title>Cursor</Title>
                     <label className="form-switch">
-                        <input type="checkbox" checked={this.props.isDefaultLights} onChange={this.props.setDefaultLights} />
+                        <input type="checkbox" checked={this.props.isCursor} onChange={this.props.setCursor} />
                         <i></i>
                     </label>
                 </Header>

@@ -7,7 +7,6 @@ export default class AssetManager extends Component{
     render(){
         return(
             <AssetManagerContainer>
-                <Title>Settings</Title>
                 <Title>Assets</Title>
                 <Images titleName='Images' {...this.props} location={this.props.title} filterBy={['jpg', 'png','mtl']}/>
                 <Images titleName='Videos' {...this.props} location={this.props.title} filterBy={['mp4','webm']}/>

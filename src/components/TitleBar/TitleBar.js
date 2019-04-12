@@ -21,7 +21,7 @@ export default class TitleBar extends Component{
                 <Link to="/"><TitleLink>Design</TitleLink></Link>
                 <Link to="/code"><TitleLinkCode>Code</TitleLinkCode></Link>
                 <Title>{this.props.title}</Title>
-                <Trigger action={['click']} popup={<div><CloudExport/></div>} prefixCls='dropdown' 
+                <Trigger action={['click']} popup={<div><CloudExport {...this.props} location={this.props.title}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                     points: ["bc", "tl"],
                     offset: [-210, 30],

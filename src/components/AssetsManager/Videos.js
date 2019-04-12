@@ -8,8 +8,6 @@ const electron =  window.require('electron');
 export default class Videos extends Component{
 
     handleAddAsset=()=>{
-        console.log(this.props);
-        
         electron.ipcRenderer.send("open-asset-modal",{location:this.props.location})
     }
 

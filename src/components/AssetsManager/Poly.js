@@ -12,9 +12,7 @@ export default class Poly extends Component{
             let data = obj.assets
             this.setState({
                 data
-            })
-            console.log(data);
-            
+            })            
         })
     }
 
@@ -31,7 +29,6 @@ export default class Poly extends Component{
             this.setState({
                 data
             })
-            console.log(data);
         })
     }
 

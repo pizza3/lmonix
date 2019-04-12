@@ -8,7 +8,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 const electron =  window.require('electron');
 
 class App extends Component {
-   
     state = {
         location:null,
         scene:null,
@@ -17,7 +16,9 @@ class App extends Component {
         activeObj:null,
         objPresent:[],
         assetStack:[],
-        code:''
+        code:'',
+        isDefaultLights:true,
+        isCursor:false
     }
     componentDidMount(){
         electron.ipcRenderer.on('ipcRenderer', function (e, val) {
@@ -30,7 +31,8 @@ class App extends Component {
                     val['obj']['data'].forEach((val) => {
                         let a = AddGroupObj(val,val.objPrimitive,this.state.scene,val.position,val.rotation,val.scale);
                         data.push(a)
-                    })                    
+                    })    
+                    console.log(val); 
                     this.setState({
                         objPresent:data,
                         activeObj:0,
@@ -57,9 +59,14 @@ class App extends Component {
                 case 'setAssetStack':
                     this.setState({
                         assetStack:val['assets'],
-                        code:val['code']
                     })
                     break;
+                case 'updateCode':
+                console.log('fcode', val['code']);
+                    this.setState({
+                        code:val['code']
+                    })
+                break;
                 default:
                     console.log('default');
                     break;
@@ -112,12 +119,28 @@ class App extends Component {
         });
     }
 
+    setCursor = ()=>{
+        const {isCursor} = this.state
+        this.setState({
+            isCursor:!isCursor
+        })
+    }
+
+    setDefaultLights = ()=>{
+        let {isDefaultLights, scene} = this.state
+        this.setState({
+            isDefaultLights:!isDefaultLights
+        },()=>{
+            scene.children[1].visible=!isDefaultLights
+            scene.children[2].visible=!isDefaultLights
+        })        
+    }
     render() {
         return (
             <Router>
                 <React.Fragment>
-                    <TitleBar title ={this.state.title}/>
-                    <Route exact path="/" render={()=> <SceneEditor {...this.state} setSceneObject={this.setSceneObject} addInScene={this.addInScene} setActiveObj={this.setActiveObj} />}/>
+                    <TitleBar title ={this.state.title} {...this.state}/>
+                    <Route exact path="/" render={()=> <SceneEditor {...this.state} setSceneObject={this.setSceneObject} addInScene={this.addInScene} setActiveObj={this.setActiveObj} setCursor={this.setCursor} setDefaultLights={this.setDefaultLights}/>}/>
                     <Route  path="/code" render={()=> <VrRenderer {...this.state} updateCode={this.updateCode} />} />
                 </React.Fragment>
             </Router>

@@ -41,7 +41,6 @@ export default class PropertiesEditor extends Component{
         return false
     }
     render(){
-        console.log(this.props.objPresent[this.props.activeObj]);
         const isColor = this.checkColor()
         const isModel = this.checkModel()
         const isLight = this.checkLight()

@@ -1,17 +1,16 @@
 import React,{Component} from 'react'
 import styled from 'styled-components';
-
+import Cursor from './Cursor'
+import DefaultLights from './DefaultLights'
 
 export default class Index extends Component{
-    state={
-
-    }
-
     render(){
         return(
-            <>
-            <Title>Settings</Title>
-            </>
+            <div>
+                <Title>Settings</Title>
+                <Cursor {...this.props}/>
+                <DefaultLights {...this.props}/>
+            </div>
         )
     }
 }

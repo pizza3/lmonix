@@ -161,7 +161,7 @@ const AddHemisphereLight = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,y
     let intensity = 2
     obj["objName"] = "SpotLight";
     obj["objType"] = "Light";
-    obj["objPrimitive"] = "spot";
+    obj["objPrimitive"] = "hemisphere";
     obj["hashColor"] = "#ffffff";
     let light = new THREE.HemisphereLight(color, groundColor,intensity);
     obj.add(light);
@@ -183,7 +183,7 @@ const AddDirectionalLight = (scene,pos={x:0,y:0,z:0},rot={x:0,y:0,z:0},sca={x:0,
     let intensity = 0.5
     obj["objName"] = "DirectionalLight";
     obj["objType"] = "Light";
-    obj["objPrimitive"] = "spot";
+    obj["objPrimitive"] = "directional";
     obj["hashColor"] = "#ffffff";
     let light = new THREE.DirectionalLight( color, intensity )
     obj.add(light);
@@ -356,6 +356,74 @@ const AddGroupObj = (obj,type,scene,pos={x:0,y:0,z:0},rot={_x:0,_y:0,_z:0},sca={
                 modelLoader(threeDobj.objModel.data,threeDobj)
             }
             return threeDobj;
+        break;
+        case "point":
+            let objPoint = new THREE.Object3D();
+            objPoint["objName"] = "PointLight";
+            objPoint["objType"] = "Light";
+            objPoint["objPrimitive"] = "point";
+            objPoint["hashColor"] = "#ffffff";
+            let light = new THREE.PointLight(obj.hashColor, 1, 0.0, 1);
+            objPoint.add(light);
+            objPoint.position.set(pos.x,pos.y,pos.z);
+            objPoint.rotation.set(rot._x,rot._y,rot._z)
+            objPoint.scale.set(sca.x,sca.y,sca.z);
+            objPoint.visible=obj.visible
+            objPoint.receiveShadow=obj.receiveShadow
+            scene.add(objPoint);
+            return objPoint;
+        break;
+        case 'spot':
+            let objSpot = new THREE.Object3D();
+            objSpot["objName"] = "SpotLight";
+            objSpot["objType"] = "Light";
+            objSpot["objPrimitive"] = "spot";
+            objSpot["hashColor"] = "#ffffff";
+            let spotlight = new THREE.SpotLight(obj.hashColor);
+            spotlight.position.set(100, 1000, 100);
+            spotlight.castShadow = true;
+            spotlight.shadow.mapSize.width = 1024;
+            spotlight.shadow.mapSize.height = 1024;
+            spotlight.shadow.camera.near = 500;
+            spotlight.shadow.camera.far = 4000;
+            spotlight.shadow.camera.fov = 30;    
+            objSpot.position.set(pos.x,pos.y,pos.z);
+            objSpot.rotation.set(rot._x,rot._y,rot._z)
+            objSpot.scale.set(sca.x,sca.y,sca.z);
+            objSpot.add(spotlight);
+            scene.add(objSpot);
+            return objSpot;
+        break
+        case 'hemisphere':
+            let objhemisphere = new THREE.Object3D();
+            let groundColor = 0xffffff
+            let intensity = 2
+            objhemisphere["objName"] = "SpotLight";
+            objhemisphere["objType"] = "Light";
+            objhemisphere["objPrimitive"] = "hemisphere";
+            objhemisphere["hashColor"] = "#ffffff";
+            let hemispherelight = new THREE.HemisphereLight(obj.hashColor, groundColor,intensity);
+            objhemisphere.add(hemispherelight);
+            objhemisphere.position.set(pos.x,pos.y,pos.z);
+            objhemisphere.rotation.set(rot._x,rot._y,rot._z)
+            objhemisphere.scale.set(sca.x,sca.y,sca.z);
+            scene.add(objhemisphere);
+            return objhemisphere;
+        break;
+        case 'directional':
+            let objdirectional = new THREE.Object3D();
+            let directionalintensity = 0.5
+            objdirectional["objName"] = "DirectionalLight";
+            objdirectional["objType"] = "Light";
+            objdirectional["objPrimitive"] = "directional";
+            objdirectional["hashColor"] = "#ffffff";
+            let lightdirectional = new THREE.DirectionalLight( obj.hashColor, directionalintensity )
+            objdirectional.add(lightdirectional);
+            objdirectional.position.set(pos.x,pos.y,pos.z);
+            objdirectional.rotation.set(rot._x,rot._y,rot._z)
+            objdirectional.scale.set(sca.x,sca.y,sca.z);
+            scene.add(objdirectional);
+            return objdirectional;
         break;
         default:
         break;

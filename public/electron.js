@@ -27,9 +27,6 @@ function createWindow(event, win) {
 
 app.on('ready', ()=>{
   createWindow()
-  // installExtension(installExtension.REACT_DEVELOPER_TOOLS)
-  // .then((name) => console.log(`Added Extension:  ${name}`))
-  // .catch((err) => console.log('An error occurred: ', err));
   protocol.registerFileProtocol('atom', (request, callback) => {
     const url = request.url.substr(7)
     callback({ path: path.normalize(`${__dirname}/${url}`) })
