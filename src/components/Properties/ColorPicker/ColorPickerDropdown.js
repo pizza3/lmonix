@@ -1,7 +1,6 @@
 import React,{Component} from 'react'
 import styled from 'styled-components';
 
-
 export default class ColorPickerDropdown extends Component{
     state = {
         drag:false,
@@ -74,7 +73,8 @@ export default class ColorPickerDropdown extends Component{
                 drag:false,
                 dragColor:false
             })
-		}.bind(this);
+        }.bind(this);
+        this.updateState(this.props.currentColor)
     }
 
     init(){
@@ -256,7 +256,33 @@ export default class ColorPickerDropdown extends Component{
 
 	MapRange(value, low1, high1, low2, high2) {
 		return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1);
-	}
+    }
+    
+    updateState(val) {
+        let col;
+        col = this.HexToRgb(val);
+        let a = this.RgbToHsl(col[0], col[1], col[2]);
+        let val2 = this.MapRange(a[0], 0, 1, 0, 235);
+        this.changeHue(val2);
+        this.setState({
+            huePos:{
+                y:val2
+            }
+        })
+        let hsv = this.RgbToHsv(col[0], col[1], col[2]);
+
+        this.changeColor(
+            (this.widthColor * (-(hsv[2] * 100) + 100)) / 100,
+            (this.heightColor * (hsv[1] * 100)) / 100
+        );
+        this.setState({
+            colorPos:{
+                y: (this.heightColor * (hsv[1] * 100)) / 100,
+                x: (this.widthColor * (-(hsv[2] * 100) + 100)) / 100
+            }
+        })
+        this.currentColorHex = val;
+    }
 
     render(){
         return(

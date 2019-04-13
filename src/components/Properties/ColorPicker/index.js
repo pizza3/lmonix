@@ -29,11 +29,13 @@ export default class ColorPicker extends Component{
         return(
             <Container>
                 <Title>Fill</Title>
-                <Trigger action={['click']} popup={<div><ColorPickerDropdown onChange={this.onChange} {...this.props} addInScene={this.props.addInScene}/></div>} prefixCls='dropdown' 
+                <Trigger action={['click']} popup={<div><ColorPickerDropdown onChange={this.onChange} {...this.props} addInScene={this.props.addInScene} currentColor={this.state.currentColor}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                         points: ["tr", "bl"],
                         offset: [-335, -30],
-                    }}>
+                    }}
+                    destroyPopupOnHide={true}    
+                >
                     <Input style={{background:this.state.currentColor}}>
                     </Input>
                 </Trigger>

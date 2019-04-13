@@ -1,7 +1,6 @@
 import * as THREE from '../ThreeLibManager';
 const Loader = new THREE.OBJLoader();
 
-
 const modelLoader = (data,obj)=>{
     // load a resource
     Loader.load(
