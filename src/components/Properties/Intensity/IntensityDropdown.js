@@ -6,6 +6,12 @@ export default class Index extends Component{
         value:0.0
     }
 
+    componentDidMount(){
+        this.setState({
+            value:this.props.objPresent[this.props.activeObj].children[0].intensity
+        })
+    }
+
     handleRange = (e) =>{
         this.setState({
             value:e.target.value

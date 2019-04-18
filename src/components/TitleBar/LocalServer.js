@@ -5,18 +5,40 @@ const electron =  window.require('electron');
 
 export default class LocalServer extends Component{
     state={
+        status:false
     }
 
     handleServer = ()=>{
-        electron.ipcRenderer.send("startlocal",{location:this.props.location})
+        const{status}=this.state
+        if(!status){
+            this.setState({
+                status:true
+            })
+        }
+        else{
+            // electron.ipcRenderer.send("startlocal",{location:this.props.location})
+            this.setState({
+                status:false
+            })
+        }
     }
     render(){
+        const{status}=this.state
         return(
             <PopContainer>
                 <Header>Preview</Header>
                 <Logo src={img}/>
+                {status?
+                <Cont>
                 <Desc>To preview your creation's you can start the localhost server and access it on any device within the same network.</Desc>
-                <StartButton onClick={this.handleServer}>Start Server</StartButton>
+                </Cont>
+                :
+                <Cont>
+                    <Desc>Access your scene at the following url.</Desc>
+                    <Url>192.168.1.1:9999</Url> 
+                </Cont>
+                }
+                <StartButton onClick={this.handleServer}> {status?'Start Server':'Stop Server'}</StartButton>
             </PopContainer>
         )
     }
@@ -57,6 +79,27 @@ const Logo = styled.img`
     margin-top: 15px;
 `
 
+const Cont = styled.div`
+    position: relative;
+    width: 196px;
+    height: 41px;
+`
+
+const Url = styled.div`
+    position: relative;
+    width: 130px;
+    height: 25px;
+    border-radius: 3px;
+    background: #d4d4d4;
+    font-size: 10px;
+    text-align: center;
+    padding-top: 6px;
+    font-weight: 700;
+    color: #636363;
+    margin-left: 33px;
+    margin-top: 4px;
+`
+
 const StartButton = styled.button`
     position: relative;
     width: 130px;
@@ -68,7 +111,7 @@ const StartButton = styled.button`
     font-size: 10px;
     border: none;
     margin-top: 21px;
-    margin-left: calc(50% - 65px);
+    margin-left: calc(50% - 79px);
     &:hover{
         background: #186AEB;
     }

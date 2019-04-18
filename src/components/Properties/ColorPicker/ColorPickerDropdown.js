@@ -74,11 +74,12 @@ export default class ColorPickerDropdown extends Component{
                 dragColor:false
             })
         }.bind(this);
+        console.log(this.props.currentColor);
         this.updateState(this.props.currentColor)
     }
 
     init(){
-        this.fillGradient('#000000')
+        // this.fillGradient('#000000')
         this.fillHueStrip();
     }
 
@@ -146,6 +147,7 @@ export default class ColorPickerDropdown extends Component{
     }
 
     changeColor = (x, y) =>{
+        const {drag,dragColor} = this.state
 		let imageData = this.ctxColor.getImageData(
 			x,
 			y,
@@ -157,7 +159,9 @@ export default class ColorPickerDropdown extends Component{
             imageData[1],
             imageData[2]
         );
-        this.props.onChange(this.currentColorHex)
+        if(drag || dragColor){
+            this.props.onChange(this.currentColorHex)
+        }
     }
     
     changeHue = (y1) => {
@@ -220,35 +224,40 @@ export default class ColorPickerDropdown extends Component{
 			: null;
 	}
 
-	RgbToHsv(r, g, b) {
-		// (r /= 255), (g /= 255), (b /= 255);
-		let max = Math.max(r, g, b),
-			min = Math.min(r, g, b);
-		let h,
-			s,
-			v = max;
+    RgbToHsv(r, g, b) {
+        // r /= 255; g /= 255; b /= 255;
+        console.log(r,g,b);
+        
+        let newR = r/255
+        let newG = g/255 
+        let newB = b/255 
+        let max = Math.max(newR, newG, newB),
+            min = Math.min(newR, newG, newB);
+        let h,
+            s,
+            v = max;
 
-		let d = max - min;
-		s = max == 0 ? 0 : d / max;
+        let d = max - min;
+        s = max == 0 ? 0 : d / max;
 
-		if (max == min) {
-			h = 0;
-		} else {
-			switch (max) {
-			case r:
-				h = (g - b) / d + (g < b ? 6 : 0);
-				break;
-			case g:
-				h = (b - r) / d + 2;
-				break;
-			case b:
-				h = (r - g) / d + 4;
-				break;
-			}
-			h /= 6;
-		}
-		return [h, s, v];
-	}
+        if (max == min) {
+            h = 0;
+        } else {
+            switch (max) {
+            case newR:
+                h = (newG - newB) / d + (newG < newB ? 6 : 0);
+                break;
+            case newG:
+                h = (newB - newR) / d + 2;
+                break;
+            case newB:
+                h = (newR - newG) / d + 4;
+                break;
+            }
+            h /= 6;
+        }
+        return [h, s, v];
+    }
 
 	RgbToHex(r, g, b) {
 		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -259,27 +268,29 @@ export default class ColorPickerDropdown extends Component{
     }
     
     updateState(val) {
+        console.log('val',val);
+        
         let col;
         col = this.HexToRgb(val);
         let a = this.RgbToHsl(col[0], col[1], col[2]);
         let val2 = this.MapRange(a[0], 0, 1, 0, 235);
         this.changeHue(val2);
+        let hsv = this.RgbToHsv(col[0], col[1], col[2]);
+
+        // this.changeColor(
+        //     (this.heightColor * (hsv[1] * 100)) / 100,
+        //     (this.widthColor * (-(hsv[2] * 100) + 100)) / 100
+        // );
         this.setState({
             huePos:{
                 y:val2
-            }
-        })
-        let hsv = this.RgbToHsv(col[0], col[1], col[2]);
-
-        this.changeColor(
-            (this.widthColor * (-(hsv[2] * 100) + 100)) / 100,
-            (this.heightColor * (hsv[1] * 100)) / 100
-        );
-        this.setState({
+            },
             colorPos:{
-                y: (this.heightColor * (hsv[1] * 100)) / 100,
-                x: (this.widthColor * (-(hsv[2] * 100) + 100)) / 100
+                x: (this.heightColor * (hsv[1] * 100)) / 100,
+                y:  (this.widthColor * (-(hsv[2] * 100) + 100)) / 100
             }
+        },()=>{
+            console.log('pos',this.state.colorPos);
         })
         this.currentColorHex = val;
     }

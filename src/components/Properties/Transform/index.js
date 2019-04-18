@@ -175,7 +175,7 @@ const Title = styled.div`
     float: left;
     color: #969696;
     font-size: 10px;
-    margin-left: 9px;
+    margin-left: 6px;
     margin-top: 4px;
     font-weight: 700;
 `
@@ -183,7 +183,7 @@ const Prop = styled.div`
     float: right;
     font-size: 11px;
     color: #9D9D9D;
-    margin-right: 6px;
+    margin-right: 9px;
 `
 const Input = styled.input`
     width: 36px;

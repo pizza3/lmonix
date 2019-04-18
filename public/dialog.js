@@ -171,7 +171,7 @@ function aframeTemplate(assetArr,sceneArr,isCursor){
             <body>
                 <a-scene>
                     <a-camera>
-                        ${isCursor?`<a-cursor></a-cursor>`:''}
+                        <a-cursor></a-cursor>
                     </a-camera>
                     <a-assets>
                         ${createAssets(assetArr)}

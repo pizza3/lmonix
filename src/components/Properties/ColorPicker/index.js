@@ -13,6 +13,7 @@ export default class ColorPicker extends Component{
         }
     }
     onChange=(currentColor)=>{
+        console.log('parent',currentColor);
         this.setState({
             currentColor
         })
@@ -32,7 +33,7 @@ export default class ColorPicker extends Component{
                 <Trigger action={['click']} popup={<div><ColorPickerDropdown onChange={this.onChange} {...this.props} addInScene={this.props.addInScene} currentColor={this.state.currentColor}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                         points: ["tr", "bl"],
-                        offset: [-335, -30],
+                        offset: [-345, -30],
                     }}
                     destroyPopupOnHide={true}    
                 >
@@ -66,7 +67,6 @@ const Input = styled.div`
     float: right;
     width: 141px;
     height: 25px;
-    border: 2px solid #DBDBDB;
     border-radius: 3px;
     margin-right: 6px;
     font-size: 10px;
