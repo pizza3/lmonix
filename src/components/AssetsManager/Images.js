@@ -32,7 +32,7 @@ export default class Images extends Component{
                     <Add src={add} onClick={this.handleAddAsset}/>
                 </Header>
                 {this.props.titleName==='Models'?
-                    <Trigger action={['click']} popup={<div><Poly/></div>} prefixCls='dropdown' 
+                    <Trigger action={['click']} popup={<div><Poly title={this.props.title}/></div>} prefixCls='dropdown' 
                         popupAlign={{
                         points: ["br", "tr"],
                         offset: [10, -3],

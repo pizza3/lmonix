@@ -11,15 +11,14 @@ import Trigger from 'rc-trigger'
 
 export default class TitleBar extends Component{
     state = {
-        title:'untitled*'
+        title:'untitled*',
     }
-
     render(){
         return(
             <TitleContainer id="titleBar">
                 <TitleOverlay/>
-                <Link to="/"><TitleLink>Design</TitleLink></Link>
-                <Link to="/code"><TitleLinkCode>Code</TitleLinkCode></Link>
+                <Link to="/"><TitleLink active={this.props.activeRoute==='/'?3:0} >Design</TitleLink></Link>
+                <Link to="/code"><TitleLinkCode active={this.props.activeRoute==='/code'?3:0}>Code</TitleLinkCode></Link>
                 <Title>{this.props.title}</Title>
                 <Trigger action={['click']} popup={<div><CloudExport {...this.props} location={this.props.title}/></div>} prefixCls='dropdown' 
                     popupAlign={{
@@ -28,7 +27,7 @@ export default class TitleBar extends Component{
                 }}>
                     <ImgContainer src={cloud} alt='Upload'/>
                 </Trigger>
-                <Trigger action={['click']} popup={<div><LocalServer location={this.props.title}/></div>} prefixCls='dropdown' 
+                <Trigger action={['click']} popup={<div><LocalServer location={this.props.title} ip={this.props.localIP}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                     points: ["bc", "tl"],
                     offset: [-210, 30],
@@ -87,7 +86,7 @@ const TitleLink = styled.div`
     font-size: 13px;
     margin-right: 15px;
     padding-bottom: 6px;
-    border-bottom: 3px solid #707070;
+    border-bottom: ${props=>props.active+'px solid #707070'};
     margin-top: 10px;
     margin-left: 85px;
 `
@@ -99,7 +98,7 @@ const TitleLinkCode = styled.div`
     font-size: 13px;
     margin-right: 15px;
     padding-bottom: 6px;
-    border-bottom: 3px solid #707070;
+    border-bottom: ${props=>props.active+'px solid #707070'};
     margin-top: 10px;
     margin-left: 1px;
 `

@@ -47,7 +47,7 @@ export default class MenuDropdown extends Component{
     render(){
         const { assetStack } = this.props;
         const Textures = assetStack.map((val,i)=>{
-            if(val.ext==='.jpg'||val.ext==='.png'||val.ext==='.mlt'||val.ext==='.mp4'||val.ext==='.webm'){
+            if(val.ext==='.jpg'||val.ext==='.png'||val.ext==='.mtl'||val.ext==='.mp4'||val.ext==='.webm'){
                 return(
                     <ObjButton key={i} style={{width:'100%'}} onClick={()=>{this.handleTexture(i)}}>
                         <Img src={this.props.assetStack[i].base}/>

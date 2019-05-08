@@ -105,7 +105,6 @@ export default class Transform extends Component{
             default:
                 break;
         }
-       
     }
     render(){
         return(

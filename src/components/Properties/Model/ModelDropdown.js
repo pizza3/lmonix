@@ -3,12 +3,15 @@ import styled from 'styled-components'
 import * as THREE from '../../ThreeLibManager';
 const fs =  window.require('fs');
 const Loader = new THREE.OBJLoader();
+const mtlLoader = new THREE.MTLLoader();
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
         let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
+        console.log(this.props.assetStack[i]);
+        
         if(this.props.assetStack[i].ext==='.obj'){
             let objPresent = this.props.objPresent[this.props.activeObj]
             // load a resource

@@ -5,21 +5,21 @@ const electron =  window.require('electron');
 
 export default class LocalServer extends Component{
     state={
-        status:false
+        status:true,
     }
-
     handleServer = ()=>{
         const{status}=this.state
         if(!status){
             this.setState({
                 status:true
             })
+            electron.ipcRenderer.send("stoplocal",{location:this.props.location})
         }
         else{
-            // electron.ipcRenderer.send("startlocal",{location:this.props.location})
-            this.setState({
-                status:false
-            })
+            electron.ipcRenderer.send("startlocal",{location:this.props.location})  
+              this.setState({
+                status:false,
+            })        
         }
     }
     render(){
@@ -35,7 +35,7 @@ export default class LocalServer extends Component{
                 :
                 <Cont>
                     <Desc>Access your scene at the following url.</Desc>
-                    <Url>192.168.1.1:9999</Url> 
+                    <Url>{this.props.ip+':9999'}</Url> 
                 </Cont>
                 }
                 <StartButton onClick={this.handleServer}> {status?'Start Server':'Stop Server'}</StartButton>
@@ -45,10 +45,9 @@ export default class LocalServer extends Component{
 }
 
 const PopContainer = styled.div`
-    width: 230px;
+    width: 248px;
     position: fixed;
-    height: 260px;
-    background: #faa;
+    height: 295px;
     background: #f7f7f7;
     border-radius: 4px;
     border: 2px solid #d4d4d4;
@@ -65,24 +64,24 @@ const Header = styled.div`
 `
 
 const Desc = styled.div`
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
-    text-align: center;
+    text-align: -webkit-center;
     color: #a9a9a9;
-    margin-top: 19px;
+    margin-top: 31px;
 `
 
 const Logo = styled.img`
     width: 86px;
     position: relative;
-    margin-left: 30%;
+    margin-left: 32%;
     margin-top: 15px;
 `
 
 const Cont = styled.div`
     position: relative;
-    width: 196px;
     height: 41px;
+    padding: 0px 11px 0px 11px;
 `
 
 const Url = styled.div`
@@ -110,8 +109,8 @@ const StartButton = styled.button`
     font-weight: 700;
     font-size: 10px;
     border: none;
-    margin-top: 21px;
-    margin-left: calc(50% - 79px);
+    margin-top: 33px;
+    margin-left: calc(57% - 79px);
     &:hover{
         background: #186AEB;
     }

@@ -2,16 +2,16 @@ import React ,{Component} from 'react';
 import styled from 'styled-components';
 import Texture from './Properties/Texture/Texture'
 import ColorPicker from './Properties/ColorPicker'
+import GroundColor from './Properties/GroundColor'
 import Visible from './Properties/Visible'
 import Transform from './Properties/Transform'
 import CastShadow from './Properties/CastShadow'
 import ReceiveShadow from './Properties/ReceiveShadow'
 import Model from './Properties/Model'
 import Intensity from './Properties/Intensity'
+import Opacity from './Properties/Opacity';
+import Transparent from './Properties/Transparent';
 export default class PropertiesEditor extends Component{
-    state={
-    }
-
     checkColor = () => {
         if(this.props.objPresent.length>0){
             if(this.props.objPresent[this.props.activeObj].objPrimitive==="3DModel"){
@@ -21,7 +21,6 @@ export default class PropertiesEditor extends Component{
         }
         return false
     }
-
     checkModel = () => {
         if(this.props.objPresent.length>0){
             if(this.props.objPresent[this.props.activeObj].objPrimitive==="3DModel"){
@@ -40,34 +39,54 @@ export default class PropertiesEditor extends Component{
         }
         return false
     }
+    checkHemisphere = ()=>{
+        if(this.checkLight()&&this.props.objPresent[this.props.activeObj].objPrimitive==="hemisphere"){
+            return true
+        }
+        return false
+    }
     render(){
         const isColor = this.checkColor()
         const isModel = this.checkModel()
         const isLight = this.checkLight()
+        const isHemisphere = this.checkHemisphere()
         return(
             <PropertiesEditorContainer>
                 <PropertiesEditorTitle>
                     Properties
                 </PropertiesEditorTitle>
                 <Transform {...this.props}/>
+                <Overlay>
                 {!isLight?
                 <Texture {...this.props}/>:null
                 }
                 {isColor?
                 <ColorPicker {...this.props}/>:null
                 }
+                {isHemisphere?
+                <GroundColor {...this.props}/>
+                :null}
                 {isModel && !isLight?
                 <Model {...this.props}/>:null
                 }
                 {isLight?
                 <Intensity {...this.props}/>:null
                 }
+                {this.props.objPresent.length>0&&!isLight&&!isModel?
+                <Opacity {...this.props}/>
+                :null}
+                {this.props.objPresent.length>0&&!isLight&&!isModel?
+                <Transparent {...this.props}/>
+                :null}
                 <Visible {...this.props}/>
+                </Overlay>
+                <Overlay>
                 <CastShadow {...this.props}/>
                 {
                 !isLight?
                 <ReceiveShadow {...this.props}/>:null 
                 }
+                </Overlay>
             </PropertiesEditorContainer>
         )
     }
@@ -94,4 +113,12 @@ const PropertiesEditorTitle = styled.div`
     font-weight: bold;
     font-size: 27px;
     margin-bottom: 13px;
+`
+
+const Overlay = styled.div`
+    position: relative;
+    width: 100%;
+    border-bottom: 2px solid #DBDBDB;
+    margin-bottom: 20px;
+    overflow: hidden;
 `

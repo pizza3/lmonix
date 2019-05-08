@@ -2,8 +2,11 @@ const {app, BrowserWindow, Menu, ipcMain, MenuItem} =  require('electron');
 const isWindows = process.platform === 'win32';
 const {showSaveDialog, showOpenDialog, showAddDialog, saveState} = require('./dialog');
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
+const os = require('os');
 
+let localServer
 module.exports = {
     setMainMenu,
     SetPopMenu
@@ -182,11 +185,43 @@ function SetPopMenu(mainWindow, win){
 
             if (err) throw err;    
 
-            http.createServer(function(request, response) {  
+            localServer=http.createServer(function(request, response) {  
                 response.writeHeader(200, {"Content-Type": "text/html"});  
                 response.write(html);  
                 response.end();  
             }).listen(PORT);
         });
+        let ip=""
+        var networkInterfaces = Object.values(os.networkInterfaces())
+            .reduce((r,a)=>{
+                r = r.concat(a)
+                return r;
+            }, [])
+            .filter(({family, address}) => {
+                return family.toLowerCase().indexOf('v4') >= 0 &&
+                    address !== '127.0.0.1'
+            })
+            .map(({address}) => address);
+        ip=networkInterfaces.join(', ')
+        mainWindow.webContents.send("ipcRenderer",{option:"updateIP", ip:ip}); 
+        })
+
+    ipcMain.on("stoplocal",(event, arg)=>{
+        localServer.close()
+    })
+
+    ipcMain.on("addModel",(event, arg)=>{
+        // localServer.close()
+        const path = `${arg.title}/Assets/${arg.name}.obj`
+        const writer = fs.createWriteStream(path)
+        let fileArr=[]
+        https.get(arg.obj.root.url, function(response) {
+          response.pipe(writer);
+        });
+        const path2 = `${arg.title}/Assets/${arg.name}.mtl`
+        const writer2 = fs.createWriteStream(path2)
+        https.get(arg.obj.resources[0].url, function(response) {
+            response.pipe(writer2);
+          });
     })
 }

@@ -1,30 +1,34 @@
 import React, {Component} from 'react'
 
-export default class Index extends Component{
+export default class OpacityRange extends Component{
 
     state={
         value:0.0
     }
 
-    componentDidMount(){        
+    componentDidMount(){
         this.setState({
-            value:this.props.objPresent[this.props.activeObj].children[0].intensity
+            value:this.props.objPresent[this.props.activeObj].children[0].material.opacity
         })
+    }
+
+    componentDidUpdate(prevProps){
+
     }
 
     handleRange = (e) =>{
         this.setState({
             value:e.target.value
         })
-        this.props.objPresent[this.props.activeObj].children[0].intensity=parseFloat(e.target.value)        
+        this.props.objPresent[this.props.activeObj].children[0].material.opacity=parseFloat(e.target.value)        
     }
 
     render(){
         return(
             <input
             className="slider"
-            id="damping"
-            data-name="damping"
+            id="opacity"
+            data-name="opacity"
             type="range"
             min={0.0}
             max={1.0}

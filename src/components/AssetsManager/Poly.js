@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import {getPolyData} from './api'
+const https = window.require('https');
+const fs = window.require('fs');
+const electron =  window.require('electron');
+
 export default class Poly extends Component{
 
     state={
@@ -31,10 +35,26 @@ export default class Poly extends Component{
             })
         })
     }
-
+    handleAddModel=(data)=>{
+        console.log(this.props);
+        
+        const {title}=this.props
+        let file
+        data.formats.forEach((obj,i) => {
+            if(obj.formatType='OBJ'){
+                console.log(data);
+                electron.ipcRenderer.send("addModel",{title:this.props.title, obj:obj, name:data.displayName.replace(/\s/g, '')})
+            }
+        })
+    }
     render(){
         let images = this.state.data.map((val,i)=>{
-            return <Img key={i} src={val.thumbnail.url}/>
+            return (
+                <ImgCont key={i}>
+                 <Img key={i} src={val.thumbnail.url}/>
+                 <Add onClick={()=>{this.handleAddModel(val)}}>+</Add>
+                </ImgCont>
+            )
         })
         return(
             <Container>
@@ -81,13 +101,32 @@ const InputContainer = styled.div`
     background: #F7F7F7;
     padding-top: 6px;
 `
-const Img = styled.img`
+const ImgCont = styled.div`
     width: 48%;
+    position: relative;
+    float: left;
     margin-right: 6px;
     border-radius: 4px;
     margin-bottom: 7px;
+    overflow: hidden;
+`
+
+const Img = styled.img`
+    width: 100%;
 `
 const ImgContainer = styled.div`
     margin-top: 46px;
 
+`
+
+const Add = styled.button`
+    position: absolute;
+    width: 31px;
+    height: 31px;
+    left: 4px;
+    bottom: 7px;
+    background: #2F79EF;
+    border: 1px solid #68a2ff;
+    color: #fff;
+    border-radius: 50%;
 `
