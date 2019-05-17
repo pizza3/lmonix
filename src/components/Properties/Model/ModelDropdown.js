@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import * as THREE from '../../ThreeLibManager';
 const fs =  window.require('fs');
 const Loader = new THREE.OBJLoader();
-const mtlLoader = new THREE.MTLLoader();
+// const mtlLoader = new THREE.MTLLoader();
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
         this.props.addInScene(obj)
