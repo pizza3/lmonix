@@ -328,7 +328,8 @@ const AddGroupObj = (
       objCube.rotation.set(rot._x, rot._y, rot._z);
       objCube.scale.set(sca.x, sca.y, sca.z);
       objCube.visible = obj.visible;
-      objCube.receiveShadow = obj.receiveShadow;
+      objCube.children[0].receiveShadow = obj.children[0].receiveShadow;
+      objCube.children[0].castShadow = obj.children[0].castShadow;
       return objCube;
       break;
     case "sphere":
@@ -351,7 +352,8 @@ const AddGroupObj = (
       objSphere.rotation.set(rot._x, rot._y, rot._z);
       objSphere.scale.set(sca.x, sca.y, sca.z);
       objSphere.visible = obj.visible;
-      objSphere.receiveShadow = obj.receiveShadow;
+      objSphere.children[0].receiveShadow = obj.children[0].receiveShadow;
+      objSphere.children[0].castShadow = obj.children[0].castShadow;
       return objSphere;
       break;
     case "plane":
@@ -374,7 +376,8 @@ const AddGroupObj = (
       objPlane.rotation.set(rot._x, rot._y, rot._z);
       objPlane.scale.set(sca.x, sca.y, sca.z);
       objPlane.visible = obj.visible;
-      objPlane.receiveShadow = obj.receiveShadow;
+      objPlane.children[0].receiveShadow = obj.children[0].receiveShadow;
+      objPlane.children[0].castShadow = obj.children[0].castShadow;
       return objPlane;
       break;
     case "sky":
@@ -398,7 +401,8 @@ const AddGroupObj = (
       objsky.rotation.set(rot._x, rot._y, rot._z);
       objsky.scale.set(sca.x, sca.y, sca.z);
       objsky.visible = obj.visible;
-      objsky.receiveShadow = obj.receiveShadow;
+      objsky.children[0].receiveShadow = obj.children[0].receiveShadow;
+      objsky.children[0].castShadow = obj.children[0].castShadow;
       return objsky;
       break;
     case "3DModel":

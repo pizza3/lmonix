@@ -77,6 +77,7 @@ export default class SceneEditor extends Component {
     );
     //render the scene
     this.renderer.render(this.scene, this.camera);
+    this.defaultLights();
     if (this.props.objPresent.length > 0) {
       // checks if the props alresdy consists of objects
       this.props.objPresent.map(obj => {
@@ -87,12 +88,14 @@ export default class SceneEditor extends Component {
     this.props.setSceneObject(this.scene, this.transformControls);
   };
 
-  defaultLights() {
+  defaultLights(visible=true) {
     //default lights which are present in the aframe scene
     this.ambientLight = new THREE.AmbientLight(0xbbbbbb, 1);
+    this.ambientLight.visible=visible
     this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
     this.directionalLight.position.set(-0.5, 1, 1);
     this.directionalLight.castShadow = true;
+    this.directionalLight.visible=visible
     this.scene.add(this.directionalLight);
     this.scene.add(this.ambientLight);
   }
@@ -128,7 +131,6 @@ export default class SceneEditor extends Component {
 
   renderSceneOnMount = () => {
     this.initScene();
-    this.defaultLights();
     this.startanimateScene();
     document.getElementById("grid").addEventListener("click", function() {
       this.stopanimateScene();

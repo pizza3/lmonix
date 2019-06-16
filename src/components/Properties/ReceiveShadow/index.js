@@ -9,7 +9,7 @@ export default class ReceiveShadow extends Component{
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].receiveShadow || false
+                let val = this.props.objPresent[this.props.activeObj].children[0].receiveShadow || false
                 this.setState({
                     receiveShadow:val
                 })
@@ -23,7 +23,7 @@ export default class ReceiveShadow extends Component{
             receiveShadow:!receiveShadow
         },()=>{
             if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].receiveShadow = !receiveShadow
+                this.props.objPresent[this.props.activeObj].children[0].receiveShadow = !receiveShadow
             }
         })
     }

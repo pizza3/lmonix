@@ -9,7 +9,7 @@ export default class CastShadow extends Component{
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].castShadow || false
+                let val = this.props.objPresent[this.props.activeObj].children[0].castShadow || false
                 this.setState({
                     castShadow:val
                 })
@@ -23,7 +23,7 @@ export default class CastShadow extends Component{
             castShadow:!castShadow
         },()=>{
             if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].castShadow = !castShadow
+                this.props.objPresent[this.props.activeObj].children[0].castShadow = !castShadow
             }
         })
     }

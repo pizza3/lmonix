@@ -109,7 +109,6 @@ class App extends Component {
     this.setState({ scene, transformControls });
   };
   updateCode = val => {
-    console.log(val);
     this.setState({
       code: val
     });
@@ -176,7 +175,7 @@ class App extends Component {
     });
   };
   setDefaultLights = () => {
-    let { isDefaultLights, scene } = this.state;
+    let { isDefaultLights, scene } = this.state;    
     this.setState(
       {
         isDefaultLights: !isDefaultLights

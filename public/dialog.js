@@ -177,7 +177,8 @@ function saveState(threeData) {
     aframeTemplate(
       threeData.state.assetStack,
       threeData.data,
-      threeData.state.isCursor
+      threeData.state.isCursor,
+      threeData.state.isDefaultLights
     ),
     "utf8",
     err => {
@@ -231,7 +232,13 @@ function createScene(threeData = [], state = {}) {
       }" position="${val.position.x} ${val.position.y} ${
         val.position.z
       }" rotation="${val.rotation._x * (180 / 3.14)} ${val.rotation._y *
-        (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"></a-sky> \n`;
+        (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"
+        visible="${val.visible}" 
+        material="
+        opacity:${val.children[0].material.opacity};
+        transparent:${val.children[0].material.transparent};
+        "
+        ></a-sky> \n`;
     } else if (val.objPrimitive === "3DModel") {
       dataString += `<a-entity id="entity${i}" obj-model="obj: ${
         val.objModel ? "#" + val.objModel.name : ""
@@ -240,7 +247,9 @@ function createScene(threeData = [], state = {}) {
       }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
         .rotation._x *
         (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
-        (180 / 3.14)}"></a-entity> \n`;
+        (180 / 3.14)}"
+        visible="${val.visible}" 
+        ></a-entity> \n`;
     } else if (val.objType === "Light") {
       dataString += `<a-entity id="entity${i}" light="type: ${
         val.objPrimitive
@@ -248,35 +257,43 @@ function createScene(threeData = [], state = {}) {
         val.position.y
       } ${val.position.z}" rotation="${val.rotation._x * (180 / 3.14)} ${val
         .rotation._y *
-        (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"></a-entity>`;
+        (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"          
+        visible="${val.visible}" 
+        ></a-entity>`;
     } else {
       dataString += `<a-entity id="entity${i}" geometry="primitive: ${
         val.objPrimitive
-      };" material="color: ${val.hashColor}; src: ${
-        val.objTexture ? "#" + val.objTexture.name : ""
-      }" position="${val.position.x} ${val.position.y} ${
+      };" material="color: ${val.hashColor}; 
+      ${
+        val.objTexture ? "src:#" + val.objTexture.name : ""
+      };
+      transparent:${val.children[0].material.transparent};
+      opacity:${val.children[0].material.opacity};
+        " 
+      position="${val.position.x} ${val.position.y} ${
         val.position.z
       }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
         .rotation._x *
         (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
         (180 / 3.14)}" 
-        shadow="receive:${val.receiveShadow}" 
+        shadow="receive:${val.children[0].receiveShadow};cast:${val.children[0].castShadow}" 
+        visible="${val.visible}"
         ></a-entity> \n`;
     }
   });
   return dataString;
 }
 
-function aframeTemplate(assetArr, sceneArr, isCursor) {
+function aframeTemplate(assetArr, sceneArr, isCursor,isDefaultLights=true) {
   // a new template is only been made on when assets are added, a new project got created, project got saved.
   return `   <html>
             <head>
                 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
                 <meta content="utf-8" http-equiv="encoding">
-                <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+                <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
             </head>
             <body>
-                <a-scene light="defaultLightsEnabled: false">
+                <a-scene light="defaultLightsEnabled: ${isDefaultLights}">
                     <a-camera>
                         <a-cursor></a-cursor>
                     </a-camera>

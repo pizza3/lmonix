@@ -11,28 +11,7 @@ const electron = window.require("electron");
 export default class VrRenderer extends Component {
   state = {
     showJs: true,
-    check:false
   };
-  componentDidMount(){
-    electron.ipcRenderer.on(
-      "updateVRView",()=>{
-        this.setState((state,prop)=>{
-          return {
-            check:true
-          }
-        })
-      })
-  }
-  componentDidUpdate(prevProps,prevState){
-    const {check}=this.state
-    if(check && check!==prevState.check){
-      setTimeout(()=>{
-        this.setState({
-          check:false
-        })
-      },10)
-    }
-  }
   handleActiveTab = (val) => {
     this.setState((state, props) => {
       return {
@@ -41,7 +20,7 @@ export default class VrRenderer extends Component {
     });
   };
   render() {
-    const {updateCount, check}=this.state
+    const {showJs}=this.state
     const optionshtml = {
       mode: "text/html",
       indentUnit: 4,
@@ -52,10 +31,10 @@ export default class VrRenderer extends Component {
       <div>
         <ContainerCode id="containerCode">
           <FileTabs>
-            <Tabs onClick={()=>{this.handleActiveTab(false)}}>index.html</Tabs>
-            <Tabs onClick={()=>{this.handleActiveTab(true)}}>script.js</Tabs>
+            <Tabs active={!showJs?'#2F79EF':'transparent'} color={!showJs?'#fff':'#797979'} onClick={()=>{this.handleActiveTab(false)}}>index.html</Tabs>
+            <Tabs active={showJs?'#2F79EF':'transparent'} color={showJs?'#fff':'#797979'} onClick={()=>{this.handleActiveTab(true)}}>script.js</Tabs>
           </FileTabs>
-          {this.state.showJs ? (
+          {showJs ? (
             <JsMirror
               value={this.props.code}
               onChange={this.props.updateCode}
@@ -64,10 +43,7 @@ export default class VrRenderer extends Component {
             <CodeMirror value={this.props.htmlCode} options={optionshtml} />
           )}
         </ContainerCode>
-        {!check?
         <VrPreview title={this.props.title} />        
-        :
-        null}
       </div>
     );
   }
@@ -93,10 +69,11 @@ const Tabs = styled.div`
   border-right: 2px solid #e0e0e0;
   float: left;
   font-size: 11px;
-  color: #797979;
+  color: ${props=>props.color};
   padding: 7px 8px 0px 8px;
   cursor: pointer;
-  &:hover {
+  background:${props=>props.active}
+  /* &:hover {
     background: #e0e0e0;
-  }
+  } */
 `;
