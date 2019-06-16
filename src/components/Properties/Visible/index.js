@@ -5,6 +5,14 @@ export default class Visible extends Component{
     state = {
         visible:false
     }
+
+    componentWillMount(){
+        if(this.props.activeObj>0){
+            this.setState({
+                visible:this.props.objPresent[this.props.activeObj].visible
+            })
+        }
+    }
     
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
@@ -15,7 +23,6 @@ export default class Visible extends Component{
                 })
             }
         }
-        
     }
 
     handleInputChange=()=>{
@@ -23,17 +30,21 @@ export default class Visible extends Component{
         this.setState({
             visible:!visible
         },()=>{
-            if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].visible = !visible
-            }
+            this.props.changeObjectProp('visible',!this.props.objPresent[this.props.activeObj].visible)
         })
+
     }
     render(){
+        const isObjectPresent = this.props.objPresent.length>0
         return(
             <Container>
                 <Title>Visible</Title>
                 <label class="form-switch">
+                    {isObjectPresent?
                     <input type="checkbox" checked={this.state.visible} onChange={this.handleInputChange} />
+                    :
+                    <input type="checkbox" disabled  checked={this.state.visible}  />
+                    }
                     <i></i>
                 </label>
             </Container>

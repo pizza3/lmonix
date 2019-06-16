@@ -4,10 +4,18 @@ const electron =  window.require('electron');
 export default class VrPreview extends Component{
     componentDidMount(){
         const self = this
-        electron.ipcRenderer.on('updateVRView', function (e, val) {
-            self.forceUpdate()
-            console.log('update happened');
-        })
+        // electron.ipcRenderer.on('updateVRView', function (e, val) {
+        //     self.forceUpdate()
+        //     console.log('update happened');
+        // })
+    }
+
+    componentDidUpdate(prevProps){
+        // if(prevProps.updateCount!==this.props.updateCount){
+        //     setTimeout(()=>{
+        //         this.forceUpdate()
+        //     },100)
+        // }
     }
 
     render(){

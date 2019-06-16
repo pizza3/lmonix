@@ -7,6 +7,7 @@ import _ from "lodash";
 import { AddCubeGroup, AddGroupObj } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
 const electron = window.require("electron");
+const ThreeContext = new React.createContext()
 
 class App extends Component {
   state = {
@@ -108,6 +109,7 @@ class App extends Component {
     this.setState({ scene, transformControls });
   };
   updateCode = val => {
+    console.log(val);
     this.setState({
       code: val
     });
@@ -197,14 +199,16 @@ class App extends Component {
           exact
           path="/"
           render={() => (
-            <SceneEditor
-              {...this.state}
-              setSceneObject={this.setSceneObject}
-              addInScene={this.addInScene}
-              setActiveObj={this.setActiveObj}
-              setCursor={this.setCursor}
-              setDefaultLights={this.setDefaultLights}
-            />
+            <ThreeContext.Provider value="🎉">
+              <SceneEditor
+                {...this.state}
+                setSceneObject={this.setSceneObject}
+                addInScene={this.addInScene}
+                setActiveObj={this.setActiveObj}
+                setCursor={this.setCursor}
+                setDefaultLights={this.setDefaultLights}
+              />
+            </ThreeContext.Provider>
           )}
         />
         <Route

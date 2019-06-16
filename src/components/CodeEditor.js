@@ -2,51 +2,72 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import CodeMirror from "react-codemirror";
 import VrPreview from "./CodeEditor/VrPreview";
+import JsMirror from "./CodeEditor/JsMirror";
 import "codemirror/mode/javascript/javascript.js";
+import "codemirror/mode/htmlembedded/htmlembedded"
+const electron = window.require("electron");
+
 // import "../codemirror.css"
 export default class VrRenderer extends Component {
   state = {
-    showJs: true
+    showJs: true,
+    check:false
   };
-  handleActiveTab = () => {
+  componentDidMount(){
+    electron.ipcRenderer.on(
+      "updateVRView",()=>{
+        this.setState((state,prop)=>{
+          return {
+            check:true
+          }
+        })
+      })
+  }
+  componentDidUpdate(prevProps,prevState){
+    const {check}=this.state
+    if(check && check!==prevState.check){
+      setTimeout(()=>{
+        this.setState({
+          check:false
+        })
+      },10)
+    }
+  }
+  handleActiveTab = (val) => {
     this.setState((state, props) => {
       return {
-        showJs: !state.showJs
+        showJs:val
       };
     });
   };
   render() {
-    const options = {
-      mode: "javascript",
-      indentUnit: 4,
-      lineNumbers: true,
-      matchBrackets: true
-    };
+    const {updateCount, check}=this.state
     const optionshtml = {
-      mode: "html",
+      mode: "text/html",
       indentUnit: 4,
       lineNumbers: true,
       matchBrackets: true
     };
-    console.log(this.props);
     return (
       <div>
         <ContainerCode id="containerCode">
           <FileTabs>
-            <Tabs onClick={this.handleActiveTab}>index.html</Tabs>
-            <Tabs onClick={this.handleActiveTab}>script.js</Tabs>
+            <Tabs onClick={()=>{this.handleActiveTab(false)}}>index.html</Tabs>
+            <Tabs onClick={()=>{this.handleActiveTab(true)}}>script.js</Tabs>
           </FileTabs>
           {this.state.showJs ? (
-            <CodeMirror
+            <JsMirror
               value={this.props.code}
               onChange={this.props.updateCode}
-              options={options}
             />
           ) : (
             <CodeMirror value={this.props.htmlCode} options={optionshtml} />
           )}
         </ContainerCode>
-        <VrPreview title={this.props.title} />
+        {!check?
+        <VrPreview title={this.props.title} />        
+        :
+        null}
       </div>
     );
   }

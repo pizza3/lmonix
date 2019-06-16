@@ -91,8 +91,7 @@ function showOpenDialog(browserWindow) {
               ) {
                 if (filename) {
                   browserWindow.webContents.send("updateVRView");
-                } else {
-                }
+                } 
               });
             }
           }
@@ -171,7 +170,7 @@ function showAddDialog(browserWindow, arg) {
   );
 }
 
-function saveState(threeData) {
+function saveState(threeData) {  
   let data = JSON.stringify(threeData);
   fs.writeFile(
     threeData.state.title + "/index.html",
@@ -260,7 +259,9 @@ function createScene(threeData = [], state = {}) {
       }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
         .rotation._x *
         (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
-        (180 / 3.14)}"></a-entity> \n`;
+        (180 / 3.14)}" 
+        shadow="receive:${val.receiveShadow}" 
+        ></a-entity> \n`;
     }
   });
   return dataString;
