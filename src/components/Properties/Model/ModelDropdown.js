@@ -9,9 +9,7 @@ export default class MenuDropdown extends Component{
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
-        let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
-        console.log(this.props.assetStack[i]);
-        
+        let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')        
         if(this.props.assetStack[i].ext==='.obj'){
             let objPresent = this.props.objPresent[this.props.activeObj]
             // load a resource
@@ -35,7 +33,7 @@ export default class MenuDropdown extends Component{
 
                 }
             );      
-            this.props.objPresent[this.props.activeObj].objModel = {data:data,type:'.obj',name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}
+            this.props.objPresent[this.props.activeObj].objModel = {path:this.props.assetStack[i].path,type:'.obj',name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}
         }
     }
 

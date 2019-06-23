@@ -29,7 +29,7 @@ export default class Visible extends Component{
         return(
             <Container>
                 <Title>Transparent</Title>
-                <label class="form-switch">
+                <label className="form-switch">
                     <input type="checkbox" checked={this.state.transparent} onChange={this.handleInputChange} />
                     <i></i>
                 </label>

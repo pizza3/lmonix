@@ -1,7 +1,11 @@
 import * as THREE from '../ThreeLibManager';
 const Loader = new THREE.OBJLoader();
+const fs = window.require("fs");
 
-const modelLoader = (data,obj)=>{
+const modelLoader = (obj)=>{
+    console.log('obj',obj);
+    
+    let data = "data:video/webm;base64,"+fs.readFileSync(obj.objModel.path).toString('base64')
     // load a resource
     Loader.load(
         // resource URL
@@ -9,11 +13,11 @@ const modelLoader = (data,obj)=>{
         // called when resource is loaded
         function ( object ) {
             obj.add(object)
-            // objPresent.objModel = {
-            //     type: '.obj',
-            //     data: object,
-            //     name:self.props.assetStack[i].name.replace(/[\W_]+/g,"")
-            // }
+            obj = {
+                type: '.obj',
+                path: obj.objModel.path,
+                name:obj.objModel.path.name.replace(/[\W_]+/g,"")
+            }
         },
         // called when loading is in progresses
         function ( xhr ) {

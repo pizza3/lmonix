@@ -301,7 +301,7 @@ const AddGroupObj = (
 ) => {
   let mapData;
   if (obj.objTexture && obj.objTexture.type === "image") {
-    mapData = textureLoader(obj.objTexture.data);
+    mapData = textureLoader(obj.objTexture.path);
   } else if (obj.objTexture && obj.objTexture.type === "video") {
     mapData = videoLoader(obj.objTexture.data);
   } else {
@@ -418,7 +418,7 @@ const AddGroupObj = (
       threeDobj.receiveShadow = obj.receiveShadow;
       if (obj.objModel) {
         threeDobj.objModel = obj.objModel;
-        modelLoader(threeDobj.objModel.data, threeDobj);
+        // modelLoader(threeDobj.objModel);
       }
       return threeDobj;
       break;

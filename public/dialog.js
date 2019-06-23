@@ -18,7 +18,10 @@ function showSaveDialog(browserWindow, threeData) {
         }
         fs.writeFile(
           filename + "/index.html",
-          aframeTemplate(),
+          aframeTemplate(
+            threeData.state.assetStack,
+            threeData.data,
+          ),
           "utf8",
           err => {
             if (err) {

@@ -39,7 +39,7 @@ export default class Visible extends Component{
         return(
             <Container>
                 <Title>Visible</Title>
-                <label class="form-switch">
+                <label className="form-switch">
                     {isObjectPresent?
                     <input type="checkbox" checked={this.state.visible} onChange={this.handleInputChange} />
                     :

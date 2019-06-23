@@ -10,7 +10,7 @@ const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const os = require("os");
-const express = require("express")();
+const express = require("express");
 
 let localServer;
 module.exports = {
@@ -206,25 +206,27 @@ function SetPopMenu(mainWindow, win) {
   });
 
   ipcMain.on("startlocal", (event, arg) => {
+    const expressapp = express()
     const { location } = arg;
     const PORT = 9999;
-    console.log(location);
-    fs.readFile(`${location}/index.html`, function(err, html) {
-      if (err) throw err;
+    let cache = [];// Array is OK!
+    cache[0] = fs.readFileSync( location + '/index.html');
+    cache[1] = fs.readFileSync( location + '/scripts/index.js');
+      expressapp.get('/', (req, res) => {
+        res.setHeader('Content-Type', 'text/html')
+        res.send(cache[0])
+      })
+      expressapp.get('/scripts/index.js', (req, res) => {
+        res.setHeader('Content-Type', 'text/javascript');
+        res.send( cache[1] );
+       });
+      expressapp.use('/Assets',express.static(location+'/Assets'))
+    ;(async () => {
+      expressapp.listen(PORT, () => console.log(`App listening on port ${PORT}!`))      
+   })()
+    
 
-    //   localServer = http
-    //     .createServer(function(request, response) {
-    //       response.writeHeader(200);
-    //       response.write(html);
-    //       response.end();
-    //     })
-    //     .listen(PORT);
-
-    express.get('/', function(req,res){
-        res.sendFile(`${location}/`)
-     });
-     express.listen(9999);
-    });
+    // });
     let ip = "";
     var networkInterfaces = Object.values(os.networkInterfaces())
       .reduce((r, a) => {

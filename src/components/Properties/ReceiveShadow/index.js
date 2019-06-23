@@ -31,7 +31,7 @@ export default class ReceiveShadow extends Component{
         return(
             <Container>
                 <Title>Receive Shadow</Title>
-                <label class="form-switch">
+                <label className="form-switch">
                     <input type="checkbox" checked={this.state.receiveShadow} onChange={this.handleInputChange} />
                     <i></i>
                 </label>

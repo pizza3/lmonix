@@ -39,15 +39,17 @@ class App extends Component {
           case "updateProject":
             let data = [];
             _.forEach(val["obj"]["data"], val => {
-              let a = AddGroupObj(
-                val,
-                val.objPrimitive,
-                this.state.scene,
-                val.position,
-                val.rotation,
-                val.scale
-              );
-              data.push(a);
+              // if(!val.objPrimitive==='3DModel'){
+                let a = AddGroupObj(
+                  val,
+                  val.objPrimitive,
+                  this.state.scene,
+                  val.position,
+                  val.rotation,
+                  val.scale
+                );
+                data.push(a);
+              // }
             });
             console.log(val);
             this.setState(
@@ -64,9 +66,9 @@ class App extends Component {
               }
             );
             break;
-          case "changeTitle":
+          case "changeTitle":            
             this.setState({
-              title: val["title"][0]
+              title: val["title"]
             });
             break;
           case "addGroupObj":
