@@ -8,8 +8,15 @@ export default class ReceiveShadow extends Component{
     
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
+        const {isModel}=this.props
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].children[0].receiveShadow || false
+                let val;
+                if(isModel){
+                    val = this.props.objPresent[this.props.activeObj].receiveShadow || false
+                }
+                else{
+                    val = this.props.objPresent[this.props.activeObj].children[0].receiveShadow || false
+                }
                 this.setState({
                     receiveShadow:val
                 })
@@ -19,11 +26,17 @@ export default class ReceiveShadow extends Component{
 
     handleInputChange=()=>{
         const {receiveShadow} = this.state
+        const {isModel}=this.props
         this.setState({
             receiveShadow:!receiveShadow
         },()=>{
             if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].children[0].receiveShadow = !receiveShadow
+                if(isModel){
+                    this.props.changeObjectProp(!receiveShadow,'receiveShadow')
+                }
+                else{
+                    this.props.changeObjectProp(!receiveShadow,'receiveShadow','children')
+                }
             }
         })
     }

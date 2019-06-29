@@ -7,9 +7,16 @@ export default class CastShadow extends Component{
     }
     
     componentDidUpdate(prevProps){
+        const {isModel}=this.props
         if(prevProps.activeObj!==this.props.activeObj){
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].children[0].castShadow || false
+                let val
+                if(isModel){
+                    val = this.props.objPresent[this.props.activeObj].castShadow || false
+                }
+                else{
+                     val = this.props.objPresent[this.props.activeObj].children[0].castShadow || false
+                }
                 this.setState({
                     castShadow:val
                 })
@@ -19,11 +26,17 @@ export default class CastShadow extends Component{
 
     handleInputChange=()=>{
         const {castShadow} = this.state
+        const {isModel}=this.props
         this.setState({
             castShadow:!castShadow
         },()=>{
             if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].children[0].castShadow = !castShadow
+                if(isModel){
+                    this.props.changeObjectProp(!castShadow,'castShadow')
+                }
+                else{
+                    this.props.changeObjectProp(!castShadow,'castShadow','children')
+                }
             }
         })
     }

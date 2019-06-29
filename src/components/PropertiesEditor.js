@@ -81,12 +81,10 @@ export default class PropertiesEditor extends Component{
                 <Visible {...this.props}/>
                 </Overlay>
                 <Overlay>
-                {!isModel?
-                <CastShadow {...this.props}/>:          
-                null}
+                <CastShadow isModel={isModel} {...this.props}/>      
                 {
-                !isLight && !isModel?
-                <ReceiveShadow {...this.props}/>:null 
+                !isLight?
+                <ReceiveShadow isModel={isModel} {...this.props}/>:null 
                 }
                 </Overlay>
             </PropertiesEditorContainer>

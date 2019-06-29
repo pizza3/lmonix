@@ -18,10 +18,7 @@ function showSaveDialog(browserWindow, threeData) {
         }
         fs.writeFile(
           filename + "/index.html",
-          aframeTemplate(
-            threeData.state.assetStack,
-            threeData.data,
-          ),
+          aframeTemplate(threeData.state.assetStack, threeData.data),
           "utf8",
           err => {
             if (err) {
@@ -87,14 +84,6 @@ function showOpenDialog(browserWindow) {
                   assets: fileArr
                 });
                 // fsx.copySync(path.resolve(filepaths[0]),'src/assets/project');
-              });
-              fs.watch(filepaths[0] + "/scripts/index.js", function(
-                event,
-                filename
-              ) {
-                if (filename) {
-                  browserWindow.webContents.send("updateVRView");
-                } 
               });
             }
           }
@@ -173,45 +162,49 @@ function showAddDialog(browserWindow, arg) {
   );
 }
 
-function saveState(threeData) {  
-  let data = JSON.stringify(threeData);
-  fs.writeFile(
-    threeData.state.title + "/index.html",
-    aframeTemplate(
-      threeData.state.assetStack,
-      threeData.data,
-      threeData.state.isCursor,
-      threeData.state.isDefaultLights
-    ),
-    "utf8",
-    err => {
+function saveState(threeData, browserWindow) {
+  if (threeData.location === "/code") {
+    fs.writeFile(
+      threeData.state.title + "/index.html",
+      aframeTemplate(
+        threeData.state.assetStack,
+        threeData.data,
+        threeData.state.isCursor,
+        threeData.state.isDefaultLights
+      ),
+      "utf8",
+      err => {
+        if (err) {
+          dialog.showErrorBox("Save Failed", err.message);
+        }
+      }
+    );
+    fs.writeFile(
+      threeData.state.title + "/scripts/index.js",
+      threeData.state.code,
+      "utf8",
+      err => {
+        if (err) {
+          dialog.showErrorBox("Save Failed", err.message);
+        }
+      }
+    );
+    browserWindow.webContents.send("updateVRView");
+  } else {
+    let data = JSON.stringify(threeData);
+    fs.writeFile(threeData.state.title + "/data.json", data, "utf8", err => {
       if (err) {
         dialog.showErrorBox("Save Failed", err.message);
       }
-    }
-  );
-  fs.writeFile(threeData.state.title + "/data.json", data, "utf8", err => {
-    if (err) {
-      dialog.showErrorBox("Save Failed", err.message);
-    }
-  });
-  fs.writeFile(
-    threeData.state.title + "/scripts/index.js",
-    threeData.state.code,
-    "utf8",
-    err => {
-      if (err) {
-        dialog.showErrorBox("Save Failed", err.message);
-      }
-    }
-  );
+    });
+  }
 }
 
 function createAssets(arr = []) {
   let assetString = "";
   arr.forEach(val => {
     let name = val.name.replace(/[\W_]+/g, "");
-    if (val.ext === ".png" || val.ext === ".jpg") {
+    if (val.ext === ".png" || val.ext === ".jpg" || val.ext === ".jpeg") {
       assetString += `<img id="${name}" src="./Assets/${val.name}"> \n`;
     } else if (val.ext === ".obj" || val.ext === ".mtl") {
       assetString += `<a-asset-item id="${name}" src="./Assets/${
@@ -251,6 +244,7 @@ function createScene(threeData = [], state = {}) {
         .rotation._x *
         (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
         (180 / 3.14)}"
+        shadow="receive:${val.receiveShadow};cast:${val.castShadow}" 
         visible="${val.visible}" 
         ></a-entity> \n`;
     } else if (val.objType === "Light") {
@@ -267,19 +261,18 @@ function createScene(threeData = [], state = {}) {
       dataString += `<a-entity id="entity${i}" geometry="primitive: ${
         val.objPrimitive
       };" material="color: ${val.hashColor}; 
-      ${
-        val.objTexture ? "src:#" + val.objTexture.name : ""
-      };
+      ${val.objTexture ? "src:#" + val.objTexture.name : ""};
       transparent:${val.children[0].material.transparent};
       opacity:${val.children[0].material.opacity};
         " 
-      position="${val.position.x} ${val.position.y} ${
-        val.position.z
-      }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
-        .rotation._x *
+      position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${
+        val.scale.x
+      } ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x *
         (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
         (180 / 3.14)}" 
-        shadow="receive:${val.children[0].receiveShadow};cast:${val.children[0].castShadow}" 
+        shadow="receive:${val.children[0].receiveShadow};cast:${
+        val.children[0].castShadow
+      }" 
         visible="${val.visible}"
         ></a-entity> \n`;
     }
@@ -287,7 +280,7 @@ function createScene(threeData = [], state = {}) {
   return dataString;
 }
 
-function aframeTemplate(assetArr, sceneArr, isCursor,isDefaultLights=true) {
+function aframeTemplate(assetArr, sceneArr, isCursor, isDefaultLights = true) {
   // a new template is only been made on when assets are added, a new project got created, project got saved.
   return `   <html>
             <head>

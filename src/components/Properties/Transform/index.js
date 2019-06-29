@@ -1,5 +1,6 @@
 import React ,{Component, Fragment} from 'react';
 import styled from 'styled-components';
+import _ from 'lodash'
 
 export default class Transform extends Component{
     state = {
@@ -12,6 +13,35 @@ export default class Transform extends Component{
         scaX:0,
         scaY:0,
         scaZ:0,
+    }
+    componentDidMount(){
+        console.log('should be called once');
+        
+        this.props.setController(this.setPos)
+    }
+
+    setPos = (val, mode)=>{
+        if(mode==='translate'){
+            this.setState({
+                traX:val.x,
+                traY:val.y,
+                traZ:val.z,
+            })
+        }
+        else if(mode==='rotate'){
+            this.setState({
+                rotX:val.x,
+                rotY:val.y,
+                rotZ:val.z,
+            })
+        }
+        else{
+            this.setState({
+                scaX:val.x,
+                scaY:val.y,
+                scaZ:val.z,
+            })
+        }
     }
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
@@ -43,63 +73,63 @@ export default class Transform extends Component{
             this.setState({
                 traX:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].position.x=this.state.traX
+                this.props.changeObjectProp(this.state.traX,['position','x'],'transform')
             })
                 break;
             case "traY":
             this.setState({
                 traY:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].position.y=this.state.traY
+                this.props.changeObjectProp(this.state.traY,['position','y'],'transform')
             })
             break;
             case "traZ":
             this.setState({
                 traZ:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].position.z=this.state.traZ
+                this.props.changeObjectProp(this.state.traZ,['position','z'],'transform')
             })
             break;
             case "rotX":
             this.setState({
                 rotX:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].rotation.x=this.state.rotX
+                this.props.changeObjectProp(this.state.rotX,['rotation','x'],'transform')
             })
                 break;
             case "rotY":
             this.setState({
                 rotY:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].rotation.y=this.state.rotY
+                this.props.changeObjectProp(this.state.rotY,['rotation','y'],'transform')
             })
             break;
             case "rotZ":
             this.setState({
                 rotZ:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].rotation.z=this.state.rotZ
+                this.props.changeObjectProp(this.state.rotZ,['rotation','z'],'transform')                
             })
             break;
             case "scaX":
             this.setState({
                 scaX:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].scale.x=this.state.scaX
+                this.props.changeObjectProp(this.state.scaX,['scale','x'],'transform')                
             })
                 break;
             case "scaY":
             this.setState({
                 scaY:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].scale.y=this.state.scaY
+                this.props.changeObjectProp(this.state.scaY,['scale','y'],'transform')                
             })
             break;
             case "scaZ":
             this.setState({
                 scaZ:e.target.value
             },()=>{
-                this.props.objPresent[this.props.activeObj].scale.z=this.state.scaZ
+                this.props.changeObjectProp(this.state.scaZ,['scale','z'],'transform')                
             })
             break;
             default:

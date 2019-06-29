@@ -21,7 +21,7 @@ export default class Visible extends Component{
             transparent:!transparent
         },()=>{
             if(this.props.objPresent.length>0){
-                this.props.objPresent[this.props.activeObj].children[0].material.transparent = !transparent
+                this.props.changeObjectProp(!transparent,'transparent','material')
             }
         })
     }

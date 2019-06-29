@@ -418,7 +418,7 @@ const AddGroupObj = (
       threeDobj.receiveShadow = obj.receiveShadow;
       if (obj.objModel) {
         threeDobj.objModel = obj.objModel;
-        // modelLoader(threeDobj.objModel);
+        modelLoader(threeDobj,threeDobj.objModel);
       }
       return threeDobj;
       break;

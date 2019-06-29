@@ -30,7 +30,7 @@ export default class Visible extends Component{
         this.setState({
             visible:!visible
         },()=>{
-            this.props.changeObjectProp('visible',!this.props.objPresent[this.props.activeObj].visible)
+            this.props.changeObjectProp(!this.props.objPresent[this.props.activeObj].visible,'visible',)
         })
 
     }

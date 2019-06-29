@@ -7,10 +7,11 @@ export default class MenuDropdown extends Component {
     this.props.addInScene(obj);
   };
   handleTexture = i => {
-    let data =
+    const data =
       "data:video/webm;base64," +
       fs.readFileSync(this.props.assetStack[i].path).toString("base64");
     if (this.props.assetStack[i].ext === ".webm") {
+      // sets up a basic video element
       let video = document.createElement("video");
       video.src = data;
       video.width = 640;
@@ -19,21 +20,18 @@ export default class MenuDropdown extends Component {
       video.muted = true;
       video.setAttribute("webkit-playsinline", "webkit-playsinline");
       video.play();
-      var texture = new THREE.VideoTexture(video);
-      this.props.objPresent[
-        this.props.activeObj
-      ].children[0].material.map = texture;
-      this.props.objPresent[
-        this.props.activeObj
-      ].children[0].material.needsUpdate = true;
-      this.props.objPresent[this.props.activeObj].objTexture = {
+      const texture = new THREE.VideoTexture(video);
+      const objTexture = {
         path: this.props.assetStack[i].path,
         type: "video",
         name: this.props.assetStack[i].name.replace(/[\W_]+/g, "")
       };
+      this.props.changeObjectProp(texture,'map','material')
+      this.props.changeObjectProp(true,'needsUpdate','material')
+      this.props.changeObjectProp(objTexture,'objTexture')
     } else if (this.props.assetStack[i].ext === ".mtl") {
     } else {
-      let texture = new THREE.TextureLoader().load(
+      const texture = new THREE.TextureLoader().load(
         data,
         function(texture) {},
         // Function called when download progresses
@@ -45,17 +43,15 @@ export default class MenuDropdown extends Component {
           console.log("An error happened");
         }
       );
-      this.props.objPresent[
-        this.props.activeObj
-      ].children[0].material.map = texture;
-      this.props.objPresent[
-        this.props.activeObj
-      ].children[0].material.needsUpdate = true;
-      this.props.objPresent[this.props.activeObj].objTexture = {
+      const objTexture={
         path: this.props.assetStack[i].path,
         type: "image",
         name: this.props.assetStack[i].name.replace(/[\W_]+/g, "")
-      };
+
+      }
+      this.props.changeObjectProp(texture,'map','material')
+      this.props.changeObjectProp(true,'needsUpdate','material')
+      this.props.changeObjectProp(objTexture,'objTexture')
     }
   };
   render() {
