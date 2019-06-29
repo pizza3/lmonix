@@ -26,12 +26,9 @@ class App extends Component {
     isCursor: false,
     localIP: null,
     activeScript: "js",
-    mouseOverScene:false,
-    currentPos :{},
-    traX:0
+    loaded:false
   };
   objPresent = [];
-  currentPos = {}
   componentDidMount() {
     electron.ipcRenderer.on(
       "ipcRenderer",
@@ -72,10 +69,10 @@ class App extends Component {
                 title: val["title"][0]
               },
               () => {
-                this.state.transformControls.attach(
-                  this.state.objPresent[this.state.activeObj]
+                this.transformControls.attach(
+                  this.objPresent[this.state.activeObj]
                 );
-                this.state.scene.add(this.state.transformControls);
+                this.scene.add(this.transformControls);
               }
             );
             break;
@@ -172,7 +169,7 @@ class App extends Component {
     });
   };
   setDefaultLights = () => {
-    let { isDefaultLights, scene } = this.state;
+    const { isDefaultLights, scene } = this.state;
     this.setState(
       {
         isDefaultLights: !isDefaultLights
@@ -189,7 +186,7 @@ class App extends Component {
     this.height = window.innerHeight - 37;
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.GridHelper(30, 30));
-    let nearPlane = 1,
+    const nearPlane = 1,
       farPlane = 70000,
       fieldOfView = 70,
       aspectRatio = this.width / this.height;
@@ -234,8 +231,8 @@ class App extends Component {
     this.directionalLight.visible = visible;
     this.scene.add(this.directionalLight);
     this.scene.add(this.ambientLight);
-    this.setController()
   }
+
   startanimateScene() {
     if (!this._frameId) {
       this._frameId = window.requestAnimationFrame(this.animateScene);
@@ -285,19 +282,16 @@ class App extends Component {
         this.trackballControls.enabled = true;
       }.bind(this)
     );
+    this.setState({
+      loaded:true
+    })
   }
 
   handleLeave = () => {
-    this.setState({
-      mouseOverScene:false
-    })
     this.trackballControls.enabled = false;
   };
 
   handleOver = () => {
-    this.setState({
-      mouseOverScene:true
-    })
     this.trackballControls.enabled = true;
   };
 

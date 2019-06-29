@@ -19,13 +19,10 @@ export default class ColorPicker extends Component{
         let hex = parseInt(currentColor.replace(/^#/, ""), 16);
         if(this.props.objPresent[this.props.activeObj].objType==='Mesh'){
             this.props.changeObjectProp(currentColor,'color','colorMaterial')
-            // this.props.objPresent[this.props.activeObj].children[0].material.color.setHex(hex);
         }
         else if(this.props.objPresent[this.props.activeObj].objType==='Light'){
             this.props.changeObjectProp(currentColor,'color','colorLight')
-            // this.props.objPresent[this.props.activeObj].children[0].color.setHex(hex);
         }
-        // this.props.objPresent[this.props.activeObj].hashColor=currentColor
     }
     render(){
         return(

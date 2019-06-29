@@ -84,6 +84,7 @@ export default class MenuDropdown extends Component {
 
 const Container = styled.div`
   position: fixed;
+  overflow: auto;
   background: #f7f7f7;
   border: 2px solid #dbdbdb;
   width: 200px;

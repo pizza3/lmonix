@@ -14,9 +14,7 @@ export default class Transform extends Component{
         scaY:0,
         scaZ:0,
     }
-    componentDidMount(){
-        console.log('should be called once');
-        
+    componentDidMount(){     
         this.props.setController(this.setPos)
     }
 
@@ -71,21 +69,21 @@ export default class Transform extends Component{
         switch (e.target.name) {
             case "traX":
             this.setState({
-                traX:e.target.value
+                traX:Number(e.target.value)
             },()=>{
                 this.props.changeObjectProp(this.state.traX,['position','x'],'transform')
             })
                 break;
             case "traY":
             this.setState({
-                traY:e.target.value
+                traY:Number(e.target.value)
             },()=>{
                 this.props.changeObjectProp(this.state.traY,['position','y'],'transform')
             })
             break;
             case "traZ":
             this.setState({
-                traZ:e.target.value
+                traZ:Number(e.target.value)
             },()=>{
                 this.props.changeObjectProp(this.state.traZ,['position','z'],'transform')
             })
@@ -228,6 +226,10 @@ const Input = styled.input`
         background: #2F79EF;
         color: #fff;
         border: 2px solid #2F79EF;
+    }
+    &::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
     }
 `
 const Overlay = styled.div`
