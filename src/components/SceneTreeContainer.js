@@ -3,9 +3,6 @@ import styled from 'styled-components';
 import SceneTree from './SceneGraph/SceneTree'
 
 export default class SceneTreeContainer extends Component{
-    state={
-
-    }
 
     render(){
         return(

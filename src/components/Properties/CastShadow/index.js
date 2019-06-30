@@ -12,10 +12,10 @@ export default class CastShadow extends Component{
             if(this.props.objPresent.length>0){
                 let val
                 if(isModel){
-                    val = this.props.objPresent[this.props.activeObj].castShadow || false
+                    val = this.props.active.castShadow || false
                 }
                 else{
-                     val = this.props.objPresent[this.props.activeObj].children[0].castShadow || false
+                     val = this.props.active.children[0].castShadow || false
                 }
                 this.setState({
                     castShadow:val

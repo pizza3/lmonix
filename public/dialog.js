@@ -234,7 +234,9 @@ function createScene(threeData = [], state = {}) {
         opacity:${val.children[0].material.opacity};
         transparent:${val.children[0].material.transparent};
         "
-        ></a-sky> \n`;
+        >
+        ${createScene(val.children.slice(1))}
+        </a-sky> \n`;
     } else if (val.objPrimitive === "3DModel") {
       dataString += `<a-entity id="entity${i}" obj-model="obj: ${
         val.objModel ? "#" + val.objModel.name : ""
@@ -246,7 +248,9 @@ function createScene(threeData = [], state = {}) {
         (180 / 3.14)}"
         shadow="receive:${val.receiveShadow};cast:${val.castShadow}" 
         visible="${val.visible}" 
-        ></a-entity> \n`;
+        >
+        ${createScene(val.children.slice(1))}
+        </a-entity> \n`;
     } else if (val.objType === "Light") {
       dataString += `<a-entity id="entity${i}" light="type: ${
         val.objPrimitive
@@ -256,7 +260,9 @@ function createScene(threeData = [], state = {}) {
         .rotation._y *
         (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"          
         visible="${val.visible}" 
-        ></a-entity>`;
+        >
+        ${createScene(val.children.slice(1))}
+        </a-entity>`;
     } else {
       dataString += `<a-entity id="entity${i}" geometry="primitive: ${
         val.objPrimitive
@@ -274,7 +280,9 @@ function createScene(threeData = [], state = {}) {
         val.children[0].castShadow
       }" 
         visible="${val.visible}"
-        ></a-entity> \n`;
+        >
+        ${createScene(val.children.slice(1))}
+        </a-entity> \n`;
     }
   });
   return dataString;
@@ -291,7 +299,7 @@ function aframeTemplate(assetArr, sceneArr, isCursor, isDefaultLights = true) {
             <body>
                 <a-scene light="defaultLightsEnabled: ${isDefaultLights}">
                     <a-camera>
-                        <a-cursor></a-cursor>
+                        ${isCursor?`<a-cursor></a-cursor>`:``}
                     </a-camera>
                     <a-assets>
                         ${createAssets(assetArr)}

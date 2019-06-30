@@ -13,10 +13,10 @@ export default class MenuDropdown extends Component{
         this.props.addInScene(obj)
     }
     handleTexture=(i)=>{
-        let data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
-        let data2 =fs.readFileSync(this.props.assetStack[i].path.replace('obj','mtl'))  
+        const data = "data:video/webm;base64,"+fs.readFileSync(this.props.assetStack[i].path).toString('base64')
+        const data2 =fs.readFileSync(this.props.assetStack[i].path.replace('obj','mtl'))  
         // if(this.props.assetStack[i].ext==='.obj'){
-        //     let objPresent = this.props.objPresent[this.props.activeObj]
+        //     let objPresent = this.props.active
         //     // load a resource
         //     Loader.load(
         //         // resource URL
@@ -38,15 +38,15 @@ export default class MenuDropdown extends Component{
 
         //         }
         //     );      
-        let objPresent = this.props.objPresent[this.props.activeObj]
-        var mtlLoader = new THREE.MTLLoader();
+        let objPresent = this.props.active
+        let mtlLoader = new THREE.MTLLoader();
         console.log(this.props.assetStack[i].path.replace('obj','mtl'));
         mtlLoader.setPath(data2);
         mtlLoader.load(data2, function(materials) {
             materials.preload();
             console.log(materials);
             
-        var objLoader = new THREE.OBJLoader();
+        let objLoader = new THREE.OBJLoader();
         objLoader.setMaterials(materials);
         // objLoader.setPath('obj/male02/');
         objLoader.load(data, function(object) {
@@ -61,7 +61,7 @@ export default class MenuDropdown extends Component{
             console.log( 'An error happened' );
             
         })
-        this.props.objPresent[this.props.activeObj].objModel = {path:this.props.assetStack[i].path,type:'.obj',name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}
+        this.props.active.objModel = {path:this.props.assetStack[i].path,type:'.obj',name:this.props.assetStack[i].name.replace(/[\W_]+/g,"")}
         
     }
 

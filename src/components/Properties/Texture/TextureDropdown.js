@@ -52,6 +52,7 @@ export default class MenuDropdown extends Component {
       this.props.changeObjectProp(texture,'map','material')
       this.props.changeObjectProp(true,'needsUpdate','material')
       this.props.changeObjectProp(objTexture,'objTexture')
+      this.props.checkForTexture()
     }
   };
   render() {

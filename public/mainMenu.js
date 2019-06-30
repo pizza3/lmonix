@@ -120,7 +120,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "box"
             });
           }
         },
@@ -129,7 +129,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "sphere"
             });
           }
         },
@@ -141,7 +141,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "plane"
             });
           }
         },
@@ -150,7 +150,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "sky"
             });
           }
         },
@@ -162,7 +162,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "point"
             });
           }
         },
@@ -171,7 +171,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "spot"
             });
           }
         },
@@ -183,7 +183,7 @@ function SetPopMenu(mainWindow, win) {
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
-              obj: "cube"
+              obj: "3DModel"
             });
           }
         }

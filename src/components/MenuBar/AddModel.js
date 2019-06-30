@@ -2,6 +2,7 @@ import * as THREE from "../ThreeLibManager";
 import textureLoader from "../Helpers/textureLoader";
 import videoLoader from "../Helpers/videoLoader";
 import modelLoader from "../Helpers/modelLoader";
+import _ from 'lodash'
 
 const AddCube = (
   scene,
@@ -307,6 +308,12 @@ const AddGroupObj = (
   } else {
     mapData = null;
   }
+  let object = new THREE.Object3D();
+  if(!_.isEmpty(obj)){
+    object.position.set(pos.x, pos.y, pos.z);
+    object.rotation.set(rot._x, rot._y, rot._z);
+    object.scale.set(sca.x, sca.y, sca.z);  
+  }
   switch (type) {
     case "box":
       let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
@@ -316,21 +323,17 @@ const AddGroupObj = (
           : 0xef2d5e,
         map: mapData
       });
-      let objCube = new THREE.Object3D();
-      objCube["objName"] = "Cube";
-      objCube["objType"] = "Mesh";
-      objCube["objPrimitive"] = "box";
-      objCube["hashColor"] = obj.hashColor || "#ef2d5e";
-      objCube.add(new THREE.Mesh(geometry, material));
-      scene.add(objCube);
-      objCube.objTexture = obj.objTexture;
-      objCube.position.set(pos.x, pos.y, pos.z);
-      objCube.rotation.set(rot._x, rot._y, rot._z);
-      objCube.scale.set(sca.x, sca.y, sca.z);
-      objCube.visible = obj.visible;
-      objCube.children[0].receiveShadow = obj.children[0].receiveShadow;
-      objCube.children[0].castShadow = obj.children[0].castShadow;
-      return objCube;
+      object["objName"] = "Cube";
+      object["objType"] = "Mesh";
+      object["objPrimitive"] = "box";
+      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object.add(new THREE.Mesh(geometry, material));
+      scene.add(object);
+      object.objTexture = obj.objTexture?obj.objTexture:{};
+      object.visible = obj.visible?obj.visible:true;
+      object.children[0].receiveShadow = obj.children?obj.children[0].receiveShadow:false;
+      object.children[0].castShadow = obj.children?obj.children[0].castShadow:false;
+      return object;
       break;
     case "sphere":
       let geometrySphere = new THREE.SphereBufferGeometry(1, 32, 32);
@@ -340,21 +343,17 @@ const AddGroupObj = (
           : 0xef2d5e,
         map: mapData
       });
-      let objSphere = new THREE.Object3D();
-      objSphere["objName"] = "Sphere";
-      objSphere["objType"] = "Mesh";
-      objSphere["hashColor"] = obj.hashColor || "#ef2d5e";
-      objSphere["objPrimitive"] = "sphere";
-      objSphere.add(new THREE.Mesh(geometrySphere, materialSphere));
-      scene.add(objSphere);
-      objSphere.objTexture = obj.objTexture;
-      objSphere.position.set(pos.x, pos.y, pos.z);
-      objSphere.rotation.set(rot._x, rot._y, rot._z);
-      objSphere.scale.set(sca.x, sca.y, sca.z);
-      objSphere.visible = obj.visible;
-      objSphere.children[0].receiveShadow = obj.children[0].receiveShadow;
-      objSphere.children[0].castShadow = obj.children[0].castShadow;
-      return objSphere;
+      object["objName"] = "Sphere";
+      object["objType"] = "Mesh";
+      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["objPrimitive"] = "sphere";
+      object.add(new THREE.Mesh(geometrySphere, materialSphere));
+      scene.add(object);
+      object.objTexture = obj.objTexture;
+      object.visible = obj.visible;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].castShadow = obj.children[0].castShadow;
+      return object;
       break;
     case "plane":
       let geometryPlane = new THREE.PlaneBufferGeometry(1, 1, 32, 32);
@@ -364,21 +363,17 @@ const AddGroupObj = (
           : 0xef2d5e,
         map: mapData
       });
-      let objPlane = new THREE.Object3D();
-      objPlane["objName"] = "Plane";
-      objPlane["objType"] = "Mesh";
-      objPlane["objPrimitive"] = "plane";
-      objPlane["hashColor"] = obj.hashColor || "#ef2d5e";
-      objPlane.add(new THREE.Mesh(geometryPlane, materialPlane));
-      scene.add(objPlane);
-      objPlane.objTexture = obj.objTexture;
-      objPlane.position.set(pos.x, pos.y, pos.z);
-      objPlane.rotation.set(rot._x, rot._y, rot._z);
-      objPlane.scale.set(sca.x, sca.y, sca.z);
-      objPlane.visible = obj.visible;
-      objPlane.children[0].receiveShadow = obj.children[0].receiveShadow;
-      objPlane.children[0].castShadow = obj.children[0].castShadow;
-      return objPlane;
+      object["objName"] = "Plane";
+      object["objType"] = "Mesh";
+      object["objPrimitive"] = "plane";
+      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object.add(new THREE.Mesh(geometryPlane, materialPlane));
+      scene.add(object);
+      object.objTexture = obj.objTexture;
+      object.visible = obj.visible;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].castShadow = obj.children[0].castShadow;
+      return object;
       break;
     case "sky":
       let skygeometry = new THREE.SphereBufferGeometry(5000, 64, 32);
@@ -389,61 +384,48 @@ const AddGroupObj = (
         side: THREE.BackSide,
         map: mapData
       });
-      let objsky = new THREE.Object3D();
-      objsky["objName"] = "Sky";
-      objsky["objType"] = "Mesh";
-      objsky["objPrimitive"] = "sky";
-      objsky["hashColor"] = obj.hashColor || "#ceecf0";
-      objsky.add(new THREE.Mesh(skygeometry, skymaterial));
-      scene.add(objsky);
-      objsky.objTexture = obj.objTexture;
-      objsky.position.set(pos.x, pos.y, pos.z);
-      objsky.rotation.set(rot._x, rot._y, rot._z);
-      objsky.scale.set(sca.x, sca.y, sca.z);
-      objsky.visible = obj.visible;
-      objsky.children[0].receiveShadow = obj.children[0].receiveShadow;
-      objsky.children[0].castShadow = obj.children[0].castShadow;
-      return objsky;
+      object["objName"] = "Sky";
+      object["objType"] = "Mesh";
+      object["objPrimitive"] = "sky";
+      object["hashColor"] = obj.hashColor || "#ceecf0";
+      object.add(new THREE.Mesh(skygeometry, skymaterial));
+      scene.add(object);
+      object.objTexture = obj.objTexture;
+      object.visible = obj.visible;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].castShadow = obj.children[0].castShadow;
+      return object;
       break;
     case "3DModel":
-      let threeDobj = new THREE.Object3D();
-      threeDobj["objName"] = "3DModel";
-      threeDobj["objType"] = "Mesh";
-      threeDobj["objPrimitive"] = "3DModel";
-      scene.add(threeDobj);
-      threeDobj.position.set(pos.x, pos.y, pos.z);
-      threeDobj.rotation.set(rot._x, rot._y, rot._z);
-      threeDobj.scale.set(sca.x, sca.y, sca.z);
-      threeDobj.visible = obj.visible;
-      threeDobj.receiveShadow = obj.receiveShadow;
+      object["objName"] = "3DModel";
+      object["objType"] = "Mesh";
+      object["objPrimitive"] = "3DModel";
+      scene.add(object);
+      object.visible = obj.visible;
+      object.receiveShadow = obj.receiveShadow;
       if (obj.objModel) {
-        threeDobj.objModel = obj.objModel;
-        modelLoader(threeDobj,threeDobj.objModel);
+        object.objModel = obj.objModel;
+        modelLoader(object,object.objModel);
       }
-      return threeDobj;
+      return object;
       break;
     case "point":
-      let objPoint = new THREE.Object3D();
-      objPoint["objName"] = "PointLight";
-      objPoint["objType"] = "Light";
-      objPoint["objPrimitive"] = "point";
-      objPoint["hashColor"] = "#ffffff";
-      let light = new THREE.PointLight(obj.hashColor, 1, 0.0, 1);
-      objPoint.add(light);
-      objPoint.position.set(pos.x, pos.y, pos.z);
-      objPoint.rotation.set(rot._x, rot._y, rot._z);
-      objPoint.scale.set(sca.x, sca.y, sca.z);
-      objPoint.visible = obj.visible;
-      objPoint.receiveShadow = obj.receiveShadow;
-      scene.add(objPoint);
-      return objPoint;
+      object["objName"] = "PointLight";
+      object["objType"] = "Light";
+      object["objPrimitive"] = "point";
+      object["hashColor"] = "#ffffff";
+      let pointLight = new THREE.PointLight(obj.hashColor, 1, 0.0, 1);
+      object.add(pointLight);
+      object.visible = obj.visible;
+      object.receiveShadow = obj.receiveShadow;
+      scene.add(object);
+      return object;
       break;
     case "spot":
-      let objSpot = new THREE.Object3D();
-      objSpot["objName"] = "SpotLight";
-      objSpot["objType"] = "Light";
-      objSpot["objPrimitive"] = "spot";
-      objSpot["hashColor"] = "#ffffff";
+      object["objName"] = "SpotLight";
+      object["objType"] = "Light";
+      object["objPrimitive"] = "spot";
+      object["hashColor"] = "#ffffff";
       let spotlight = new THREE.SpotLight(obj.hashColor);
       spotlight.position.set(100, 1000, 100);
       spotlight.castShadow = true;
@@ -452,50 +434,39 @@ const AddGroupObj = (
       spotlight.shadow.camera.near = 500;
       spotlight.shadow.camera.far = 4000;
       spotlight.shadow.camera.fov = 30;
-      objSpot.position.set(pos.x, pos.y, pos.z);
-      objSpot.rotation.set(rot._x, rot._y, rot._z);
-      objSpot.scale.set(sca.x, sca.y, sca.z);
-      objSpot.add(spotlight);
-      scene.add(objSpot);
-      return objSpot;
+      object.add(spotlight);
+      scene.add(object);
+      return object;
       break;
     case "hemisphere":
-      let objhemisphere = new THREE.Object3D();
       let groundColor = 0xffffff;
       let intensity = 2;
-      objhemisphere["objName"] = "HemisphereLight";
-      objhemisphere["objType"] = "Light";
-      objhemisphere["objPrimitive"] = "hemisphere";
-      objhemisphere["hashColor"] = "#ffffff";
+      object["objName"] = "HemisphereLight";
+      object["objType"] = "Light";
+      object["objPrimitive"] = "hemisphere";
+      object["hashColor"] = "#ffffff";
       let hemispherelight = new THREE.HemisphereLight(
         obj.hashColor,
         groundColor,
         intensity
       );
-      objhemisphere.add(hemispherelight);
-      objhemisphere.position.set(pos.x, pos.y, pos.z);
-      objhemisphere.rotation.set(rot._x, rot._y, rot._z);
-      objhemisphere.scale.set(sca.x, sca.y, sca.z);
-      scene.add(objhemisphere);
-      return objhemisphere;
+      object.add(hemispherelight);
+      scene.add(object);
+      return object;
       break;
     case "directional":
-      let objdirectional = new THREE.Object3D();
       let directionalintensity = 0.5;
-      objdirectional["objName"] = "DirectionalLight";
-      objdirectional["objType"] = "Light";
-      objdirectional["objPrimitive"] = "directional";
-      objdirectional["hashColor"] = "#ffffff";
+      object["objName"] = "DirectionalLight";
+      object["objType"] = "Light";
+      object["objPrimitive"] = "directional";
+      object["hashColor"] = "#ffffff";
       let lightdirectional = new THREE.DirectionalLight(
         obj.hashColor,
         directionalintensity
       );
-      objdirectional.add(lightdirectional);
-      objdirectional.position.set(pos.x, pos.y, pos.z);
-      objdirectional.rotation.set(rot._x, rot._y, rot._z);
-      objdirectional.scale.set(sca.x, sca.y, sca.z);
-      scene.add(objdirectional);
-      return objdirectional;
+      object.add(lightdirectional);
+      scene.add(object);
+      return object;
       break;
     default:
       break;

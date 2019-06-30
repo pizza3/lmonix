@@ -4,7 +4,7 @@ import VrRenderer from "./components/CodeEditor";
 import SceneEditor from "./components/SceneEditor";
 // import Code from './components/Code';
 import _ from "lodash";
-import { AddCubeGroup, AddGroupObj } from "./components/MenuBar/AddModel";
+import { AddGroupObj } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
 import * as THREE from "./components/ThreeLibManager";
 import  TransformControls from "./components/Transform";
@@ -26,7 +26,9 @@ class App extends Component {
     isCursor: false,
     localIP: null,
     activeScript: "js",
-    loaded:false
+    loaded:false,
+    active:null,
+    activeKey:null
   };
   objPresent = [];
   componentDidMount() {
@@ -49,23 +51,13 @@ class App extends Component {
             });
             break;
           case "updateProject":
-            let data = [];
-            _.forEach(val["obj"]["data"], val => {
-              let a = AddGroupObj(
-                val,
-                val.objPrimitive,
-                this.state.scene,
-                val.position,
-                val.rotation,
-                val.scale
-              );
-              data.push(a);
-            });
+            let data = this.reloadProject(val["obj"]["data"],0);
             this.objPresent = data;
             this.setState(
               {
+                active:data[0],
                 objPresent: data,
-                activeObj: 0,
+                activeObj: '00',
                 title: val["title"][0]
               },
               () => {
@@ -83,12 +75,22 @@ class App extends Component {
             break;
           case "addGroupObj":
             let datas = this.state.objPresent;
-            let a = AddCubeGroup(this.state.objPresent[this.state.activeObj]);
-            datas.push(a);
+            let a = 
+            // AddCubeGroup(this.state.active);
+              AddGroupObj(
+              {},
+              val['obj'],
+              this.active,
+            );
+            // datas.push(a);
+            // this.setState({
+            //   active:
+            // });
+            this.active=a
             this.setState({
-              objPresent: datas,
-              activeObj: datas.length - 1
-            });
+              active:a,
+
+            })
             break;
           case "setAssetStack":
             this.setState({
@@ -128,9 +130,12 @@ class App extends Component {
   addInScene = obj => {
     const activeObj = this.state.objPresent.length;
     this.objPresent.push(obj);
+    this.active=obj
     this.setState(
       {
         activeObj,
+        active:obj,
+        activeKey:`0${activeObj}`,
         objPresent:this.objPresent
       },
       () => {
@@ -141,21 +146,41 @@ class App extends Component {
       }
     );
   };
-  setActiveObj = activeObj => {
+  reloadProject = (data,num,parent)=>{
+    let objData = [];
+    _.forEach(data, val => {
+      let object = AddGroupObj(
+        val,
+        val.objPrimitive,
+        !num>0?this.scene:parent,
+        val.position,
+        val.rotation,
+        val.scale
+      );
+      this.reloadProject(val.children.slice(1),num+1,object)
+      if(!num>0){
+        objData.push(object);
+      }
+    });
+    return objData
+  }
+  setActiveObj = (activeObj,obj) => {
+    this.active=obj
     this.setState(
       {
-        activeObj
+        activeObj,
+        activeKey:activeObj,
+        active:obj
       },
       () => {
-        this.transformControls.attach(
-          this.objPresent[this.state.activeObj]
+        this.transformControls.attach(obj
         );
         this.scene.add(this.transformControls);
-        document.getElementById("obj" + this.state.activeObj).addEventListener(
+        document.getElementById("obj" + this.state.activeKey).addEventListener(
           "contextmenu",
           function(e) {
             electron.ipcRenderer.send("show-context-menu", {
-              dataNo: this.state.activeObj
+              dataNo: this.state.activeKey
             });
           }.bind(this)
         );
@@ -303,34 +328,34 @@ class App extends Component {
     });
   };
 
-  changeObjectProp = (value, prop, option) => {
+  changeObjectProp = (value, prop, option) => {    
     switch (option) {
       case "transform":
-        this.objPresent[this.state.activeObj][prop[0]][prop[1]] = value;
+        this.active[prop[0]][prop[1]] = value;
         break;
       case "children":
-        this.objPresent[this.state.activeObj].children[0][prop] = value;
+        this.active.children[0][prop] = value;
         break;
       case "material":
-        this.objPresent[this.state.activeObj].children[0].material[
+        this.active.children[0].material[
           prop
         ] = value;
         break;
       case "colorMaterial":
         let hex = parseInt(value.replace(/^#/, ""), 16);
-        this.objPresent[this.state.activeObj].children[0].material[prop].setHex(
+        this.active.children[0].material[prop].setHex(
           hex
         );
-        this.objPresent[this.state.activeObj].hashColor = value;
+        this.active.hashColor = value;
         break;
       case "colorLight":
         let lighthex = parseInt(value.replace(/^#/, ""), 16);
-        this.objPresent[this.state.activeObj].children[0][prop].setHex(
+        this.active.children[0][prop].setHex(
           lighthex
         );
-        this.objPresent[this.state.activeObj].hashColor = value;
+        this.active.hashColor = value;
       default:
-        this.objPresent[this.state.activeObj][prop] = value;
+        this.active[prop] = value;
     }
   };
 

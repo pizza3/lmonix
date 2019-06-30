@@ -8,7 +8,7 @@ export default class Visible extends Component{
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].children[0].material.transparent || false
+                let val = this.props.active.children[0].material.transparent || false
                 this.setState({
                     transparent:val
                 })

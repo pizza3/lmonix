@@ -9,7 +9,7 @@ export default class GroundColor extends Component{
     }
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
-                this.onChange(this.props.objPresent[this.props.activeObj].hashGroundColor)
+                this.onChange(this.props.active.hashGroundColor)
         }
     }
     onChange=(currentColor)=>{
@@ -17,8 +17,8 @@ export default class GroundColor extends Component{
             currentColor
         })
         let hex = parseInt(currentColor.replace(/^#/, ""), 16);
-        this.props.objPresent[this.props.activeObj].children[0].groundColor.setHex(hex);
-        this.props.objPresent[this.props.activeObj].hashGroundColor=currentColor
+        this.props.active.children[0].groundColor.setHex(hex);
+        this.props.active.hashGroundColor=currentColor
     }
     render(){
         return(

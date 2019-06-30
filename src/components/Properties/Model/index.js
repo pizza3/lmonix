@@ -14,7 +14,7 @@ export default class Model extends Component{
                 <Trigger action={['click']} popup={<div><ModelDropdown {...this.props} addInScene={this.props.addInScene}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                         points: ["tr", "bl"],
-                        offset: [-280, -20],
+                        offset: [-290, -20],
                 }}>
                     <Input>
                         {this.state.currentTexture}

@@ -8,7 +8,7 @@ export default class Index extends Component{
 
     componentDidMount(){        
         this.setState({
-            value:this.props.objPresent[this.props.activeObj].children[0].intensity
+            value:this.props.active.children[0].intensity
         })
     }
 
@@ -16,7 +16,7 @@ export default class Index extends Component{
         this.setState({
             value:e.target.value
         })
-        this.props.objPresent[this.props.activeObj].children[0].intensity=parseFloat(e.target.value)        
+        this.props.active.children[0].intensity=parseFloat(e.target.value)        
     }
 
     render(){

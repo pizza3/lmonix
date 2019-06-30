@@ -30,7 +30,7 @@ export default class TitleBar extends Component{
                 <Trigger action={['click']} popup={<div><LocalServer location={this.props.title} ip={this.props.localIP}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                     points: ["bc", "tl"],
-                    offset: [-210, 30],
+                    offset: [-230, 30],
                 }}>
                     <ImgContainer src={preview} alt='Preview'/>
                 </Trigger>

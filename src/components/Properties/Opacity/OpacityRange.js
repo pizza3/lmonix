@@ -6,8 +6,15 @@ export default class OpacityRange extends Component{
     }
     componentDidMount(){
         this.setState({
-            value:this.props.objPresent[this.props.activeObj].children[0].material.opacity
+            value:this.props.active.children[0].material.opacity
         })
+    }
+    componentDidUpdate(prevProps){
+        if(prevProps.activeObj!==this.props.activeObj){
+            this.setState({
+                value:this.props.active.children[0].material.opacity
+            })  
+        }
     }
     handleRange = (e) =>{
         this.setState({

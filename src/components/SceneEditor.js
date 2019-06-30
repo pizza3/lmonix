@@ -27,7 +27,7 @@ export default class SceneEditor extends Component {
     this.props.stopanimateScene();
   }
 
-  render() {
+  render() {    
     return (
       <SceneEditorContainer>
         <MenuBar

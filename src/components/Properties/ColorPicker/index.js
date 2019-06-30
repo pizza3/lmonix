@@ -7,9 +7,12 @@ export default class ColorPicker extends Component{
     state = {
         currentColor:'#fff'
     }
-    componentDidUpdate(prevProps){
+    componentDidMount(){
+        this.onChange(this.props.active.hashColor)
+    }
+    componentDidUpdate(prevProps){        
         if(prevProps.activeObj!==this.props.activeObj){
-                this.onChange(this.props.objPresent[this.props.activeObj].hashColor)
+            this.onChange(this.props.active.hashColor)
         }
     }
     onChange=(currentColor)=>{
@@ -17,10 +20,10 @@ export default class ColorPicker extends Component{
             currentColor
         })
         let hex = parseInt(currentColor.replace(/^#/, ""), 16);
-        if(this.props.objPresent[this.props.activeObj].objType==='Mesh'){
+        if(this.props.active.objType==='Mesh'){
             this.props.changeObjectProp(currentColor,'color','colorMaterial')
         }
-        else if(this.props.objPresent[this.props.activeObj].objType==='Light'){
+        else if(this.props.active.objType==='Light'){
             this.props.changeObjectProp(currentColor,'color','colorLight')
         }
     }

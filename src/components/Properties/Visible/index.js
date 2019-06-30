@@ -6,10 +6,10 @@ export default class Visible extends Component{
         visible:false
     }
 
-    componentWillMount(){
+    componentDidMount(){
         if(this.props.activeObj>0){
             this.setState({
-                visible:this.props.objPresent[this.props.activeObj].visible
+                visible:this.props.active.visible
             })
         }
     }
@@ -17,7 +17,7 @@ export default class Visible extends Component{
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
             if(this.props.objPresent.length>0){
-                let val = this.props.objPresent[this.props.activeObj].visible || false
+                let val = this.props.active.visible || false
                 this.setState({
                     visible:val
                 })
@@ -30,7 +30,7 @@ export default class Visible extends Component{
         this.setState({
             visible:!visible
         },()=>{
-            this.props.changeObjectProp(!this.props.objPresent[this.props.activeObj].visible,'visible',)
+            this.props.changeObjectProp(!this.props.active.visible,'visible',)
         })
 
     }

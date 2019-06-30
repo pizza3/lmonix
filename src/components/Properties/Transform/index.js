@@ -43,15 +43,15 @@ export default class Transform extends Component{
     }
     componentDidUpdate(prevProps){
         if(prevProps.activeObj!==this.props.activeObj){
-            const tx =this.props.objPresent[this.props.activeObj].position.x;
-            const ty =this.props.objPresent[this.props.activeObj].position.y;
-            const tz =this.props.objPresent[this.props.activeObj].position.z;
-            const rx =this.props.objPresent[this.props.activeObj].rotation.x;
-            const ry =this.props.objPresent[this.props.activeObj].rotation.y;
-            const rz =this.props.objPresent[this.props.activeObj].rotation.z;
-            const sx =this.props.objPresent[this.props.activeObj].scale.x;
-            const sy =this.props.objPresent[this.props.activeObj].scale.y;
-            const sz =this.props.objPresent[this.props.activeObj].scale.z;
+            const tx =this.props.active.position.x;
+            const ty =this.props.active.position.y;
+            const tz =this.props.active.position.z;
+            const rx =this.props.active.rotation.x;
+            const ry =this.props.active.rotation.y;
+            const rz =this.props.active.rotation.z;
+            const sx =this.props.active.scale.x;
+            const sy =this.props.active.scale.y;
+            const sz =this.props.active.scale.z;
             this.setState({
                 traX:tx,
                 traY:ty,

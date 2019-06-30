@@ -21,7 +21,7 @@ export default class Images extends Component{
             return(
                 <Item key={i}>
                     <Name>{val.name}</Name>
-                    <Trash src={trash}/>
+                    {/* <Trash src={trash}/> */}
                 </Item>
             )
         })

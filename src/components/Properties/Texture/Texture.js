@@ -2,29 +2,74 @@ import React ,{Component} from 'react';
 import styled from 'styled-components';
 import Trigger from 'rc-trigger'
 import TextureDropdown from './TextureDropdown'
-
+import Cross from '../../../assets/cross.svg'
 export default class Texture extends Component{
     state = {
-        currentTexture:'Add Texture'
+        currentTexture:'Add Texture',
+        isTexture:false
     }
+
+    componentDidMount(){
+        if(this.props.active&&this.props.active.objTexture&&this.props.active.objTexture.name){
+            this.setState({
+                isTexture:true,
+                currentTexture:this.props.active.objTexture.name
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps){
+        if(prevProps.activeObj!==this.props.activeObj){
+            if(this.props.active&&this.props.active.objTexture&&this.props.active.objTexture.name){
+                this.setState({
+                    isTexture:true,
+                    currentTexture:this.props.active.objTexture.name
+                })
+            }
+            else{
+                this.setState({
+                    isTexture:false
+                })
+            }
+        }
+    }
+
+    checkForTexture = () => {
+        this.setState({
+            isTexture:true,
+            currentTexture:this.props.active.objTexture.name
+        })
+    }
+
+    removeTexture = () => { 
+        this.props.changeObjectProp(null,'map','material')
+        this.props.changeObjectProp(true,'needsUpdate','material')
+        this.props.changeObjectProp({},'objTexture')  
+        this.setState({
+            isTexture:false
+        })      
+    }
+
     render(){
-        let content =this.props.objPresent[this.props.activeObj]? 
-        this.props.objPresent[this.props.activeObj].objTexture?
-        this.props.objPresent[this.props.activeObj].objTexture.name
-        :this.state.currentTexture
-        :this.state.currentTexture
+        const { currentTexture, isTexture } = this.state
+        const content = this.props.active? 
+        this.props.active.objTexture?
+        this.props.active.objTexture.name
+        :currentTexture
+        :currentTexture
         return(
             <Container>
                 <Title>Texture</Title>
-                <Trigger action={['click']} popup={<div><TextureDropdown {...this.props} addInScene={this.props.addInScene}/></div>} prefixCls='dropdown' 
+                <Trigger action={['click']} popup={<div><TextureDropdown {...this.props} addInScene={this.props.addInScene} checkForTexture={this.checkForTexture}/></div>} prefixCls='dropdown' 
                     popupAlign={{
                         points: ["tr", "bl"],
-                        offset: [-280, -20],
+                        offset: [-290, -20],
                 }}>
                     <Input>
-                        {content}
+                        {isTexture?content:'Add Texture'}
                     </Input>
                 </Trigger>
+                {isTexture?<Delete src={Cross} onClick={this.removeTexture}/>:null}
             </Container>
         )
     }
@@ -59,4 +104,14 @@ const Input = styled.div`
     padding: 4px;
     color: #969696;
     cursor: pointer;
+`
+const Delete = styled.img`
+    position: absolute;
+    width: 21px;
+    right: 8px;
+    top: 2px;
+    border-radius: 3px;
+    &:hover{
+        background: #c7c7c7;
+    }
 `
