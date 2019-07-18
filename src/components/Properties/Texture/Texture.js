@@ -102,7 +102,11 @@ const Input = styled.div`
     margin-right: 6px;
     font-size: 10px;
     padding: 4px;
+    padding-right: 15px;
     color: #969696;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: pointer;
 `
 const Delete = styled.img`

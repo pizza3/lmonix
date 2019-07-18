@@ -5,6 +5,7 @@ const THREE = require('three')
 
 
 THREE.TransformControls = function ( camera, domElement, changePos ) {
+console.log(domElement);
 
 	THREE.Object3D.call( this );
 

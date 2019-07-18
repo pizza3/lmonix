@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import styled from 'styled-components'
-import {AddDirectionalLight, AddPointLight, AddSpotLight, AddHemisphereLight}  from '../AddModel';
+import {AddDirectionalLight, AddPointLight, AddSpotLight, AddHemisphereLight, AddAmbientLight}  from '../AddModel';
 
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
@@ -15,6 +15,7 @@ export default class MenuDropdown extends Component{
                <ObjButton style={{width:'100%'}} onClick={()=>{this.addModel(AddHemisphereLight(scene))}}>Hemisphere</ObjButton>
                <ObjButton style={{width:'100%'}} onClick={()=>{this.addModel(AddPointLight(scene))}}>Point</ObjButton>
                <ObjButton style={{width:'100%'}} onClick={()=>{this.addModel(AddSpotLight(scene))}}>Spot</ObjButton>
+               <ObjButton style={{width:'100%'}} onClick={()=>{this.addModel(AddAmbientLight(scene))}}>Ambient</ObjButton>
             </Container>
         )
     }

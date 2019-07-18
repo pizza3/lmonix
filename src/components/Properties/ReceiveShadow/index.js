@@ -1,12 +1,13 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
+import _ from 'lodash'
 
 export default class ReceiveShadow extends Component{
     state = {
         receiveShadow:false
     }
     componentDidUpdate(prevProps){
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){
         const {isModel}=this.props
             if(this.props.objPresent.length>0){
                 let val;

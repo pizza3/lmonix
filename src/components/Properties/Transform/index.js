@@ -42,7 +42,7 @@ export default class Transform extends Component{
         }
     }
     componentDidUpdate(prevProps){
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){
             const tx =this.props.active.position.x;
             const ty =this.props.active.position.y;
             const tz =this.props.active.position.z;

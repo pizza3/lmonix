@@ -3,6 +3,11 @@ import textureLoader from "../Helpers/textureLoader";
 import videoLoader from "../Helpers/videoLoader";
 import modelLoader from "../Helpers/modelLoader";
 import _ from 'lodash'
+import {helvetikerBold} from '../../assets/fonts'
+const loader = new THREE.FontLoader();
+const createGeometry = require('three-bmfont-text')
+const loadFont = require('load-bmfont')
+
 
 const AddCube = (
   scene,
@@ -11,7 +16,7 @@ const AddCube = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
-  let material = new THREE.MeshPhongMaterial({
+  let material = new THREE.MeshStandardMaterial({
     color: 0xef2d5e
   });
 
@@ -40,7 +45,7 @@ const AddCubeGroup = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
-  let material = new THREE.MeshPhongMaterial({
+  let material = new THREE.MeshStandardMaterial({
     color: 0xef2d5e
   });
 
@@ -70,7 +75,7 @@ const AddSphere = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let geometry = new THREE.SphereBufferGeometry(1, 32, 32);
-  let material = new THREE.MeshPhongMaterial({
+  let material = new THREE.MeshStandardMaterial({
     color: 0xef2d5e
   });
 
@@ -99,7 +104,7 @@ const AddPlane = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32);
-  let material = new THREE.MeshPhongMaterial({
+  let material = new THREE.MeshStandardMaterial({
     color: 0xef2d5e
   });
 
@@ -239,6 +244,33 @@ const AddDirectionalLight = (
   return obj;
 };
 
+const AddAmbientLight = (
+  scene,
+  pos = { x: 0, y: 0, z: 0 },
+  rot = { x: 0, y: 0, z: 0 },
+  sca = { x: 0, y: 0, z: 0 }
+) => {
+  let obj = new THREE.Object3D();
+  let color = 0xffffff;
+  let intensity = 0.5;
+  obj["objName"] = "AmbientLight";
+  obj["objType"] = "Light";
+  obj["objPrimitive"] = "ambient";
+  obj["hashColor"] = "#ffffff";
+  let light = new THREE.AmbientLight(color, intensity);
+  obj.add(light);
+  scene.add(obj);
+  obj.position.set(pos.x, pos.y, pos.z);
+  obj.rotation._x = rot.x;
+  obj.rotation._y = rot.y;
+  obj.rotation._z = rot.z;
+  // obj.scale.x=sca.x;
+  // obj.scale.y=sca.y;
+  // obj.scale.z=sca.z
+  // obj.scale.set(sca.x,sca.y,sca.z);
+  return obj;
+};
+
 const AddSky = (
   scene,
   pos = { x: 0, y: 0, z: 0 },
@@ -267,6 +299,7 @@ const AddSky = (
   // obj.scale.y=sca.y;
   // obj.scale.z=sca.z
   // obj.scale.set(sca.x,sca.y,sca.z);
+  console.log(obj);
   return obj;
 };
 
@@ -292,6 +325,62 @@ const AddModel = (
   return obj;
 };
 
+const AddText = (
+  scene,
+  pos = { x: 0, y: 0, z: 0 },
+  rot = { x: 0, y: 0, z: 0 },
+  sca = { x: 0, y: 0, z: 0 })=>{
+    let obj
+    // loader.load( 'src/assets/helvetiker_bold.typeface.json', function ( font ) {
+      let material = new THREE.MeshBasicMaterial({
+        color: 0xceecf0,
+        side: THREE.BackSide,
+        map: null
+      });
+      const testFont = new THREE.Font(helvetikerBold)
+      const textgeometry = new THREE.TextBufferGeometry( 'Hello three.js!', {
+        font: testFont,
+        size: 1,
+        height: 1,
+        curveSegments: 1,
+        bevelEnabled: false,
+        bevelThickness: 1,
+        bevelSize: 8,
+        bevelOffset: 0,
+        bevelSegments: 5
+      } );
+      var geometry = createGeometry({
+        width: 300,
+        align: 'right',
+        lineHeight:1,
+        font: testFont
+      })
+      geometry.update('Lorem ipsum\nDolor sit amet.')
+
+      obj = new THREE.Object3D();
+      obj.add(new THREE.Mesh(geometry, material));
+      obj["objName"] = "Text";
+      obj["objType"] = "Mesh";
+      obj["objPrimitive"] = "text";
+      obj["hashColor"] = "#ceecf0";
+      scene.add(obj);
+      obj.position.set(pos.x, pos.y, pos.z);
+      obj.rotation._x = rot.x;
+      obj.rotation._y = rot.y;
+      obj.rotation._z = rot.z;      
+    return obj;
+}
+
+export const ApplyTexture = (obj)=>{
+  let mapData=null;
+  if (obj.objTexture && obj.objTexture.type === "image") {
+    mapData = textureLoader(obj.objTexture.path);
+  } else if (obj.objTexture && obj.objTexture.type === "video") {
+    mapData = videoLoader(obj.objTexture.data);
+  }
+  return mapData
+}
+
 const AddGroupObj = (
   obj,
   type,
@@ -300,29 +389,27 @@ const AddGroupObj = (
   rot = { _x: 0, _y: 0, _z: 0 },
   sca = { x: 0, y: 0, z: 0 }
 ) => {
-  let mapData;
-  if (obj.objTexture && obj.objTexture.type === "image") {
-    mapData = textureLoader(obj.objTexture.path);
-  } else if (obj.objTexture && obj.objTexture.type === "video") {
-    mapData = videoLoader(obj.objTexture.data);
-  } else {
-    mapData = null;
-  }
+  let mapData = ApplyTexture(obj);
   let object = new THREE.Object3D();
   if(!_.isEmpty(obj)){
     object.position.set(pos.x, pos.y, pos.z);
     object.rotation.set(rot._x, rot._y, rot._z);
     object.scale.set(sca.x, sca.y, sca.z);  
   }
+  let material = new THREE.MeshStandardMaterial({
+    color: obj.hashColor
+      ? parseInt(obj.hashColor.replace(/^#/, ""), 16)
+      : 0xef2d5e,
+    map: mapData,
+    metalness: obj?obj.children[0].material.metalness:0,
+    roughness: obj?obj.children[0].material.roughness:1,
+    opacity:  obj?obj.children[0].material.opacity:1,
+    transparent:  obj?obj.children[0].material.transparent:false
+
+  });
   switch (type) {
     case "box":
-      let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
-      let material = new THREE.MeshPhongMaterial({
-        color: obj.hashColor
-          ? parseInt(obj.hashColor.replace(/^#/, ""), 16)
-          : 0xef2d5e,
-        map: mapData
-      });
+      const geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
       object["objName"] = "Cube";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "box";
@@ -334,47 +421,32 @@ const AddGroupObj = (
       object.children[0].receiveShadow = obj.children?obj.children[0].receiveShadow:false;
       object.children[0].castShadow = obj.children?obj.children[0].castShadow:false;
       return object;
-      break;
     case "sphere":
       let geometrySphere = new THREE.SphereBufferGeometry(1, 32, 32);
-      let materialSphere = new THREE.MeshPhongMaterial({
-        color: obj.hashColor
-          ? parseInt(obj.hashColor.replace(/^#/, ""), 16)
-          : 0xef2d5e,
-        map: mapData
-      });
       object["objName"] = "Sphere";
       object["objType"] = "Mesh";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
       object["objPrimitive"] = "sphere";
-      object.add(new THREE.Mesh(geometrySphere, materialSphere));
+      object.add(new THREE.Mesh(geometrySphere, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
-      break;
     case "plane":
       let geometryPlane = new THREE.PlaneBufferGeometry(1, 1, 32, 32);
-      let materialPlane = new THREE.MeshPhongMaterial({
-        color: obj.hashColor
-          ? parseInt(obj.hashColor.replace(/^#/, ""), 16)
-          : 0xef2d5e,
-        map: mapData
-      });
       object["objName"] = "Plane";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "plane";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
-      object.add(new THREE.Mesh(geometryPlane, materialPlane));
+      object.add(new THREE.Mesh(geometryPlane, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
-      break;
     case "sky":
       let skygeometry = new THREE.SphereBufferGeometry(5000, 64, 32);
       let skymaterial = new THREE.MeshBasicMaterial({
@@ -395,7 +467,6 @@ const AddGroupObj = (
       object.children[0].receiveShadow = obj.children[0].receiveShadow;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
-      break;
     case "3DModel":
       object["objName"] = "3DModel";
       object["objType"] = "Mesh";
@@ -408,7 +479,6 @@ const AddGroupObj = (
         modelLoader(object,object.objModel);
       }
       return object;
-      break;
     case "point":
       object["objName"] = "PointLight";
       object["objType"] = "Light";
@@ -420,7 +490,6 @@ const AddGroupObj = (
       object.receiveShadow = obj.receiveShadow;
       scene.add(object);
       return object;
-      break;
     case "spot":
       object["objName"] = "SpotLight";
       object["objType"] = "Light";
@@ -437,7 +506,6 @@ const AddGroupObj = (
       object.add(spotlight);
       scene.add(object);
       return object;
-      break;
     case "hemisphere":
       let groundColor = 0xffffff;
       let intensity = 2;
@@ -453,7 +521,6 @@ const AddGroupObj = (
       object.add(hemispherelight);
       scene.add(object);
       return object;
-      break;
     case "directional":
       let directionalintensity = 0.5;
       object["objName"] = "DirectionalLight";
@@ -467,9 +534,41 @@ const AddGroupObj = (
       object.add(lightdirectional);
       scene.add(object);
       return object;
-      break;
+    case "ambient":
+        object["objName"] = "AmbientLight";
+        object["objType"] = "Light";
+        object["objPrimitive"] = "ambient";
+        object["hashColor"] = "#ffffff";  
+        var ambientlight = new THREE.AmbientLight( obj.hashColor ); 
+        object.add(ambientlight);
+        scene.add(object);
+        return object;
+    case 'text':
+        const testFont = new THREE.Font(helvetikerBold)
+        const textgeometry = new THREE.TextBufferGeometry( 'Hello three.js!', {
+          font: testFont,
+          size: 90,
+          height: 1,
+          curveSegments: 12,
+          bevelEnabled: true,
+          bevelThickness: 1,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
+        } );
+        object = new THREE.Object3D();
+        object.add(new THREE.Mesh(textgeometry, material));
+        object["objName"] = "Text";
+        object["objType"] = "Mesh";
+        object["objPrimitive"] = "text";
+        object["hashColor"] = "#ceecf0";
+        scene.add(object);
+        object.position.set(pos.x, pos.y, pos.z);
+        object.rotation._x = rot.x;
+        object.rotation._y = rot.y;
+        object.rotation._z = rot.z;      
+        return object;
     default:
-      break;
   }
 };
 
@@ -482,7 +581,9 @@ export {
   AddSpotLight,
   AddHemisphereLight,
   AddDirectionalLight,
+  AddAmbientLight,
   AddSky,
   AddModel,
-  AddGroupObj
+  AddGroupObj,
+  AddText
 };

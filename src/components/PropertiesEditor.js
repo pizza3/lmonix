@@ -11,6 +11,7 @@ import Model from './Properties/Model'
 import Intensity from './Properties/Intensity'
 import Opacity from './Properties/Opacity';
 import Transparent from './Properties/Transparent';
+import Material from './Properties/Material';
 export default class PropertiesEditor extends Component{
     checkColor = () => {        
         if(this.props.objPresent.length>0){
@@ -58,11 +59,14 @@ export default class PropertiesEditor extends Component{
                 <Transform {...this.props}/>
                 <Section>
                 {!isLight?
+                <Material  {...this.props}/>:null
+                }
+                {!isLight?
                 <Texture {...this.props}/>:null
                 }
-                {/* {isColor?
+                {isColor?
                 <ColorPicker {...this.props}/>:null
-                } */}
+                } 
                 {isHemisphere?
                 <GroundColor {...this.props}/>
                 :null}

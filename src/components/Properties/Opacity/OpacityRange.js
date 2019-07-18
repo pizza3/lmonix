@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import _ from 'lodash'
 
 export default class OpacityRange extends Component{
     state={
@@ -10,7 +11,7 @@ export default class OpacityRange extends Component{
         })
     }
     componentDidUpdate(prevProps){
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){
             this.setState({
                 value:this.props.active.children[0].material.opacity
             })  

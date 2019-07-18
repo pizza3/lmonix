@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import styled from 'styled-components'
-import {AddSky}  from '../AddModel';
+import {AddSky, AddText}  from '../AddModel';
 
 export default class MenuDropdown extends Component{
     addModel = (obj) => {
@@ -12,6 +12,7 @@ export default class MenuDropdown extends Component{
         return(
             <Container>
                <ObjButton style={{width:'100%'}} onClick={()=>{this.addModel(AddSky(scene))}}>Sky</ObjButton>
+               <ObjButton style={{width:'100%'}} onClick={()=>{this.addModel(AddText(scene))}}>Text</ObjButton>
             </Container>
         )
     }

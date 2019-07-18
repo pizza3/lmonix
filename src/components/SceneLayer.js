@@ -1,27 +1,26 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import SceneTreeContainer from "./SceneTreeContainer";
+import SceneTree from "./SceneGraph/SceneTree";
 import _ from "lodash";
 
 export default class SceneLayer extends Component {
   renderSceneLayer = (objArr,num) => {
-    return objArr.map((obj, i) => {
+    return _.map(objArr,(obj, i) => {
       return (
         <>
         {!(i===0&&num>0)?
         <>
-          <SceneTreeContainer
+          <SceneTree
           key={`${num}${i}`}
           num={`${num}${i}`}
           name={obj.objName}
           obj={obj}
-          active={`${num}${i}` === this.props.activeObj ? true : false}
           {...this.props}
           objPresent={objArr}
           layer={num}
-        >
+          >
             {this.renderSceneLayer(obj.children,num+1)}
-        </SceneTreeContainer>
+          </SceneTree>
         </>
         :[]}
         </>
@@ -29,6 +28,7 @@ export default class SceneLayer extends Component {
     });
   };
   render() {      
+    const children = this.props.scene?this.props.scene.children.slice(3):[]
     return (
       <SceneGraphContainer>
         <SceneGraphTitle>Scene</SceneGraphTitle>

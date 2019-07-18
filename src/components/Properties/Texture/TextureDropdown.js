@@ -49,6 +49,9 @@ export default class MenuDropdown extends Component {
         name: this.props.assetStack[i].name.replace(/[\W_]+/g, "")
 
       }
+      const point = new THREE.Vector2( 0.5, 0.5 );
+      texture.center=point
+      texture.rotation=3.14
       this.props.changeObjectProp(texture,'map','material')
       this.props.changeObjectProp(true,'needsUpdate','material')
       this.props.changeObjectProp(objTexture,'objTexture')

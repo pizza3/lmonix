@@ -4,7 +4,7 @@ import VrRenderer from "./components/CodeEditor";
 import SceneEditor from "./components/SceneEditor";
 // import Code from './components/Code';
 import _ from "lodash";
-import { AddGroupObj } from "./components/MenuBar/AddModel";
+import { AddGroupObj, ApplyTexture } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
 import * as THREE from "./components/ThreeLibManager";
 import  TransformControls from "./components/Transform";
@@ -28,7 +28,12 @@ class App extends Component {
     activeScript: "js",
     loaded:false,
     active:null,
-    activeKey:null
+    activeKey:null,
+    activeDrilldown:{},
+    addedActiveKey:[],
+    activeStack:[],
+    copyObj:null,
+    editState:[]
   };
   objPresent = [];
   componentDidMount() {
@@ -55,6 +60,7 @@ class App extends Component {
             this.objPresent = data;
             this.setState(
               {
+                // isDefaultLights: 
                 active:data[0],
                 objPresent: data,
                 activeObj: '00',
@@ -64,6 +70,7 @@ class App extends Component {
                 this.transformControls.attach(
                   this.objPresent[this.state.activeObj]
                 );
+                this.active=data[0]
                 this.scene.add(this.transformControls);
               }
             );
@@ -74,23 +81,19 @@ class App extends Component {
             });
             break;
           case "addGroupObj":
-            let datas = this.state.objPresent;
             let a = 
-            // AddCubeGroup(this.state.active);
               AddGroupObj(
               {},
               val['obj'],
               this.active,
             );
-            // datas.push(a);
-            // this.setState({
-            //   active:
-            // });
+            this.updateActiveDrilldown(this.active.uuid,true)
             this.active=a
             this.setState({
               active:a,
 
             })
+            this.updateActiveDrilldown()
             break;
           case "setAssetStack":
             this.setState({
@@ -112,6 +115,28 @@ class App extends Component {
               localIP: val["ip"]
             });
             break;
+          case "deleteObj":
+              const { objPresent }=this.state
+              const parent = this.active.parent
+              this.active.parent.remove(this.active)
+              this.setActiveObj(parent) 
+              // add case when top layer scene objs removed
+              break;
+          case "copyObj":
+            const keys = _.keys(this.active)
+            const keysList = _.filter(keys,(val)=>val.substr(0,3)==="obj")
+            // let copy = this.active.clone()
+            let copy = this.active
+            keysList.forEach((val)=>{
+              copy[val]=this.active[val]
+            })
+            this.setState({
+              copyObj:this.active
+            })
+            break;
+          case "pasteObj":
+              this.reloadProject3D(this.state.copyObj,this.active)            
+              break;
           default:
             console.log("default");
             break;
@@ -127,16 +152,17 @@ class App extends Component {
       code: val
     });
   };
-  addInScene = obj => {
+  addInScene = obj => {    
     const activeObj = this.state.objPresent.length;
     this.objPresent.push(obj);
     this.active=obj
+    const {activeStack}=this.state
     this.setState(
       {
         activeObj,
         active:obj,
-        activeKey:`0${activeObj}`,
-        objPresent:this.objPresent
+        objPresent:this.objPresent,
+        activeStack:[...activeStack,obj]
       },
       () => {
         this.transformControls.attach(
@@ -164,19 +190,34 @@ class App extends Component {
     });
     return objData
   }
-  setActiveObj = (activeObj,obj) => {
-    this.active=obj
+  reloadProject3D = (data,parent)=>{
+    let newParent = AddGroupObj(
+        data,
+        data.objPrimitive,
+        parent,
+        data.position,
+        data.rotation,
+        data.scale
+      );
+      if(data.children.length>=2){
+        _.forEach(data.children,(val,i)=>{
+          if(i!==0){
+            this.reloadProject3D(data.children[i],newParent)
+          }
+        })
+      }
+  }
+  setActiveObj = (obj) => {
+    this.active=obj    
     this.setState(
       {
-        activeObj,
-        activeKey:activeObj,
         active:obj
       },
       () => {
         this.transformControls.attach(obj
         );
         this.scene.add(this.transformControls);
-        document.getElementById("obj" + this.state.activeKey).addEventListener(
+        document.getElementById("obj" + obj.uuid).addEventListener(
           "contextmenu",
           function(e) {
             electron.ipcRenderer.send("show-context-menu", {
@@ -250,6 +291,7 @@ class App extends Component {
     //default lights which are present in the aframe scene
     this.ambientLight = new THREE.AmbientLight(0xbbbbbb, 1);
     this.ambientLight.visible = visible;
+    this.ambientLight.intensity = 1;
     this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
     this.directionalLight.position.set(-0.5, 1, 1);
     this.directionalLight.castShadow = true;
@@ -328,6 +370,27 @@ class App extends Component {
     });
   };
 
+  updateActiveDrilldown=(obj,bool)=>{
+    const {activeDrilldown}=this.state
+    this.setState({
+      activeDrilldown:{
+        ...activeDrilldown,
+        [obj]:bool
+      }
+    })
+  }
+
+  setMaterial = (material)=>{
+    const mapData = ApplyTexture(this.active)
+    const newMaterial = new THREE[material]({
+      color: this.active.children[0].material.color,
+      map: mapData,
+      transparent:this.active.children[0].material.transparent,
+      opacity:this.active.children[0].material.opacity
+    });
+    this.active.children[0].material = newMaterial
+  }
+
   changeObjectProp = (value, prop, option) => {    
     switch (option) {
       case "transform":
@@ -342,11 +405,13 @@ class App extends Component {
         ] = value;
         break;
       case "colorMaterial":
-        let hex = parseInt(value.replace(/^#/, ""), 16);
-        this.active.children[0].material[prop].setHex(
-          hex
-        );
-        this.active.hashColor = value;
+        if(this.active){
+          let hex = parseInt(value.replace(/^#/, ""), 16);
+          this.active.children[0].material[prop].setHex(
+            hex
+          );
+          this.active.hashColor = value;
+        }
         break;
       case "colorLight":
         let lighthex = parseInt(value.replace(/^#/, ""), 16);
@@ -389,6 +454,8 @@ class App extends Component {
                 changeObjectProp={this.changeObjectProp}
                 setController={this.setController}
                 transformControls={this.transformControls}
+                updateActiveDrilldown={this.updateActiveDrilldown}
+                setMaterial={this.setMaterial}
               />
             </ThreeContext.Provider>
           )}

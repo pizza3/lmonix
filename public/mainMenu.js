@@ -112,84 +112,159 @@ function SetPopMenu(mainWindow, win) {
   const menu = new Menu();
   this.objNum = 0;
   menu.append(
-    new MenuItem({
-      label: "Add To Group",
-      submenu: [
-        {
-          label: "Cube",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "box"
-            });
+    new MenuItem(
+      {
+        label: "Add To Group",
+        submenu: [
+          {
+            label: "Cube",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "box"
+              });
+            }
+          },
+          {
+            label: "Sphere",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "sphere"
+              });
+            }
+          },
+          {
+            label: "Plane",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "plane"
+              });
+            }
+          },
+          {
+            type: "separator"
+          },
+          {
+            label: "Surface",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "plane"
+              });
+            }
+          },
+          {
+            label: "Sky",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "sky"
+              });
+            }
+          },
+          {
+            type: "separator"
+          },
+          {
+            label: "Point Light",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "point"
+              });
+            }
+          },
+          {
+            label: "Spot Light",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "spot"
+              });
+            }
+          },
+          {
+            type: "separator"
+          },
+          {
+            label: "3D Object",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "3DModel"
+              });
+            }
           }
-        },
-        {
-          label: "Sphere",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "sphere"
-            });
-          }
-        },
-        {
-          type: "separator"
-        },
-        {
-          label: "Surface",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "plane"
-            });
-          }
-        },
-        {
-          label: "Sky",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "sky"
-            });
-          }
-        },
-        {
-          type: "separator"
-        },
-        {
-          label: "Point Light",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "point"
-            });
-          }
-        },
-        {
-          label: "Spot Light",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "spot"
-            });
-          }
-        },
-        {
-          type: "separator"
-        },
-        {
-          label: "3D Object",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "3DModel"
-            });
-          }
-        }
-      ]
-    })
+        ]
+      },
+    )
   );
+  menu.append(
+    new MenuItem(
+      {
+        type: "separator"
+      }
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        label: "Rename",
+      },
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        type: "separator"
+      }
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        label: "Copy",
+        click:function() {
+          mainWindow.webContents.send("ipcRenderer", {
+            option: "copyObj",
+          });
+        }
+      },
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        label: "Paste",
+        click:function() {
+          mainWindow.webContents.send("ipcRenderer", {
+            option: "pasteObj",
+          });
+        }
+      },
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        type: "separator"
+      }
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        label: "Delete",
+        click:function() {
+          mainWindow.webContents.send("ipcRenderer", {
+            option: "deleteObj",
+          });
+        }
+      },
+    )
+  )
   mainWindow.on("context-menu", (e, params) => {
     menu.popup(win, params.x, params.y);
   });
@@ -205,26 +280,29 @@ function SetPopMenu(mainWindow, win) {
   });
 
   ipcMain.on("startlocal", (event, arg) => {
-    const expressapp = express()
+    const expressapp = express();
     const { location } = arg;
     const PORT = 9999;
-    const indexFile = () => fs.readFileSync( location + '/index.html');
-    const jsFile = () => fs.readFileSync( location + '/scripts/index.js');
+    const indexFile = () => fs.readFileSync(location + "/index.html");
+    const jsFile = () => fs.readFileSync(location + "/scripts/index.js");
     // html file
-      expressapp.get('/', (req, res) => {
-        res.setHeader('Content-Type', 'text/html')
-        res.send(indexFile())
-      })
+    expressapp.get("/", (req, res) => {
+      res.setHeader("Content-Type", "text/html");
+      res.send(indexFile());
+    });
     // js file
-      expressapp.get('/scripts/index.js', (req, res) => {
-        res.setHeader('Content-Type', 'text/javascript');
-        res.send(jsFile());
-       });
+    expressapp.get("/scripts/index.js", (req, res) => {
+      res.setHeader("Content-Type", "text/javascript");
+      res.send(jsFile());
+    });
     // asset file
-      expressapp.use('/Assets',express.static(location+'/Assets'))
-    ;(async () => {
-      expressapp.listen(PORT, () => console.log(`App listening on port ${PORT}!`))      
-   })()
+    expressapp.use("/Assets", express.static(location + "/Assets"));
+    // start local server
+    (async () => {
+      expressapp.listen(PORT, () =>
+        console.log(`App listening on port ${PORT}!`)
+      );
+    })();
     let ip = "";
     var networkInterfaces = Object.values(os.networkInterfaces())
       .reduce((r, a) => {

@@ -2,7 +2,7 @@ import React ,{Component} from 'react';
 import styled from 'styled-components';
 import Trigger from 'rc-trigger'
 import ColorPickerDropdown from './ColorPickerDropdown'
-
+import _ from 'lodash'
 export default class ColorPicker extends Component{
     state = {
         currentColor:'#fff'
@@ -11,7 +11,7 @@ export default class ColorPicker extends Component{
         this.onChange(this.props.active.hashColor)
     }
     componentDidUpdate(prevProps){        
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){
             this.onChange(this.props.active.hashColor)
         }
     }

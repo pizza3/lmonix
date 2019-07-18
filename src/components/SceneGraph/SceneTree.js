@@ -2,24 +2,37 @@ import React ,{Component} from 'react';
 import styled from 'styled-components';
 import arrowWhite from '../../assets/arrowWhite.svg';
 import arrow from '../../assets/arrow.svg';
-import SceneTreeContainer from '../SceneTreeContainer'
+import _ from 'lodash'
 export default class SceneTree extends Component{
     state={
         isGroup:false,
         showGroup:false
     }
-
     componentDidMount(){
-        
+        const {activeDrilldown,num}=this.props        
+        if(_.isUndefined(activeDrilldown[this.props.obj.uuid])){
+            this.setState({
+                showGroup:false
+            })
+        }
+        else{
+            this.setState({
+                showGroup:activeDrilldown[this.props.obj.uuid]
+            })     
+        }
     }
     showGroup = () => {
+        const {showGroup}=this.state
         this.setState({
-            showGroup:!this.state.showGroup
+            showGroup:!showGroup
+        },()=>{
+            this.props.updateActiveDrilldown(this.props.obj.uuid,!showGroup)
         })
     }
+
     render(){
-        const isActive = this.props.activeKey===this.props.num
-        const {layer }=this.props
+        const {layer, active}=this.props
+        const isActive = this.props.obj.uuid === active.uuid
         const SceneGraphEl = styled.div`
             position:relative;
             width: 100%;
@@ -36,7 +49,7 @@ export default class SceneTree extends Component{
         `
         return(
             <Container>
-                <SceneGraphEl id={'obj'+this.props.num} onClick={()=>{this.props.setActiveObj(this.props.num, this.props.obj)}}>
+                <SceneGraphEl id={'obj'+this.props.obj.uuid} onClick={()=>{this.props.setActiveObj(this.props.obj)}}>
                     {this.props.name}
                     {
                         this.props.obj.children.length>1?

@@ -1,12 +1,13 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
+import _ from 'lodash'
 
 export default class Visible extends Component{
     state = {
         transparent:false
     }
     componentDidUpdate(prevProps){
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){
             if(this.props.objPresent.length>0){
                 let val = this.props.active.children[0].material.transparent || false
                 this.setState({

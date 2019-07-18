@@ -1,5 +1,6 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
+import _ from 'lodash'
 
 export default class CastShadow extends Component{
     state = {
@@ -8,7 +9,7 @@ export default class CastShadow extends Component{
     
     componentDidUpdate(prevProps){
         const {isModel}=this.props
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){
             if(this.props.objPresent.length>0){
                 let val
                 if(isModel){

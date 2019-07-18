@@ -37,7 +37,7 @@ export default class ColorPickerDropdown extends Component{
                 if (y <= 0) {
                     y = 0;
                 } else if (y >= 235) {
-                    y = 235;
+                    y = 234;
                 }
                 this.setState({
                     huePos:{
@@ -49,7 +49,7 @@ export default class ColorPickerDropdown extends Component{
 				let x = this.fixedPos.x + e.clientX - this.state.startColorPos.x;
                 let y = this.fixedPos.y + e.clientY - this.state.startColorPos.y;
                 if (x >= 215) {
-                    x = 215;
+                    x = 214;
                 } else if (x <= 0) {
                     x = 0;
                 }
@@ -74,12 +74,10 @@ export default class ColorPickerDropdown extends Component{
                 dragColor:false
             })
         }.bind(this);
-        console.log(this.props.currentColor);
         this.updateState(this.props.currentColor)
     }
 
     init(){
-        // this.fillGradient('#000000')
         this.fillHueStrip();
     }
 
@@ -119,6 +117,28 @@ export default class ColorPickerDropdown extends Component{
 		this.ctxHue.fillStyle = grd1;
 		this.ctxHue.fill();
     }
+
+    handleColorDown=(e)=>{
+        const {colorPos}=this.state
+        const client = document.getElementById('colorCursor').getBoundingClientRect()        
+       
+        this.setState({
+            dragColor:true,
+            colorPos:{
+                x:colorPos.x+e.clientX-client.x-7,
+                y:colorPos.y+e.clientY-client.y-7
+            },
+            startColorPos:{
+                x:e.clientX,
+                y:e.clientY
+            }
+        })
+        this.fixedPos = {
+            x:colorPos.x+e.clientX-client.x-7,
+            y:colorPos.y+e.clientY-client.y-7,
+        }
+        this.changeColor(colorPos.x+e.clientX-client.x-7, colorPos.y+e.clientY-client.y-7);
+    }
     
     handleColorCursorDown = (e) => {
         this.fixedPos = {
@@ -134,9 +154,28 @@ export default class ColorPickerDropdown extends Component{
         })
     }
 
+    handleHueDown = (e)=>{
+        const {huePos}=this.state
+        const client = document.getElementById('hueCursor').getBoundingClientRect()        
+       
+        this.setState({
+            drag:true,
+            huePos:{
+                y:huePos.y+e.clientY-client.y-4.5
+            },
+            starthuePos:{
+                y:e.clientY
+            }
+        })
+        this.fixedPos = {
+            y:huePos.y+e.clientY-client.y-4.5,
+        }
+        this.changeHue(huePos.y+e.clientY-client.y-4.5)
+    }
+
     handleHueCursorDown = (e) => {
         this.fixedPosHue = {
-            y:this.state.colorPos.y,
+            y:this.state.huePos.y,
         }
         this.setState({
             drag:true,
@@ -267,9 +306,7 @@ export default class ColorPickerDropdown extends Component{
 		return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1);
     }
     
-    updateState(val) {
-        console.log('val',val);
-        
+    updateState(val) {        
         let col;
         col = this.HexToRgb(val);
         let a = this.RgbToHsl(col[0], col[1], col[2]);
@@ -289,8 +326,6 @@ export default class ColorPickerDropdown extends Component{
                 x: (this.heightColor * (hsv[1] * 100)) / 100,
                 y:  (this.widthColor * (-(hsv[2] * 100) + 100)) / 100
             }
-        },()=>{
-            console.log('pos',this.state.colorPos);
         })
         this.currentColorHex = val;
     }
@@ -299,15 +334,17 @@ export default class ColorPickerDropdown extends Component{
         return(
             <Container>
                 <CanvasColorContainer id='color-container'>
-                    <CanvasColor id='color' onMouseDown={this.handleColorCursorDown}/>
+                    <CanvasColor id='color' onMouseDown={this.handleColorDown}/>
                     <ColorCursor style={{
                         background:this.currentColorHex,
                         transform:`translate(${this.state.colorPos.x-7}px,${this.state.colorPos.y-7}px)`
                     }} id='colorCursor' onMouseDown={this.handleColorCursorDown} />
                 </CanvasColorContainer>
                 <CanvasHueContainer id='hue-container'>
-                    <CanvasHue id='hue' onMouseDown={this.handleHueCursorDown}/>
-                    <HueCursor style={{
+                    <CanvasHue id='hue' onMouseDown={this.handleHueDown}/>
+                    <HueCursor
+                    id='hueCursor'
+                    style={{
                         transform:`translate(0px,${this.state.huePos.y-4.5}px)`
                     }} onMouseDown={this.handleHueCursorDown} />
                 </CanvasHueContainer>

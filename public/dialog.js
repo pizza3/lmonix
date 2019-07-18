@@ -129,41 +129,55 @@ function showAddDialog(browserWindow, arg) {
       filters: [{ name: "Images", extensions: arg.filter }]
     },
     filepaths => {
-      const fileName = path.basename(filepaths[0]);
-      fsx.copySync(
-        path.resolve(filepaths[0]),
-        arg.location + "/Assets/" + fileName
-      );
-      fs.readdir(arg.location + "/Assets/", (err, files) => {
-        let fileArr = [];
-        files.forEach(file => {
-          fileArr.push({
-            name: file,
-            path: filepaths[0],
-            ext: path.extname(filepaths[0] + "/Assets/" + file)
+      if(filepaths&&filepaths.length){
+        const fileName = path.basename(filepaths[0]);
+        fsx.copySync(
+          path.resolve(filepaths[0]),
+          arg.location + "/Assets/" + fileName
+        );
+        fs.readdir(arg.location + "/Assets/", (err, files) => {
+          let fileArr = [];
+          files.forEach(file => {
+            fileArr.push({
+              name: file,
+              path: filepaths[0],
+              ext: path.extname(filepaths[0] + "/Assets/" + file)
+            });
+          });
+          fs.writeFile(
+            arg.location + "/index.html",
+            aframeTemplate(fileArr),
+            "utf8",
+            err => {
+              if (err) {
+                dialog.showErrorBox("Save Failed", err.message);
+              }
+            }
+          );
+          browserWindow.webContents.send("ipcRenderer", {
+            option: "setAssetStack",
+            assets: fileArr
           });
         });
-        fs.writeFile(
-          arg.location + "/index.html",
-          aframeTemplate(fileArr),
-          "utf8",
-          err => {
-            if (err) {
-              dialog.showErrorBox("Save Failed", err.message);
-            }
-          }
-        );
-        browserWindow.webContents.send("ipcRenderer", {
-          option: "setAssetStack",
-          assets: fileArr
-        });
-      });
+      }
     }
   );
 }
 
 function saveState(threeData, browserWindow) {
   if (threeData.location === "/code") {
+    fs.writeFile(
+      threeData.state.title + "/scripts/index.js",
+      threeData.state.code,
+      "utf8",
+      err => {
+        if (err) {
+          dialog.showErrorBox("Save Failed", err.message);
+        }
+      }
+    );
+    browserWindow.webContents.send("updateVRView");
+  } else {
     fs.writeFile(
       threeData.state.title + "/index.html",
       aframeTemplate(
@@ -179,18 +193,6 @@ function saveState(threeData, browserWindow) {
         }
       }
     );
-    fs.writeFile(
-      threeData.state.title + "/scripts/index.js",
-      threeData.state.code,
-      "utf8",
-      err => {
-        if (err) {
-          dialog.showErrorBox("Save Failed", err.message);
-        }
-      }
-    );
-    browserWindow.webContents.send("updateVRView");
-  } else {
     let data = JSON.stringify(threeData);
     fs.writeFile(threeData.state.title + "/data.json", data, "utf8", err => {
       if (err) {
@@ -297,7 +299,7 @@ function aframeTemplate(assetArr, sceneArr, isCursor, isDefaultLights = true) {
                 <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
             </head>
             <body>
-                <a-scene light="defaultLightsEnabled: ${isDefaultLights}">
+                <a-scene>
                     <a-camera>
                         ${isCursor?`<a-cursor></a-cursor>`:``}
                     </a-camera>

@@ -19,6 +19,10 @@ const textureLoader = (path)=>{
             console.log( 'An error happened' );
         }
     );
+    const point = new THREE.Vector2( 0.5, 0.5 );
+    texture.center=point
+    texture.rotation=3.14
+    // texture.flipY=false
     return texture
 }
 
