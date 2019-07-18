@@ -324,15 +324,18 @@ function SetPopMenu(mainWindow, win) {
   });
 
   ipcMain.on("addModel", (event, arg) => {
-    // localServer.close()
-    const path = `${arg.title}/Assets/${arg.name}.obj`;
-    const writer = fs.createWriteStream(path);
-    // let fileArr = [];
+    const objPath = `${arg.title}/Assets/${arg.name}.obj`;
+    const writer = fs.createWriteStream(objPath);
     https.get(arg.obj.root.url, function(response) {
       response.pipe(writer);
+      writer.on('end', function() {
+        console.log('Downloaded successfully');
+        
+        // response.end({"status":"Completed"});
+      });
     });
-    const path2 = `${arg.title}/Assets/${arg.name}.mtl`;
-    const writer2 = fs.createWriteStream(path2);
+    const mtlPath = `${arg.title}/Assets/${arg.name}.mtl`;
+    const writer2 = fs.createWriteStream(mtlPath);
     https.get(arg.obj.resources[0].url, function(response) {
       response.pipe(writer2);
     });

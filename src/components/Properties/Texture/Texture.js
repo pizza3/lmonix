@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Trigger from 'rc-trigger'
 import TextureDropdown from './TextureDropdown'
 import Cross from '../../../assets/cross.svg'
+import _ from 'lodash'
 export default class Texture extends Component{
     state = {
         currentTexture:'Add Texture',
@@ -19,7 +20,7 @@ export default class Texture extends Component{
     }
 
     componentDidUpdate(prevProps){
-        if(prevProps.activeObj!==this.props.activeObj){
+        if(!_.isEqual(prevProps.active,this.props.active)){            
             if(this.props.active&&this.props.active.objTexture&&this.props.active.objTexture.name){
                 this.setState({
                     isTexture:true,

@@ -1,21 +1,23 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import {getPolyData} from './api'
+import _ from 'lodash'
 const https = window.require('https');
 const fs = window.require('fs');
 const electron =  window.require('electron');
 
 export default class Poly extends Component{
-
     state={
         value:'car',
-        data:[]
+        data:[],
+        loaded:false
     }
     componentDidMount(){
         getPolyData(this.state.value).then(obj => {
             let data = obj.assets
             this.setState({
-                data
+                data,
+                loaded:true
             })            
         })
     }
@@ -29,26 +31,31 @@ export default class Poly extends Component{
     handleSubmit=(e)=>{
         e.preventDefault();
         getPolyData(this.state.value).then(obj => {
-            let data = obj.assets
-            this.setState({
-                data
-            })
+            if(_.isEmpty(obj)){
+                this.setState({
+                    data:[]
+                })
+            }else{
+                const data = obj.assets
+                this.setState({
+                    data
+                })
+            }
         })
     }
-    handleAddModel=(data)=>{
-        console.log(this.props);
-        
+    handleAddModel=(data)=>{        
         const {title}=this.props
         let file
         data.formats.forEach((obj,i) => {
             if(obj.formatType='OBJ'){
                 console.log(data);
-                electron.ipcRenderer.send("addModel",{title:this.props.title, obj:obj, name:data.displayName.replace(/\s/g, '')})
+                electron.ipcRenderer.send("addModel",{title, obj, name:data.displayName.replace(/\s/g, '')})
             }
         })
     }
     render(){
-        let images = this.state.data.map((val,i)=>{
+        const {loaded, data}=this.state
+        const images = data.map((val,i)=>{
             return (
                 <ImgCont key={i}>
                  <Img key={i} src={val.thumbnail.url}/>
@@ -56,6 +63,7 @@ export default class Poly extends Component{
                 </ImgCont>
             )
         })
+        const message = <Message>Sorry can't find any object's.</Message>
         return(
             <Container>
                 <InputContainer>
@@ -64,7 +72,7 @@ export default class Poly extends Component{
                     </form>
                 </InputContainer>
                 <ImgContainer>
-                    {images}
+                    {loaded?images.length?images:message:<div className="loader"></div>}
                 </ImgContainer>
             </Container>
         )
@@ -129,4 +137,12 @@ const Add = styled.button`
     border: 1px solid #68a2ff;
     color: #fff;
     border-radius: 50%;
+    font-size: 22px;
+`
+
+const Message = styled.div`
+    text-align: center;
+    font-weight: 700;
+    top: 73px;
+    position: relative;
 `
