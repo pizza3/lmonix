@@ -1,37 +1,36 @@
-import * as THREE from '../ThreeLibManager';
-const Loader = new THREE.OBJLoader();
-const fs = window.require("fs");
+import * as THREE from "../ThreeLibManager";
+const mtlLoader = new THREE.MTLLoader();
+const objLoader = new THREE.OBJLoader();
+// const fs = window.require("fs");
 
-const modelLoader = (threeDobj,obj)=>{
-    console.log('obj',obj);
-    
-    let data = "data:video/webm;base64,"+fs.readFileSync(obj.path).toString('base64')
-    // load a resource
-    Loader.load(
-        // resource URL
-        data,
-        // called when resource is loaded
-        function ( object ) {
-            threeDobj.add(object)
-            obj = {
-                type: '.obj',
-                path: obj.path,
-                name:obj.path.name.replace(/[\W_]+/g,"")
-            }
-        },
-        // called when loading is in progresses
-        function ( xhr ) {
+const modelLoader = async (threeDobj, obj) => {
+  mtlLoader.setPath("http://localhost:8000");
+  console.log(obj);
+  const newName = obj.name.replace("obj", ".obj");
+  const url = newName.replace("obj", "mtl");
+  let finalObject
+    mtlLoader.load("/Assets/" + url, function(materials) {
+    materials.preload();
+    objLoader.setMaterials(materials);
+    objLoader.setPath("http://localhost:8000");
+    objLoader.load(
+      "/Assets/" + newName,
+      function(object) {
+        threeDobj.add(object);
+        // finalObject = object
+      },
+      function(xhr) {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      // called when loading has errors
+      function(error) {
+        console.log("An error happened");
+      }
+    );
+  });
+  console.log(finalObject);
+  
+//   return finalObject
+};
 
-            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-        },
-        // called when loading has errors
-        function ( error ) {
-
-            console.log( 'An error happened' );
-
-        }
-    );      
-}
-
-export default modelLoader
+export default modelLoader;

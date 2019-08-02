@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Trigger from 'rc-trigger'
 import ColorPickerDropdown from './ColorPickerDropdown'
 import _ from 'lodash'
+const element = document.getElementById('properties-scroll')
 export default class ColorPicker extends Component{
     state = {
         currentColor:'#fff'
@@ -37,6 +38,7 @@ export default class ColorPicker extends Component{
                         offset: [-345, -30],
                     }}
                     destroyPopupOnHide={true}    
+                    // getPopupContainer={()=>document.getElementById('properties-scroll')}
                 >
                     <Input style={{background:this.state.currentColor}}>
                     </Input>

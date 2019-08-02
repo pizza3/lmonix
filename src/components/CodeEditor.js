@@ -3,55 +3,201 @@ import styled from "styled-components";
 import CodeMirror from "react-codemirror";
 import VrPreview from "./CodeEditor/VrPreview";
 import JsMirror from "./CodeEditor/JsMirror";
+import SceneLayer from "./SceneGraph/SceneLayer";
+import Animate from "./Animate/index";
+import { eye, code } from "../assets/icon";
+import Trigger from "rc-trigger";
 import "codemirror/mode/javascript/javascript.js";
-import "codemirror/mode/htmlembedded/htmlembedded"
-const electron = window.require("electron");
+import "codemirror/mode/htmlembedded/htmlembedded";
+
+const optionshtml = {
+  mode: "text/html",
+  indentUnit: 4,
+  lineNumbers: true,
+  matchBrackets: true
+};
 export default class VrRenderer extends Component {
   state = {
-    showJs: true,
+    tabName: 0
   };
-  handleActiveTab = (val) => {
+  handleActiveTab = val => {
     this.setState((state, props) => {
       return {
-        showJs:val
+        tabName: val
       };
     });
   };
-  render() {
-    const {showJs}=this.state
-    const optionshtml = {
-      mode: "text/html",
-      indentUnit: 4,
-      lineNumbers: true,
-      matchBrackets: true
-    };
-    return (
-      <div>
-        <Container id="container">
-          <FileTabs>
-            <Tabs active={!showJs?'#2F79EF':'transparent'} color={!showJs?'#fff':'#797979'} onClick={()=>{this.handleActiveTab(false)}}>index.html</Tabs>
-            <Tabs active={showJs?'#2F79EF':'transparent'} color={showJs?'#fff':'#797979'} onClick={()=>{this.handleActiveTab(true)}}>script.js</Tabs>
-          </FileTabs>
-          {showJs ? (
+  returnActiveTab = tabname => {
+    switch (tabname) {
+      case "animate":
+        return <Animate animate={this.props.animate} />;
+      case "js":
+        return (
+          <JsMirror value={this.props.code} onChange={this.props.updateCode} />
+        );
+      default:
+        return <Animate />;
+    }
+  };
+  showEditor = () => {
+    const { tabName } = this.state;
+    if (tabName === 1) {
+      return (
+        <>
+          <div style={{ float: "left", width: "50%", height:'100%' }}>
+            <VrPreview
+              title={this.props.title}
+              objPresent={this.props.objPresent}
+              assetStack={this.props.assetStack}
+              animate={this.props.animate}
+            />
+          </div>
+          <div style={{ float: "left", width: "50%" }}>
             <JsMirror
               value={this.props.code}
               onChange={this.props.updateCode}
             />
-          ) : (
-            <CodeOverlay>
-            <CodeMirror value={this.props.htmlCode} options={optionshtml} />
-            </CodeOverlay>
-          )}
+          </div>
+        </>
+      );
+    } else if (tabName === 2) {
+      return (
+        <JsMirror value={this.props.code} onChange={this.props.updateCode} />
+      );
+    }
+    return (
+      <VrPreview
+        title={this.props.title}
+        objPresent={this.props.objPresent}
+        assetStack={this.props.assetStack}
+        animate={this.props.animate}
+      />
+    );
+  };
+  render() {
+    const { tabName } = this.state;
+    // const activeTab = this.returnActiveTab(tabName);
+    const editor = this.showEditor()
+    return (
+      <div>
+        <SceneLayerContainer>
+          <SceneLayer objPresent={this.props.objPresent} />
+        </SceneLayerContainer>
+        <Container>
+          <EditorContainer id="container">
+            <FileTabs>
+              <TabsContainer>
+                <Trigger
+                  action={["hover"]}
+                  popup={
+                    <TooltipBody>
+                      <TooltipOverlay />
+                      <TooltipText>Render</TooltipText>
+                    </TooltipBody>
+                  }
+                  prefixCls="dropdown"
+                  popupAlign={{
+                    points: ["tc", "bc"],
+                    offset: [0, 10]
+                  }}
+                >
+                  <Tabs
+                    background={tabName === 0 ? "#2F79EF" : "#cecece"}
+                    onClick={() => {
+                      this.handleActiveTab(0);
+                    }}
+                  >
+                    <TabIcon
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      {eye(tabName === 0 ? "#ffffff" : "#6a6a6a")}
+                    </TabIcon>
+                  </Tabs>
+                </Trigger>
+                <Trigger
+                  action={["hover"]}
+                  popup={
+                    <TooltipBody>
+                      <TooltipOverlay />
+                      <TooltipText>Render | Script</TooltipText>
+                    </TooltipBody>
+                  }
+                  prefixCls="dropdown"
+                  popupAlign={{
+                    points: ["tc", "bc"],
+                    offset: [0, 10]
+                  }}
+                >
+                  <TabsCenter
+                    background={tabName === 1 ? "#2F79EF" : "#cecece"}
+                    onClick={() => {
+                      this.handleActiveTab(1);
+                    }}
+                  >
+                    <TabCenterIcon
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      {eye(tabName === 1 ? "#ffffff" : "#6a6a6a")}
+                    </TabCenterIcon>
+                    <TabsCenterSeperator />
+                    <TabCenterIcon
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      {code(tabName === 1 ? "#ffffff" : "#6a6a6a")}
+                    </TabCenterIcon>
+                  </TabsCenter>
+                </Trigger>
+                <Trigger
+                  action={["hover"]}
+                  popup={
+                    <TooltipBody>
+                      <TooltipOverlay />
+                      <TooltipText>Script</TooltipText>
+                    </TooltipBody>
+                  }
+                  prefixCls="dropdown"
+                  popupAlign={{
+                    points: ["tc", "bc"],
+                    offset: [0, 10]
+                  }}
+                >
+                  <Tabs
+                    background={tabName === 2 ? "#2F79EF" : "#cecece"}
+                    onClick={() => {
+                      this.handleActiveTab(2);
+                    }}
+                  >
+                    <TabIcon
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      {code(tabName === 2 ? "#ffffff" : "#6a6a6a")}
+                    </TabIcon>
+                  </Tabs>
+                </Trigger>
+              </TabsContainer>
+            </FileTabs>
+            {editor}
+          </EditorContainer>
         </Container>
-        <VrPreview title={this.props.title} />        
+        <Animate animate={this.props.animate} />
       </div>
     );
   }
 }
 
-const Container = styled.div`
+const SceneLayerContainer = styled.div`
   height: calc(100vh - 37px);
-  width: 50%;
+  margin-top: 37px;
+  float: left;
+`;
+
+const EditorContainer = styled.div`
+  height: calc(100vh - 37px);
+  width: 100%;
   margin-top: 37px;
   float: left;
   border-right: 2px solid #e0e0e0;
@@ -60,25 +206,98 @@ const Container = styled.div`
 const CodeOverlay = styled.div`
   height: calc(100vh - 68px);
   width: 100%;
-`
+`;
 
 const FileTabs = styled.div`
   width: 100%;
   border-bottom: 2px solid #e0e0e0;
-  height: 30px;
+  height: 35px;
   background: #f7f7f7;
+  padding-top: 4px;
+  text-align: -webkit-center;
+`;
+
+const TabsContainer = styled.div`
+  position: relative;
+  width: 174px;
+  height: 28px;
 `;
 
 const Tabs = styled.div`
-  height: 100%;
-  border-right: 2px solid #e0e0e0;
+  height: 26px;
+  width: 41px;
   float: left;
-  font-size: 11px;
-  color: ${props=>props.color};
-  padding: 7px 8px 0px 8px;
   cursor: pointer;
-  background:${props=>props.active}
-  /* &:hover {
-    background: #e0e0e0;
-  } */
+  border-radius: 3px;
+  background: ${props => props.background};
+  text-align: center;
+  padding-top: 3px;
+`;
+
+const TabsCenter = styled.div`
+  height: 26px;
+  width: 60px;
+  float: left;
+  cursor: pointer;
+  border-radius: 3px;
+  background: ${props => props.background};
+  text-align: center;
+  padding-top: 3px;
+  margin: 0px 16px 0px 16px;
+  padding-left: 5px;
+`;
+
+const TabsCenterSeperator = styled.div`
+  position: relative;
+  width: 2px;
+  height: 20px;
+  float: left;
+  border-radius: 5px;
+  background: #c7c7c7;
+  margin: 0px 3px 0px 5px;
+`;
+
+const TabCenterIcon = styled.svg`
+  width: 20px;
+  float: left;
+`;
+
+const TabIcon = styled.svg`
+  width: 20px;
+`;
+
+const Container = styled.div`
+  position: relative;
+  float: left;
+  width: calc(100% - 422px);
+  height: 100%;
+`;
+
+const TooltipBody = styled.div`
+  width: auto;
+  height: auto;
+  padding: 7px;
+  box-sizing: content-box;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  font-weight: 600;
+  font-size: 10px;
+`;
+
+const TooltipOverlay = styled.div`
+  background: #000;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  left: 0%;
+  top: 0%;
+  z-index: -1;
+`;
+
+const TooltipText = styled.div`
+  z-index: 1;
+  color: white;
+  position: relative;
 `;

@@ -1,46 +1,38 @@
 
 const electron = require('electron');
 const app = electron.app;
-const protocol = electron.protocol;
 const BrowserWindow = electron.BrowserWindow;
-const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-const path = require('path');
 const isDev = require('electron-is-dev');
+// const { default: installExtension, REACT_DEVELOPER_TOOLS } = isDev?require('electron-devtools-installer'):{};
+const path = require('path');
 const {setMainMenu, SetPopMenu} = require('./mainMenu.js');
-const http = require('http');
-const fs = require('fs');
-
 let mainWindow;
 
 function createWindow(event, win) {
   mainWindow = new BrowserWindow({
-  width: 900, 
-  height: 680,
+  width: 1300, 
+  height: 700,
   titleBarStyle: "hiddenInset",
-  nodeIntegration: false
+  nodeIntegration: false,
+  webPreferences: { webSecurity: false, allowRunningInsecureContent: true }
 });
-  mainWindow.loadURL(isDev ? 'http://localhost:3006/code' : `file://${path.join(__dirname, '../build/index.html')}`);
+  mainWindow.loadURL(isDev ? 'http://localhost:3006/design' : `file://${path.join(__dirname, '../build/index.html/design')}`);
   mainWindow.on('closed', () => mainWindow = null);
   setMainMenu(mainWindow);
   SetPopMenu(mainWindow,win)
 }
-const installExtensions = async () => {
-  return installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
-};
+// const installExtensions = async () => {
+//   return installExtension(REACT_DEVELOPER_TOOLS)
+//     .then((name) => console.log(`Added Extension:  ${name}`))
+//     .catch((err) => console.log('An error occurred: ', err));
+// };
 
 
 app.on('ready', async ()=>{
-    await installExtensions();
+    // if(!isDev){
+    //   await installExtensions();
+    // }
     createWindow()
-  protocol.registerFileProtocol('atom', (request, callback) => {
-    const url = request.url.substr(7)
-    callback({ path: path.normalize(`${__dirname}/${url}`) })
-  
-  }, (error) => {
-    if (error) console.error('Failed to register protocol')
-  })
 });
 
 app.on('window-all-closed', () => {

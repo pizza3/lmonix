@@ -1,6 +1,7 @@
 import React ,{Component} from 'react';
-import styled from 'styled-components';
 import _ from 'lodash'
+import {Container, Title} from '../styled'
+import Switch from "../../../designLib/Switch";
 
 export default class ReceiveShadow extends Component{
     state = {
@@ -43,29 +44,8 @@ export default class ReceiveShadow extends Component{
         return(
             <Container>
                 <Title>Receive Shadow</Title>
-                <label className="form-switch">
-                    <input type="checkbox" checked={this.state.receiveShadow} onChange={this.handleInputChange} />
-                    <i></i>
-                </label>
+                  <Switch checked={this.state.receiveShadow} onChange={this.handleInputChange} />
             </Container>
         )
     }
 }
-
-
-const Container = styled.div`
-    position:relative;
-    float:left;
-    width:100%;
-    height:auto;
-    padding-bottom: 18px;
-`
-const Title = styled.div`
-    position: relative;
-    float: left;
-    color: #969696;
-    font-size: 10px;
-    margin-left: 9px;
-    margin-top: 4px;
-    font-weight: 700;
-`

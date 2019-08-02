@@ -2,17 +2,21 @@ import React, { Component } from "react";
 import TitleBar from "./components/TitleBar/TitleBar";
 import VrRenderer from "./components/CodeEditor";
 import SceneEditor from "./components/SceneEditor";
-// import Code from './components/Code';
 import _ from "lodash";
 import { AddGroupObj, ApplyTexture } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
+import { basicAnimationsConfig } from "./components/Helpers/helpers";
 import * as THREE from "./components/ThreeLibManager";
-import  TransformControls from "./components/Transform";
+import TransformControls from "./components/Transform";
+import TrackballControls from "./components/TrackballControls";
+import { message } from "antd";
+import { JSDOM } from "jsdom";
+import ThreeProvider from "./ThreeProvider";
 const electron = window.require("electron");
-const ThreeContext = new React.createContext();
 
 class App extends Component {
   state = {
+    numberOfObj: {},
     location: null,
     scene: null,
     title: "untitled*",
@@ -26,25 +30,30 @@ class App extends Component {
     isCursor: false,
     localIP: null,
     activeScript: "js",
-    loaded:false,
-    active:null,
-    activeKey:null,
-    activeDrilldown:{},
-    addedActiveKey:[],
-    activeStack:[],
-    copyObj:null,
-    editState:[]
+    loaded: false,
+    active: null,
+    activeKey: null,
+    activeDrilldown: {},
+    addedActiveKey: [],
+    activeStack: [],
+    copyObj: null,
+    editState: [],
+    animate: {}
   };
   objPresent = [];
   componentDidMount() {
+    window.addEventListener("resize", this.handleResize, false);
     electron.ipcRenderer.on(
       "ipcRenderer",
       function(e, val) {
         switch (val["option"]) {
+          case "message":
+            message[val["type"]](val["message"], 3);
+            break;
           case "extractThreeData":
             electron.ipcRenderer.send("reciveThreeData", {
               data: this.state.objPresent,
-              state: this.state,
+              state: this.state
             });
             break;
 
@@ -56,22 +65,25 @@ class App extends Component {
             });
             break;
           case "updateProject":
-            let data = this.reloadProject(val["obj"]["data"],0);
+            let parsedObj = JSON.parse(val["obj"]);
+            this.clearScene();
+            const data = this.reloadProject(parsedObj["data"], 0);
             this.objPresent = data;
             this.setState(
               {
-                // isDefaultLights: 
-                active:data[0],
+                // isDefaultLights:
+                active: data[0],
                 objPresent: data,
-                activeObj: '00',
+                activeObj: "00",
                 title: val["title"][0]
               },
               () => {
                 this.transformControls.attach(
                   this.objPresent[this.state.activeObj]
                 );
-                this.active=data[0]
+                this.active = data[0];
                 this.scene.add(this.transformControls);
+                message.success("Project Loaded", 3);
               }
             );
             break;
@@ -81,19 +93,13 @@ class App extends Component {
             });
             break;
           case "addGroupObj":
-            let a = 
-              AddGroupObj(
-              {},
-              val['obj'],
-              this.active,
-            );
-            this.updateActiveDrilldown(this.active.uuid,true)
-            this.active=a
+            let a = AddGroupObj({}, val["obj"], this.active);
+            this.updateActiveDrilldown(this.active.uuid, true);
+            this.active = a;
             this.setState({
-              active:a,
-
-            })
-            this.updateActiveDrilldown()
+              active: a
+            });
+            this.updateActiveDrilldown();
             break;
           case "setAssetStack":
             this.setState({
@@ -106,6 +112,8 @@ class App extends Component {
             });
             break;
           case "updateCodeHtml":
+            let dom = new JSDOM(val["code"]);
+            console.log(dom.window.document.body);
             this.setState({
               htmlCode: val["code"]
             });
@@ -116,27 +124,27 @@ class App extends Component {
             });
             break;
           case "deleteObj":
-              const { objPresent }=this.state
-              const parent = this.active.parent
-              this.active.parent.remove(this.active)
-              this.setActiveObj(parent) 
-              // add case when top layer scene objs removed
-              break;
+            this.deleteObject();
+            // add case when top layer scene objs removed
+            break;
           case "copyObj":
-            const keys = _.keys(this.active)
-            const keysList = _.filter(keys,(val)=>val.substr(0,3)==="obj")
+            const keys = _.keys(this.active);
+            const keysList = _.filter(keys, val => val.substr(0, 3) === "obj");
             // let copy = this.active.clone()
-            let copy = this.active
-            keysList.forEach((val)=>{
-              copy[val]=this.active[val]
-            })
+            let copy = this.active;
+            keysList.forEach(val => {
+              copy[val] = this.active[val];
+            });
             this.setState({
-              copyObj:this.active
-            })
+              copyObj: this.active
+            });
             break;
           case "pasteObj":
-              this.reloadProject3D(this.state.copyObj,this.active)            
-              break;
+            this.reloadProject3D(this.state.copyObj, this.active);
+            break;
+          case "animate":
+            this.setAnimate()
+            break;
           default:
             console.log("default");
             break;
@@ -144,6 +152,18 @@ class App extends Component {
       }.bind(this)
     );
   }
+  setAnimate = () => {
+    const { animate, active } = this.state;
+    const value = animate[active.objName]
+      ? [ ...animate[active.objName], basicAnimationsConfig ]
+      : [basicAnimationsConfig];
+    this.setState({
+      animate: {
+        ...animate,
+        [active.objName]: value
+      }
+    });
+  };
   setSceneObject = (scene, transformControls) => {
     this.setState({ scene, transformControls });
   };
@@ -152,70 +172,149 @@ class App extends Component {
       code: val
     });
   };
-  addInScene = obj => {    
+  handleResize = () => {
+    const width = window.innerWidth - 466;
+    const height = window.innerHeight - 37;
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
+  };
+  addInScene = obj => {
     const activeObj = this.state.objPresent.length;
     this.objPresent.push(obj);
-    this.active=obj
-    const {activeStack}=this.state
+    this.active = obj;
+    const { activeStack } = this.state;
     this.setState(
       {
         activeObj,
-        active:obj,
-        objPresent:this.objPresent,
-        activeStack:[...activeStack,obj]
+        active: obj,
+        objPresent: this.objPresent,
+        activeStack: [...activeStack, obj]
       },
       () => {
-        this.transformControls.attach(
-          this.objPresent[this.state.activeObj]
-        );
+        this.transformControls.attach(this.objPresent[this.state.activeObj]);
         this.scene.add(this.transformControls);
       }
     );
   };
-  reloadProject = (data,num,parent)=>{
+  reloadProject = (data, num, parent) => {
     let objData = [];
+    this.clearScene();
     _.forEach(data, val => {
       let object = AddGroupObj(
         val,
         val.objPrimitive,
-        !num>0?this.scene:parent,
+        !num > 0 ? this.scene : parent,
         val.position,
         val.rotation,
         val.scale
       );
-      this.reloadProject(val.children.slice(1),num+1,object)
-      if(!num>0){
+      this.reloadProject(val.children.slice(1), num + 1, object);
+      if (!num > 0) {
         objData.push(object);
       }
     });
-    return objData
-  }
-  reloadProject3D = (data,parent)=>{
+    return objData;
+  };
+  reloadProject3D = (data, parent) => {
     let newParent = AddGroupObj(
-        data,
-        data.objPrimitive,
-        parent,
-        data.position,
-        data.rotation,
-        data.scale
-      );
-      if(data.children.length>=2){
-        _.forEach(data.children,(val,i)=>{
-          if(i!==0){
-            this.reloadProject3D(data.children[i],newParent)
+      data,
+      data.objPrimitive,
+      parent,
+      data.position,
+      data.rotation,
+      data.scale
+    );
+    if (data.children.length >= 2) {
+      _.forEach(data.children, (val, i) => {
+        if (i !== 0) {
+          this.reloadProject3D(val, newParent);
+        }
+      });
+    }
+  };
+  replaceGeometry = (geometry, type) => {
+    this.active.children[0].geometry.dispose();
+    this.active.children[0].geometry = geometry;
+    if (type) {
+      this.active.objName = type;
+      this.active.objPrimitive = type.toLowerCase();
+      this.setState({
+        active: this.active
+      });
+    }
+  };
+  replaceLights = (light, type) => {
+    this.active["objName"] = `${type}Light`;
+    this.active["objType"] = "Light";
+    this.active["objPrimitive"] = type.toLowerCase();
+    this.active["hashColor"] = "#ffffff";
+    const copy = this.active.children.slice(1);
+    _.forEach(this.active.children, val => {
+      this.active.remove(val);
+    });
+    this.active.add(light);
+    _.forEach(copy, val => {
+      this.reloadProject3D(val, this.active);
+    });
+    this.setState({
+      active: this.active
+    });
+  };
+  clearScene = () => {
+    this.transformControls.detach(this.active);
+    _.forEach(this.objPresent, val => {
+      this.scene.remove(val);
+    });
+    this.objPresent = [];
+    this.setState({
+      objPresent: []
+    });
+  };
+  deleteObject = () => {
+    const { objPresent } = this.state;
+    const parent = this.active.parent;
+    const uuid = this.active.uuid;
+    const objPresentInScene = _.find(objPresent, { uuid: uuid });
+    if (objPresentInScene) {
+      let index = 0;
+      let newObjPresent = [];
+      _.forEach(objPresent, (obj, i) => {
+        if (obj.uuid === uuid) {
+          index = i;
+        }
+      });
+      newObjPresent = _.filter(objPresent, obj => obj.uuid !== uuid);
+      this.setState(
+        {
+          objPresent: newObjPresent
+        },
+        () => {
+          this.objPresent = newObjPresent;
+          this.transformControls.detach(this.active);
+          this.scene.remove(this.active);
+          if (!_.isEmpty(newObjPresent)) {
+            if (index) {
+              this.setActiveObj(this.state.objPresent[index - 1]);
+            } else {
+              this.setActiveObj(this.state.objPresent[index]);
+            }
           }
-        })
-      }
-  }
-  setActiveObj = (obj) => {
-    this.active=obj    
+        }
+      );
+    } else {
+      this.active.parent.remove(this.active);
+      this.setActiveObj(parent);
+    }
+  };
+  setActiveObj = obj => {
+    this.active = obj;
     this.setState(
       {
-        active:obj
+        active: obj
       },
       () => {
-        this.transformControls.attach(obj
-        );
+        this.transformControls.attach(obj);
         this.scene.add(this.transformControls);
         document.getElementById("obj" + obj.uuid).addEventListener(
           "contextmenu",
@@ -322,9 +421,12 @@ class App extends Component {
     this.renderer.render(this.scene, this.camera);
   }
 
-  setController = (posChange)=>{
+  setController = posChange => {
     //trackball and transform controls initialise
-    this.trackballControls = new THREE.TrackballControls(this.camera);
+    this.trackballControls = new THREE.TrackballControls(
+      this.camera,
+      this.renderer.domElement
+    );
     this.transformControls = new THREE.TransformControls(
       this.camera,
       this.renderer.domElement,
@@ -350,9 +452,9 @@ class App extends Component {
       }.bind(this)
     );
     this.setState({
-      loaded:true
-    })
-  }
+      loaded: true
+    });
+  };
 
   handleLeave = () => {
     this.trackballControls.enabled = false;
@@ -370,28 +472,28 @@ class App extends Component {
     });
   };
 
-  updateActiveDrilldown=(obj,bool)=>{
-    const {activeDrilldown}=this.state
+  updateActiveDrilldown = (obj, bool) => {
+    const { activeDrilldown } = this.state;
     this.setState({
-      activeDrilldown:{
+      activeDrilldown: {
         ...activeDrilldown,
-        [obj]:bool
+        [obj]: bool
       }
-    })
-  }
+    });
+  };
 
-  setMaterial = (material)=>{
-    const mapData = ApplyTexture(this.active)
+  setMaterial = material => {
+    const mapData = ApplyTexture(this.active);
     const newMaterial = new THREE[material]({
       color: this.active.children[0].material.color,
       map: mapData,
-      transparent:this.active.children[0].material.transparent,
-      opacity:this.active.children[0].material.opacity
+      transparent: this.active.children[0].material.transparent,
+      opacity: this.active.children[0].material.opacity
     });
-    this.active.children[0].material = newMaterial
-  }
+    this.active.children[0].material = newMaterial;
+  };
 
-  changeObjectProp = (value, prop, option) => {    
+  changeObjectProp = (value, prop, option) => {
     switch (option) {
       case "transform":
         this.active[prop[0]][prop[1]] = value;
@@ -400,33 +502,41 @@ class App extends Component {
         this.active.children[0][prop] = value;
         break;
       case "material":
-        this.active.children[0].material[
-          prop
-        ] = value;
+        this.active.children[0].material[prop] = value;
         break;
       case "colorMaterial":
-        if(this.active){
+        if (this.active) {
           let hex = parseInt(value.replace(/^#/, ""), 16);
-          this.active.children[0].material[prop].setHex(
-            hex
-          );
+          this.active.children[0].material[prop].setHex(hex);
           this.active.hashColor = value;
         }
         break;
       case "colorLight":
         let lighthex = parseInt(value.replace(/^#/, ""), 16);
-        this.active.children[0][prop].setHex(
-          lighthex
-        );
+        this.active.children[0][prop].setHex(lighthex);
         this.active.hashColor = value;
+        break;
+      case "addObject":
+        this.active.add(value);
+        break;
       default:
         this.active[prop] = value;
+        break;
     }
   };
-
   render() {
+    const { objPresent, active, activeDrilldown, animate } = this.state;
     return (
-      <React.Fragment>
+      <ThreeProvider
+        value={{
+          objPresent: objPresent || [],
+          active: active,
+          setActiveObj: this.setActiveObj,
+          updateActiveDrilldown: this.updateActiveDrilldown,
+          activeDrilldown: activeDrilldown,
+          changeObjectProp:this.changeObjectProp
+        }}
+      >
         <TitleBar
           title={this.state.title}
           {...this.state}
@@ -434,30 +544,29 @@ class App extends Component {
         />
         <Route
           exact
-          path="/"
+          path="/design"
           render={() => (
-            <ThreeContext.Provider value="🎉">
-              <SceneEditor
-                {...this.state}
-                scene={this.scene}
-                objPresent={this.objPresent || []}
-                setSceneObject={this.setSceneObject}
-                addInScene={this.addInScene}
-                currentPos={this.currentPos}
-                setActiveObj={this.setActiveObj}
-                setCursor={this.setCursor}
-                setDefaultLights={this.setDefaultLights}
-                renderSceneOnMount={this.renderSceneOnMount}
-                handleLeave={this.handleLeave}
-                handleOver={this.handleOver}
-                stopanimateScene={this.stopanimateScene}
-                changeObjectProp={this.changeObjectProp}
-                setController={this.setController}
-                transformControls={this.transformControls}
-                updateActiveDrilldown={this.updateActiveDrilldown}
-                setMaterial={this.setMaterial}
-              />
-            </ThreeContext.Provider>
+            <SceneEditor
+              {...this.state}
+              scene={this.scene}
+              objPresent={this.state.objPresent || []}
+              setSceneObject={this.setSceneObject}
+              addInScene={this.addInScene}
+              setActiveObj={this.setActiveObj}
+              setCursor={this.setCursor}
+              setDefaultLights={this.setDefaultLights}
+              renderSceneOnMount={this.renderSceneOnMount}
+              handleLeave={this.handleLeave}
+              handleOver={this.handleOver}
+              stopanimateScene={this.stopanimateScene}
+              changeObjectProp={this.changeObjectProp}
+              setController={this.setController}
+              transformControls={this.transformControls}
+              updateActiveDrilldown={this.updateActiveDrilldown}
+              setMaterial={this.setMaterial}
+              replaceGeometry={this.replaceGeometry}
+              replaceLights={this.replaceLights}
+            />
           )}
         />
         <Route
@@ -466,7 +575,7 @@ class App extends Component {
             <VrRenderer {...this.state} updateCode={this.updateCode} />
           )}
         />
-      </React.Fragment>
+      </ThreeProvider>
     );
   }
 }

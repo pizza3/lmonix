@@ -1,17 +1,11 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import MenuBar from "./MenuBar/index";
-import SceneLayer from "./SceneLayer";
+import SceneLayer from "./SceneGraph/SceneLayer";
 import SceneRenderer from "./SceneRenderer";
-import PropertiesEditor from "./PropertiesEditor";
+import PropertiesEditor from "./Properties/PropertiesEditor";
 import SceneController from "./SceneController";
 import SceneGeneral from "./SceneGeneral";
-import * as THREE from "../components/ThreeLibManager";
-import {
-  TrackballControls,
-  TransformControls,
-  PointerLockControls
-} from "../components/ThreeLibManager";
 
 export default class SceneEditor extends Component {
   state = {
@@ -28,6 +22,8 @@ export default class SceneEditor extends Component {
   }
 
   render() {    
+    const { active, objPresent } = this.props;
+    const objectsPresent = objPresent.length
     return (
       <SceneEditorContainer>
         <MenuBar
@@ -36,7 +32,7 @@ export default class SceneEditor extends Component {
           {...this.props}
         />
         {this.state.setMode ? (
-          <SceneLayer {...this.props} />
+          <SceneLayer objPresent={objPresent}/>
         ) : (
           <SceneGeneral {...this.props} />
         )}
@@ -46,7 +42,9 @@ export default class SceneEditor extends Component {
           handleLeave={this.props.handleLeave}
           handleOver={this.props.handleOver}
         />
-        <PropertiesEditor {...this.props} changeObjectProp={this.props.changeObjectProp} />
+        {/* {objectsPresent? */}
+          <PropertiesEditor {...this.props} changeObjectProp={this.props.changeObjectProp} />        
+        {/* :[]} */}
       </SceneEditorContainer>
     );
   }

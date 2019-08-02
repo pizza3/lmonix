@@ -1,6 +1,7 @@
 import React ,{Component} from 'react'
 import styled from 'styled-components'
 import img from '../../assets/GoogleCardboard.png'
+import { message} from 'antd'
 const electron =  window.require('electron');
 
 export default class LocalServer extends Component{
@@ -9,17 +10,22 @@ export default class LocalServer extends Component{
     }
     handleServer = ()=>{
         const{status}=this.state
-        if(!status){
-            this.setState({
-                status:true
-            })
-            electron.ipcRenderer.send("stoplocal",{location:this.props.location})
+        if(this.props.location!=='untitled*'){
+            if(!status){
+                this.setState({
+                    status:true
+                })
+                electron.ipcRenderer.send("stoplocal",{location:this.props.location})
+            }
+            else{
+                electron.ipcRenderer.send("startlocal",{location:this.props.location})  
+                  this.setState({
+                    status:false,
+                })        
+            }
         }
         else{
-            electron.ipcRenderer.send("startlocal",{location:this.props.location})  
-              this.setState({
-                status:false,
-            })        
+            message.warning('Please Save the project first.',7)
         }
     }
     render(){

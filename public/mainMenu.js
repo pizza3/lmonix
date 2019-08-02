@@ -10,8 +10,8 @@ const https = require("https");
 const fs = require("fs");
 const os = require("os");
 const express = require("express");
-
-let localServer;
+const expressapp = express();
+let server
 module.exports = {
   setMainMenu,
   SetPopMenu
@@ -117,7 +117,7 @@ function SetPopMenu(mainWindow, win) {
         label: "Add To Group",
         submenu: [
           {
-            label: "Cube",
+            label: "Box",
             click: function() {
               mainWindow.webContents.send("ipcRenderer", {
                 option: "addGroupObj",
@@ -144,16 +144,43 @@ function SetPopMenu(mainWindow, win) {
             }
           },
           {
-            type: "separator"
-          },
-          {
-            label: "Surface",
+            label: "Cylinder",
             click: function() {
               mainWindow.webContents.send("ipcRenderer", {
                 option: "addGroupObj",
-                obj: "plane"
+                obj: "cylinder"
               });
             }
+          },
+          {
+            label: "Cone",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "cone"
+              });
+            }
+          },
+          {
+            label: "Ring",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "ring"
+              });
+            }
+          },
+          {
+            label: "Circle",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "circle"
+              });
+            }
+          },
+          {
+            type: "separator"
           },
           {
             label: "Sky",
@@ -168,11 +195,29 @@ function SetPopMenu(mainWindow, win) {
             type: "separator"
           },
           {
-            label: "Point Light",
+            label: "Ambient Light",
             click: function() {
               mainWindow.webContents.send("ipcRenderer", {
                 option: "addGroupObj",
-                obj: "point"
+                obj: "ambient"
+              });
+            }
+          },
+          {
+            label: "Directional Light",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "directional"
+              });
+            }
+          },
+          {
+            label: "Hemisphere Light",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "hemisphere"
               });
             }
           },
@@ -182,6 +227,15 @@ function SetPopMenu(mainWindow, win) {
               mainWindow.webContents.send("ipcRenderer", {
                 option: "addGroupObj",
                 obj: "spot"
+              });
+            }
+          },
+          {
+            label: "Point Light",
+            click: function() {
+              mainWindow.webContents.send("ipcRenderer", {
+                option: "addGroupObj",
+                obj: "point"
               });
             }
           },
@@ -265,6 +319,25 @@ function SetPopMenu(mainWindow, win) {
       },
     )
   )
+  menu.append(
+    new MenuItem(
+      {
+        type: "separator"
+      }
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        label: "Add to animate",
+        click:function() {
+          mainWindow.webContents.send("ipcRenderer", {
+            option: "animate",
+          });
+        }
+      },
+    )
+  )
   mainWindow.on("context-menu", (e, params) => {
     menu.popup(win, params.x, params.y);
   });
@@ -275,12 +348,10 @@ function SetPopMenu(mainWindow, win) {
   });
   ipcMain.on("open-asset-modal", (event, arg) => {
     const location = arg;
-    // BrowserWindow.webContents.send("ipcRenderer",{option:"getLocation"});
     showAddDialog(mainWindow, location);
   });
 
   ipcMain.on("startlocal", (event, arg) => {
-    const expressapp = express();
     const { location } = arg;
     const PORT = 9999;
     const indexFile = () => fs.readFileSync(location + "/index.html");
@@ -320,18 +391,17 @@ function SetPopMenu(mainWindow, win) {
   });
 
   ipcMain.on("stoplocal", () => {
-    localServer.close();
+    server.close();
   });
 
   ipcMain.on("addModel", (event, arg) => {
     const objPath = `${arg.title}/Assets/${arg.name}.obj`;
     const writer = fs.createWriteStream(objPath);
+    console.log(arg.obj.resources);
     https.get(arg.obj.root.url, function(response) {
-      response.pipe(writer);
-      writer.on('end', function() {
+      const stream = response.pipe(writer);
+      stream.on('complete', function() {
         console.log('Downloaded successfully');
-        
-        // response.end({"status":"Completed"});
       });
     });
     const mtlPath = `${arg.title}/Assets/${arg.name}.mtl`;

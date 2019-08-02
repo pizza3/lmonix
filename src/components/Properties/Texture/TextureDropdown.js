@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import * as THREE from "../../ThreeLibManager";
+import { texture } from "../../../assets/icon";
 const fs = window.require("fs");
 export default class MenuDropdown extends Component {
   addModel = obj => {
     this.props.addInScene(obj);
   };
   handleTexture = i => {
+    const type = this.props.active.objPrimitive
     const data =
       "data:video/webm;base64," +
       fs.readFileSync(this.props.assetStack[i].path).toString("base64");
-    if (this.props.assetStack[i].ext === ".webm") {
+    if (this.props.assetStack[i].ext === ".mp4") {
       // sets up a basic video element
       let video = document.createElement("video");
       video.src = data;
@@ -26,9 +28,9 @@ export default class MenuDropdown extends Component {
         type: "video",
         name: this.props.assetStack[i].name.replace(/[\W_]+/g, "")
       };
-      this.props.changeObjectProp(texture,'map','material')
-      this.props.changeObjectProp(true,'needsUpdate','material')
-      this.props.changeObjectProp(objTexture,'objTexture')
+      this.props.changeObjectProp(texture, "map", "material");
+      this.props.changeObjectProp(true, "needsUpdate", "material");
+      this.props.changeObjectProp(objTexture, "objTexture");
     } else if (this.props.assetStack[i].ext === ".mtl") {
     } else {
       const texture = new THREE.TextureLoader().load(
@@ -43,19 +45,18 @@ export default class MenuDropdown extends Component {
           console.log("An error happened");
         }
       );
-      const objTexture={
+      const objTexture = {
         path: this.props.assetStack[i].path,
         type: "image",
         name: this.props.assetStack[i].name.replace(/[\W_]+/g, "")
-
-      }
-      const point = new THREE.Vector2( 0.5, 0.5 );
-      texture.center=point
-      texture.rotation=3.14
-      this.props.changeObjectProp(texture,'map','material')
-      this.props.changeObjectProp(true,'needsUpdate','material')
-      this.props.changeObjectProp(objTexture,'objTexture')
-      this.props.checkForTexture()
+      };
+      const point = new THREE.Vector2(0.5, 0.5);
+      texture.center = point;
+      if(type!=='sky')texture.rotation = 3.14;
+      this.props.changeObjectProp(texture, "map", "material");
+      this.props.changeObjectProp(true, "needsUpdate", "material");
+      this.props.changeObjectProp(objTexture, "objTexture");
+      this.props.checkForTexture();
     }
   };
   render() {
@@ -63,6 +64,7 @@ export default class MenuDropdown extends Component {
     const Textures = assetStack.map((val, i) => {
       if (
         val.ext === ".jpg" ||
+        val.ext === ".webp " ||
         val.ext === ".png" ||
         val.ext === ".mtl" ||
         val.ext === ".mp4" ||
@@ -76,13 +78,26 @@ export default class MenuDropdown extends Component {
               this.handleTexture(i);
             }}
           >
-            <Img src={this.props.assetStack[i].base} />
+            <Img src={val.base} />
             <Text>{val.name}</Text>
           </ObjButton>
         );
       }
     });
-    return <Container>{Textures || "Nothing"}</Container>;
+    return (
+      <Container>
+        {Textures.length ? (
+          Textures
+        ) : (
+          <>
+            <TextureIcon>{texture}</TextureIcon>
+            <Message>
+              No texture's available. Add them from General > Assets > Images.
+            </Message>
+          </>
+        )}
+      </Container>
+    );
   }
 }
 
@@ -131,4 +146,19 @@ const Text = styled.span`
   top: 10px;
   position: relative;
   margin-left: 11px;
+`;
+
+const TextureIcon = styled.div`
+  text-align: center;
+  margin-top: 32px;
+`;
+
+const Message = styled.div`
+  text-align: center;
+  position: absolute;
+  font-size: 9px;
+  font-weight: 500;
+  text-align: -webkit-center;
+  color: #a9a9a9;
+  padding: 22px;
 `;
