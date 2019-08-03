@@ -6,18 +6,8 @@ import ThreeContext from "../../ThreeContext";
 
 export default class SceneLayer extends Component {
   state={
-    currentNames:[]
   }
-  addName=(name)=>{
-    const {currentNames}=this.state
-    if(currentNames.includes(name)){
-      
-      this.props.changeObjectProp(name, "name");
-    }
-    this.setState({
-      currentNames:[...currentNames,name]
-    })
-  }
+
   setNewName = (oldName)=>{
     let lastChars = oldName.slice(oldName.length-2)
     if(lastChars[0]==='-'&&Number("3")){
@@ -37,14 +27,6 @@ export default class SceneLayer extends Component {
   }
 
   setNames = (objPresent, num)=>{
-  _.forEach(objPresent, (obj, i) => {
-    // console.log(obj.name);
-    // console.log(obj);
-      if(obj.name!==""){
-        this.addName(obj.name)
-        this.setNames(obj.children,num+1)
-      }
-    })
   }
   renderSceneLayer = (objArr, num) =>
     _.map(objArr, (obj, i) => {
@@ -56,7 +38,7 @@ export default class SceneLayer extends Component {
                 <SceneTree
                   key={obj.uuid}
                   num={`${num}${i}`}
-                  name={obj.objName}
+                  name={obj.name.length?obj.name:obj.objName}
                   obj={obj}
                   objPresent={objArr}
                   layer={num}

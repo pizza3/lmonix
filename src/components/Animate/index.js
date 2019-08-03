@@ -7,10 +7,10 @@ export default class Animate extends Component {
   state = {};
 
   render() {
-    const { animate } = this.props;
-    const animInfos = _.map(animate, (val, index) => {
-      return <AnimInfo key={index} objName={index} animData={val} />;
-    });
+    const { active, updateAnimate } = this.props;
+    const animInfos =active? _.map(active.objAnimate, (val, index) => {
+      return <AnimInfo key={index} name={val.name} data={val} index={index} updateAnimate={updateAnimate} active={active}/>;
+    }):[];
     return (
       <AnimGraphContainer>
         <AnimGraphTitle>Animation</AnimGraphTitle>

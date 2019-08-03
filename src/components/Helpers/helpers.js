@@ -1,5 +1,6 @@
 import * as THREE from "../../components/ThreeLibManager";
 import _ from "lodash";
+const fs = window.require("fs");
 export const updateGeometry = (type, obj, value) => {
   switch (type) {
     case "SphereBufferGeometry":
@@ -122,22 +123,37 @@ export const CustomGeometryConfig = [
 //   1
 // )};base64,${val.data}"
 
+const videoAndImagesExt = [".png",".jpg",".jpeg"]
+
 export const createAssets = (arr = [], title) => {
   let assetString = "";
   arr.forEach(val => {
     let name = val.name.replace(/[\W_]+/g, "");
-    if (val.ext === ".png" || val.ext === ".jpg" || val.ext === ".jpeg") {
+    if (videoAndImagesExt.includes(val.ext)) {
+      const data =
+      "data:video/webm;base64," +
+      fs.readFileSync(val.path).toString("base64");
       assetString += `<img id="${name}" 
-      src="http://localhost:8000/Assets/${val.name}"
+      src="${data}"
       > \n`;
-    } else if (val.ext === ".obj" || val.ext === ".mtl") {
-      assetString += `<a-asset-item id="${name}" src="http://localhost:9999/${
-        val.name
+    } else if (val.ext === ".obj" ) {
+      const data =
+      "data:video/webm;base64," +
+      fs.readFileSync(val.path).toString("base64");
+      assetString += `<a-asset-item id="${name}" src="${
+        data
       }"></a-asset-item> \n`;
-    } else {
-      assetString += `<video id="${name}" src="${title}/${
-        val.name
-      }"></video> \n`;
+    }else if(val.ext === ".mtl"){
+      const data = fs.readFileSync(val.path);
+      assetString += `<a-asset-item id="${name}" src="${
+        data
+      }"></a-asset-item> \n`;
+    } 
+    else {
+      const data =
+      "data:video/webm;base64," +
+      fs.readFileSync(val.path).toString("base64");
+      assetString += `<video id="${name}" autoplay loop="true" src="${data}"></video> \n`;
     }
   });
   return assetString;
@@ -147,7 +163,7 @@ export const createScene = (threeData = [], animate = {}) => {
   let dataString = "";
   _.forEach(threeData, (val, i) => {
     if (val.objPrimitive === "sky") {
-      dataString += `<a-sky id="entity${i}" color="${val.hashColor}" src="${
+      dataString += `<a-sky id="${val.objName}" color="${val.hashColor}" src="${
         val.objTexture ? "#" + val.objTexture.name : ""
       }" position="${val.position.x} ${val.position.y} ${
         val.position.z
@@ -163,7 +179,7 @@ export const createScene = (threeData = [], animate = {}) => {
         </a-sky> \n`;
     } else if (val.objPrimitive === "curvedimage") {
       const params = val.children[0].geometry.parameters;
-      dataString += `<a-curvedimage id="entity${i}" color="${
+      dataString += `<a-curvedimage id="${val.objName}" color="${
         val.hashColor
       }" src="${val.objTexture ? "#" + val.objTexture.name : ""}" position="${
         val.position.x
@@ -181,10 +197,10 @@ export const createScene = (threeData = [], animate = {}) => {
         >
         ${createScene(val.children.slice(1))}
         </a-curvedimage> \n`;
-    } else if (val.objPrimitive === "3DModel") {
-      dataString += `<a-entity id="entity${i}" obj-model="obj: ${
-        val.objModel ? "#" + val.objModel.name : ""
-      };"  position="${val.position.x} ${val.position.y} ${
+    } else if (val.objPrimitive === "3DModel") {      
+      dataString += `<a-entity id="${val.objName}"
+      obj-model="obj: url(${val.objModel.path});"
+      position="${val.position.x} ${val.position.y} ${
         val.position.z
       }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
         .rotation._x *
@@ -196,7 +212,7 @@ export const createScene = (threeData = [], animate = {}) => {
         ${createScene(val.children.slice(1))}
         </a-entity> \n`;
     } else if (val.objType === "Light") {
-      dataString += `<a-entity id="entity${i}" light="type: ${
+      dataString += `<a-entity id="${val.objName}" light="type: ${
         val.objPrimitive
       }; color: ${val.hashColor}; intensity: ${
         val.children[0].intensity
@@ -212,9 +228,9 @@ export const createScene = (threeData = [], animate = {}) => {
       const geometryParams = setGeometryAframe(
         val.children[0].geometry.parameters
       );
-      dataString += `<a-entity id="entity${i}" 
+      dataString += `<a-entity id="${val.objName}" 
       geometry="primitive: ${val.objPrimitive};${geometryParams}" 
-      ${createAnimaionAttr(animate,val.objName)}
+      ${createAnimaionAttr(val.objAnimate, val.objName)}
       material="color: ${val.hashColor}; 
       ${val.objTexture ? "src:#" + val.objTexture.name : ""};
       transparent:${val.children[0].material.transparent};
@@ -236,6 +252,13 @@ export const createScene = (threeData = [], animate = {}) => {
   });
   return dataString;
 };
+
+// obj-model="obj: 
+//       ${
+//         val.objModel ? "#" + val.objModel.name : ""
+//       };"  
+
+
 
 // animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 10000;"
 
@@ -307,34 +330,109 @@ export const easeFuncsList = [
 ];
 
 export const basicAnimationsConfig = {
-  name: "Animation1",
-  property: "rotation",
-  from:{x:0,y:0,z:0},
-  to:{x:0,y:6.3,z:0},
-  delay: 0,
-  duration: 1200,
-  direction: "normal",
-  ease: "linear",
-  loop: true,
-  loopValue: 0
+  rotation: {
+    name: "",
+    property: "rotation",
+    from: { x: 0, y: 0, z: 0 },
+    to: { x: 0, y: 6.3, z: 0 },
+    delay: 0,
+    duration: 1200,
+    direction: "normal",
+    easing: "linear",
+    loop: true,
+    loopValue: 0,
+    elasticity:0
+  },
+  scale: {
+    name: "",
+    property: "scale",
+    from: { x: 1, y: 1, z: 1 },
+    to: { x: 1.2, y: 1.2, z: 1.2 },
+    delay: 0,
+    duration: 1200,
+    direction: "reverse",
+    easing: "linear",
+    loop: true,
+    loopValue: 0,
+    elasticity:0
+  },
+  position: {
+    name: "",
+    property: "position",
+    from: { x: 0, y: 0, z: 0 },
+    to: { x: 0, y: 4, z: 0 },
+    delay: 0,
+    duration: 1200,
+    direction: "reverse",
+    easing: "linear",
+    loop: true,
+    loopValue: 0,
+    elasticity:0
+  },
+  color: {
+    name: "",
+    property: "color",
+    from: "#E21F29",
+    to: "#ffffff",
+    delay: 0,
+    duration: 1200,
+    direction: "reverse",
+    easing: "linear",
+    loop: true,
+    loopValue: 0,
+    elasticity:0
+  },
+  opacity: {
+    name: "",
+    property: "opacity",
+    from: "1",
+    to: "0",
+    delay: 0,
+    duration: 1200,
+    direction: "alternate",
+    easing: "linear",
+    loop: true,
+    loopValue: 0,
+    elasticity:0
+  }
+};
+
+export const createAnimaionAttr = (animData, name) => {
+  let data = "";
+  const propertPrefix = {
+    position:"",
+    scale:"",
+    rotation:"",
+    opacity:"components.material.material.",
+    color:"components.material.material.",
+  }
+  if (animData.length) {
+    _.forEach(animData, (anim, index) => {
+      let from = anim.from, to=anim.to;
+      if (anim.property === "rotation") {
+        from = `${anim.from.x * (180 / 3.14)} ${anim.from.y *
+          (180 / 3.14)} ${anim.from.z * (180 / 3.14)}`;
+        to = `${anim.to.x * (180 / 3.14)} ${anim.to.y * (180 / 3.14)} ${anim.to
+          .z *
+          (180 / 3.14)}`;
+      } else if (anim.property === "position" || anim.property === "scale") {
+        from = `${anim.from.x} ${anim.from.y} ${anim.from.z}`;
+        to = `${anim.to.x} ${anim.to.y} ${anim.to.z}`;
+      }
+      data += ` 
+      animation__${anim.name}="property: ${propertPrefix[anim.property]}${
+        anim.property
+      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${anim.loop};delay:${
+        anim.delay
+      }; dur: ${anim.duration}; dir:${anim.direction}; easing: ${
+        anim.easing
+      }; elasticity: ${
+        anim.elasticity
+      };"`;
+    });
+    return data;
+  }
+  return "";
 };
 
 
-export const createAnimaionAttr = (animData, name)=>{
-  console.log(animData,animData[name]);
-  
-  if(animData[name]){
-    let data=""
-    _.forEach(animData[name],(anim,index)=>{
-        data=`animation="property: ${anim.property}; from: 0 0 0; to: 0 360 0; loop:  ${anim.loop}; dur:  ${anim.duration};"`
-    })
-    return data
-  }
-  return ""
-}
-
-export const setObjectDefaultName = (name, numberOfObj)=>{
-  if(numberOfObj.name){
-    
-  }
-}

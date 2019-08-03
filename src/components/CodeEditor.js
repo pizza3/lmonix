@@ -27,18 +27,6 @@ export default class VrRenderer extends Component {
       };
     });
   };
-  returnActiveTab = tabname => {
-    switch (tabname) {
-      case "animate":
-        return <Animate animate={this.props.animate} />;
-      case "js":
-        return (
-          <JsMirror value={this.props.code} onChange={this.props.updateCode} />
-        );
-      default:
-        return <Animate />;
-    }
-  };
   showEditor = () => {
     const { tabName } = this.state;
     if (tabName === 1) {
@@ -76,7 +64,6 @@ export default class VrRenderer extends Component {
   };
   render() {
     const { tabName } = this.state;
-    // const activeTab = this.returnActiveTab(tabName);
     const editor = this.showEditor()
     return (
       <div>
@@ -183,7 +170,7 @@ export default class VrRenderer extends Component {
             {editor}
           </EditorContainer>
         </Container>
-        <Animate animate={this.props.animate} />
+        <Animate updateAnimate={this.props.updateAnimate} animate={this.props.animate} active={this.props.active} />
       </div>
     );
   }
@@ -201,11 +188,6 @@ const EditorContainer = styled.div`
   margin-top: 37px;
   float: left;
   border-right: 2px solid #e0e0e0;
-`;
-
-const CodeOverlay = styled.div`
-  height: calc(100vh - 68px);
-  width: 100%;
 `;
 
 const FileTabs = styled.div`
@@ -227,7 +209,6 @@ const Tabs = styled.div`
   height: 26px;
   width: 41px;
   float: left;
-  cursor: pointer;
   border-radius: 3px;
   background: ${props => props.background};
   text-align: center;
@@ -238,7 +219,6 @@ const TabsCenter = styled.div`
   height: 26px;
   width: 60px;
   float: left;
-  cursor: pointer;
   border-radius: 3px;
   background: ${props => props.background};
   text-align: center;

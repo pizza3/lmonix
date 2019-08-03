@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import walk from "../assets/walk.svg";
-import grid from "../assets/grid.svg";
-import scale from "../assets/scale.svg";
-import rotate from "../assets/rotate.svg";
-import translate from "../assets/translate.svg";
-import walkWhite from "../assets/walkWhite.svg";
-import scaleWhite from "../assets/scaleWhite.svg";
-import rotateWhite from "../assets/rotateWhite.svg";
-import translateWhite from "../assets/translateWhite.svg";
+import { walk, grid, scale, translate, rotate } from "../assets/icon";
 import Trigger from "rc-trigger";
 
 export default class SceneController extends Component {
@@ -48,7 +40,7 @@ export default class SceneController extends Component {
   };
 
   render() {
-    const logo = [walkWhite, scaleWhite, rotateWhite, translateWhite];
+    const { activeLogo } = this.state;
     const SceneControllerContainer = styled.div`
       position: absolute;
       z-index: 102;
@@ -78,11 +70,13 @@ export default class SceneController extends Component {
           }}
         >
           <SelectController
-            active={this.state.active}
             onClick={() => {
               this.handleTransform("walk");
             }}
           >
+            <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7.449 10.845">
+              {walk()}
+            </Svg>
             <Img src={walk} />
           </SelectController>
         </Trigger>
@@ -100,9 +94,11 @@ export default class SceneController extends Component {
             offset: [20, 0]
           }}
         >
-        <SelectController id="grid" active={this.state.active}>
-          <Img src={grid} />
-        </SelectController>
+          <SelectController id="grid">
+            <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.151 10.151">
+              {grid()}
+            </Svg>
+          </SelectController>
         </Trigger>
         <Trigger
           action={["hover"]}
@@ -118,14 +114,16 @@ export default class SceneController extends Component {
             offset: [20, 0]
           }}
         >
-        <SelectController
-          active={this.state.active}
-          onClick={() => {
-            this.handleTransform("scale");
-          }}
-        >
-          <Img src={scale} />
-        </SelectController>
+          <SelectController
+            active={activeLogo === 1} 
+            onClick={() => {
+              this.handleTransform("scale");
+            }}
+          >
+            <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.452 10.469">
+              {scale(activeLogo === 1 ? "#ffffff" : "#707070")}
+            </Svg>
+          </SelectController>
         </Trigger>
         <Trigger
           action={["hover"]}
@@ -141,14 +139,17 @@ export default class SceneController extends Component {
             offset: [20, 0]
           }}
         >
-        <SelectController
-          active={this.state.active}
-          onClick={() => {
-            this.handleTransform("rotate");
-          }}
-        >
-          <Img src={rotate} />
-        </SelectController>
+          <SelectController
+           active={activeLogo === 2} 
+            onClick={() => {
+              this.handleTransform("rotate");
+            }}
+          >
+            <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.133 13.127">
+              {rotate(activeLogo === 2 ? "#ffffff" : "#707070")}
+            </Svg>
+            <Img src={rotate} />
+          </SelectController>
         </Trigger>
         <Trigger
           action={["hover"]}
@@ -164,14 +165,17 @@ export default class SceneController extends Component {
             offset: [20, 0]
           }}
         >
-        <SelectController
-          active={this.state.active}
-          onClick={() => {
-            this.handleTransform("translate");
-          }}
-        >
-          <Img src={translate} />
-        </SelectController>
+          <SelectController
+            active={activeLogo === 3} 
+            onClick={() => {
+              this.handleTransform("translate");
+            }}
+          >
+    
+            <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.634 13.634">
+              {translate(activeLogo === 3 ? "#ffffff" : "#707070")}
+            </Svg>
+          </SelectController>
         </Trigger>
       </SceneControllerContainer>
     );
@@ -182,16 +186,27 @@ const SelectController = styled.div`
   position: relative;
   width: 33px;
   height: 33px;
-  background: #f7f7f7;
+  background: ${props=>props.active?'#2F79EF':'#f7f7f7'};
   border-top: 2px solid #dbdbdb;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: 0.2s;
-  cursor: pointer;
-
   &:hover {
-    background: #dbdbdb;
+    background : ${props=>props.active?'#1a66e0':'#dbdbdb'};
   }
+`;
+
+const Svg = styled.svg`
+  position: absolute;
+  width: 13px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  bottom: 0;
+  margin-top: auto;
+  margin-bottom: auto;
 `;
 
 const Img = styled.img`

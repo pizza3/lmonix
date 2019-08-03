@@ -25,11 +25,12 @@ const AddCube = (
   });
 
   let obj = new THREE.Object3D();
-  obj.name="Box"
+  obj.name=""
   obj["objName"] = "Box";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "box";
   obj["hashColor"] = "#ef2d5e";
+  obj["objAnimate"] = [];
   obj.add(new THREE.Mesh(geometry, material));
   scene.add(obj);
   obj.position.set(pos.x, pos.y, pos.z);
@@ -304,7 +305,8 @@ export const ApplyTexture = obj => {
   if (obj.objTexture && obj.objTexture.type === "image") {
     mapData = textureLoader(obj.objTexture.path);
   } else if (obj.objTexture && obj.objTexture.type === "video") {
-    mapData = videoLoader(obj.objTexture.data);
+    console.log(obj.objTexture);
+    mapData = videoLoader(obj.objTexture.path);
   }
   return mapData;
 };
@@ -341,11 +343,11 @@ const AddGroupObj =  (
     });
   }
   object.name=toCamelCase(type)
-  object.objAnimate = {}
+  object.objAnimate = obj.objAnimate?obj.objAnimate:[]
   switch (type) {
     case "box":
       const geometry = updateGeometry('BoxBufferGeometry',{},geometryParams);
-      object["objName"] = "Box";
+      object["objName"] =obj.objName? obj.objName:"Box";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "box";
       object["hashColor"] = obj.hashColor || "#ef2d5e";      
@@ -362,7 +364,7 @@ const AddGroupObj =  (
       return object;
     case "sphere":
       let geometrySphere =updateGeometry('SphereBufferGeometry',{},geometryParams);
-      object["objName"] = "Sphere";
+      object["objName"] =obj.objName? obj.objName:"Sphere";
       object["objType"] = "Mesh";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
       object["objPrimitive"] = "sphere";
@@ -370,12 +372,12 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
     case "plane":
       let geometryPlane = updateGeometry('PlaneBufferGeometry',{},geometryParams);
-      object["objName"] = "Plane";
+      object["objName"] =obj.objName? obj.objName:"Plane";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "plane";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -383,12 +385,12 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
     case "cylinder":
       let geometryCylinder = updateGeometry('CylinderBufferGeometry',{},geometryParams);
-      object["objName"] = "Cylinder";
+      object["objName"] =obj.objName? obj.objName:"Cylinder";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "cone";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -396,12 +398,12 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
-      object.children[0].castShadow = obj.children[0].castShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
+      object.children[0].castShadow = obj.children[0].castShadow||false;
       return object;
     case "cone":
       let geometryCone = updateGeometry('ConeBufferGeometry',{},geometryParams);
-      object["objName"] = "Cone";
+      object["objName"] =obj.objName? obj.objName:"Cone";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "cone";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -409,12 +411,12 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
     case "ring":
       let geometryRing = updateGeometry('RingBufferGeometry',{},geometryParams);
-      object["objName"] = "Ring";
+      object["objName"] =obj.objName? obj.objName:"Ring";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "ring";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -422,12 +424,12 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
     case "circle":
       let geometryCircle = updateGeometry('CircleBufferGeometry',{},geometryParams);
-      object["objName"] = "Circle";
+      object["objName"] =obj.objName? obj.objName:"Circle";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "circle";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -435,7 +437,7 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       return object;
     case "sky":      
@@ -448,7 +450,7 @@ const AddGroupObj =  (
         side: THREE.BackSide,
         map: mapData
       });
-      object["objName"] = "Sky";
+      object["objName"] =obj.objName? obj.objName:"Sky";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "sky";
       object["hashColor"] = obj.hashColor || "#ceecf0";
@@ -456,12 +458,12 @@ const AddGroupObj =  (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow;
+      object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       object.scale.set(-1,1,1)
       return object;
     case "3DModel":
-      object["objName"] = "3DModel";
+      object["objName"] =obj.objName? obj.objName:"3DModel";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "3DModel";
       if (obj.objModel) {
@@ -474,7 +476,7 @@ const AddGroupObj =  (
       object.receiveShadow = obj.receiveShadow;
       return object;
     case "point":
-      object["objName"] = "PointLight";
+      object["objName"] =obj.objName? obj.objName:"PointLight";
       object["objType"] = "Light";
       object["objPrimitive"] = "point";
       object["hashColor"] = "#ffffff";
@@ -485,7 +487,7 @@ const AddGroupObj =  (
       scene.add(object);
       return object;
     case "spot":
-      object["objName"] = "SpotLight";
+      object["objName"] =obj.objName? obj.objName:"SpotLight";
       object["objType"] = "Light";
       object["objPrimitive"] = "spot";
       object["hashColor"] = "#ffffff";
@@ -503,7 +505,7 @@ const AddGroupObj =  (
     case "hemisphere":
       let groundColor = 0xffffff;
       let intensity = 2;
-      object["objName"] = "HemisphereLight";
+      object["objName"] =obj.objName? obj.objName:"HemisphereLight";
       object["objType"] = "Light";
       object["objPrimitive"] = "hemisphere";
       object["hashColor"] = "#ffffff";
@@ -517,7 +519,7 @@ const AddGroupObj =  (
       return object;
     case "directional":
       let directionalintensity = 0.5;
-      object["objName"] = "DirectionalLight";
+      object["objName"] =obj.objName? obj.objName:"DirectionalLight";
       object["objType"] = "Light";
       object["objPrimitive"] = "directional";
       object["hashColor"] = "#ffffff";
@@ -529,7 +531,7 @@ const AddGroupObj =  (
       scene.add(object);
       return object;
     case "ambient":
-      object["objName"] = "AmbientLight";
+      object["objName"] =obj.objName? obj.objName:"AmbientLight";
       object["objType"] = "Light";
       object["objPrimitive"] = "ambient";
       object["hashColor"] = "#ffffff";
@@ -552,7 +554,7 @@ const AddGroupObj =  (
       });
       object = new THREE.Object3D();
       object.add(new THREE.Mesh(textgeometry, material));
-      object["objName"] = "Text";
+      object["objName"] =obj.objName? obj.objName:"Text";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "text";
       object["hashColor"] = "#ceecf0";
@@ -564,7 +566,7 @@ const AddGroupObj =  (
       return object;
     case "curvedimage":
       let geometryCurvedimage = updateGeometry('CylinderBufferGeometry',{},geometryParams);
-      object["objName"] = "CurvedImage";
+      object["objName"] =obj.objName? obj.objName:"CurvedImage";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "curvedimage";
       object["hashColor"] = obj.hashColor || "#ef2d5e";

@@ -2,11 +2,11 @@ import React from "react";
 import styled from "styled-components";
 
 const Number = props => {
-  return <Input type="number" style={props.style||{}} value={props.value} onChange={props.onChange} data-name={props.name||""} />;
+  return <Input type="number" style={props.style||{}} value={props.value} onChange={props.onChange} data-name={props.name||""} Width={props.Width} />;
 };
 
 const Input = styled.input`
-  width: 36px;
+  width: ${props=>props.Width?`${props.Width}px`:`36px`};
   height: 25px;
   border: 2px solid #dbdbdb !important;
   background: #dbdbdb;

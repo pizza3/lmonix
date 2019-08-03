@@ -2,8 +2,8 @@ import React ,{Component} from 'react';
 import styled from 'styled-components';
 import Trigger from 'rc-trigger'
 import TextureDropdown from './TextureDropdown'
-import Cross from '../../../assets/cross.svg'
 import _ from 'lodash'
+import { cross } from '../../../assets/icon';
 export default class Texture extends Component{
     state = {
         currentTexture:'Add Texture',
@@ -70,7 +70,9 @@ export default class Texture extends Component{
                         {isTexture?content:'Add Texture'}
                     </Input>
                 </Trigger>
-                {isTexture?<Delete src={Cross} onClick={this.removeTexture}/>:null}
+                {isTexture?<Delete onClick={this.removeTexture} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    {cross()}
+                </Delete>:null}
             </Container>
         )
     }
@@ -110,7 +112,7 @@ const Input = styled.div`
     text-overflow: ellipsis;
     cursor: pointer;
 `
-const Delete = styled.img`
+const Delete = styled.svg`
     position: absolute;
     width: 21px;
     right: 8px;

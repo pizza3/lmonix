@@ -11,20 +11,23 @@ import Trigger from "rc-trigger";
 import {
   genericProperties,
   directions,
-  easeFuncsList
+  easeFuncsList,
+  basicAnimationsConfig
 } from "../Helpers/helpers";
 export default class AnimDropdown extends Component {
   // over here we have basic/common props needed for animation
   state = {
+    name: "",
     property: "rotation",
     delay: 0,
     duration: 1000,
     direction: "normal",
-    ease: "linear",
+    easing: "linear",
     loop: true,
     loopValue: 0,
     from: null,
-    to: null
+    to: null,
+    elasticity:0
   };
 
   componentDidMount() {
@@ -32,49 +35,96 @@ export default class AnimDropdown extends Component {
   }
 
   handleChange = e => {
-    e.persist();
-    const name = e.target.dataset.name;
-    const value = e.target.value;
-    this.setState({
-      [name]: value
-    });
+    if(e.persist)
+    e.persist();    
+    const { from, to, property } = this.state;
+    let propname = e.name || e.target.dataset.name || e.target.name;
+    let value = e.value ||  e.target.value ;
+    propname = propname.toLowerCase();
+    if (
+      property === "rotation" ||
+      property === "position" ||
+      property === "scale"
+    ) {
+      let prop = propname[propname.length - 1];
+      if (propname.includes("from")) {
+        propname = "from";
+        value = {
+          ...from,
+          [prop]: value
+        };
+      } else if (propname.includes("to")) {
+        propname = "to";
+        value = {
+          ...to,
+          [prop]: value
+        };
+      }
+    }
+    else if(property === "color" || property === "opacity"){
+      if (propname.includes("from")) {
+        propname = 'from'
+      }
+      else if (propname.includes("to")) {
+        propname = 'to'
+      }
+    }
+    if (propname === "property") {
+      this.setProprtyUpdate(value, this.state.name);
+    }
+    this.setState(
+      {
+        [propname]: value
+      },
+      () => {
+        this.props.updateAnimate(this.state, this.props.index);
+      }
+    );
   };
 
+  setProprtyUpdate = (property, name) => {
+    const { active } = this.props;
+    let from = basicAnimationsConfig[property].from,
+      to = basicAnimationsConfig[property].to;
+    if (property === "position" || property === "scale") {
+      from = active[property];
+      to = {
+        ...active[property],
+        y: active[property].y + 1
+      };
+    } else if (property === "color") {
+      from = active.hashColor;
+    }
+    else if (property === "opacity") {
+      from = active.children[0].material.opacity;
+    }
+    this.setState({
+      ...basicAnimationsConfig[property],
+      name,
+      from,
+      to
+    });
+  };
   setComponentProp = () => {
     const { data } = this.props;
-    const {
-      property,
-      delay,
-      duration,
-      direction,
-      ease,
-      loop,
-      loopValue
-    } = data;
-    let from, to;
-    // if(property==='rotation'&&property==='translate'&&property==='rotation'){
-    //     from = {
-    //         x:
-    //     }
-    // }
     this.setState({
-      property,
-      delay,
-      duration,
-      direction,
-      ease,
-      loop,
-      loopValue
+      ...data
     });
   };
 
   render() {
-    const { property, delay, direction, ease, duration, loop } = this.state;
-    const { name, data } = this.props;
-    const customStyle={
-        background: '#bdbdbd',
-        color: '#6d6d6d'
-    }
+    const {
+      property,
+      delay,
+      direction,
+      easing,
+      duration,
+      loop,
+      from,
+      to,
+      elasticity
+    } = this.state;
+    const { name } = this.props;
     const propoptions = _.map(genericProperties, (prop, index) => {
       return (
         <optgroup key={index} label={index}>
@@ -114,7 +164,6 @@ export default class AnimDropdown extends Component {
                 <PropertyContainer>
                   <PropertyName>Property</PropertyName>
                   <Select
-                    style={customStyle}
                     value={property}
                     onChange={this.handleChange}
                     options={propoptions}
@@ -122,27 +171,37 @@ export default class AnimDropdown extends Component {
                   />
                 </PropertyContainer>
 
-                <From name={"From"} property={property} />
-                <From name={"To"} property={property} />
+                <From
+                  name={"From"}
+                  property={property}
+                  data={from}
+                  onChange={this.handleChange}
+                />
+                <From
+                  name={"To"}
+                  property={property}
+                  data={to}
+                  onChange={this.handleChange}
+                />
               </AnimConfigSeperator>
               <AnimConfigSeperator>
                 <PropertyContainer>
                   <PropertyName>Duration</PropertyName>
                   <EntitySymbol>(ms)</EntitySymbol>
                   <Number
-                    style={customStyle}
                     value={duration}
                     onChange={this.handleChange}
                     name={"duration"}
+                    Width={86}
                   />
                 </PropertyContainer>
                 <PropertyContainer>
                   <PropertyName>Delay</PropertyName>
                   <EntitySymbol>(ms)</EntitySymbol>
                   <Number
-                    style={customStyle}
                     value={delay}
                     onChange={this.handleChange}
+                    Width={86}
                     name={"delay"}
                   />
                 </PropertyContainer>
@@ -151,7 +210,6 @@ export default class AnimDropdown extends Component {
                 <PropertyContainer>
                   <PropertyName>Direction</PropertyName>
                   <Select
-                    style={customStyle}
                     value={direction}
                     onChange={this.handleChange}
                     options={diroptions}
@@ -161,24 +219,32 @@ export default class AnimDropdown extends Component {
                 <PropertyContainer>
                   <PropertyName>Loop</PropertyName>
                   <Switch
-                    style={customStyle}
-                    value={loop}
+                    checked={loop}
                     onChange={this.handleChange}
                     name={"loop"}
                   />
                 </PropertyContainer>
               </AnimConfigSeperator>
-
-              <PropertyContainer>
-                <PropertyName>Easing</PropertyName>
-                <Select
-                  style={customStyle}
-                  value={ease}
-                  onChange={this.handleChange}
-                  options={easeOptions}
-                  name={"ease"}
-                />
-              </PropertyContainer>
+              <AnimConfigSeperator>
+                <PropertyContainer>
+                  <PropertyName>Easing</PropertyName>
+                  <Select
+                    value={easing}
+                    onChange={this.handleChange}
+                    options={easeOptions}
+                    name={"easing"}
+                  />
+                </PropertyContainer>
+                <PropertyContainer>
+                  <PropertyName>Elasticity</PropertyName>
+                  <Number
+                    value={elasticity}
+                    onChange={this.handleChange}
+                    name={"elasticity"}
+                    Width={86}
+                  />
+                </PropertyContainer>
+              </AnimConfigSeperator>
             </AnimConfigDropdown>
           }
           prefixCls="dropdown"
@@ -259,7 +325,6 @@ const AnimConfigTitle = styled.div`
 const AnimConfigSeperator = styled.div`
   position: relative;
   float: left;
-  background: #dcdcdc;
   border-radius: 3px;
   padding-left: 5px;
   padding-bottom: 7px;

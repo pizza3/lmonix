@@ -1,7 +1,11 @@
 import * as THREE from '../ThreeLibManager';
+const fs = window.require("fs");
 
 
-const videoLoader = (data)=>{
+const videoLoader = (path)=>{
+    let data =
+    "data:video/webm;base64," +
+    fs.readFileSync(path).toString("base64");
     let video = document.createElement( 'video' );
         video.src = data;
         video.width = 640;

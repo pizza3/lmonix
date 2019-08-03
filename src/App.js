@@ -10,7 +10,7 @@ import * as THREE from "./components/ThreeLibManager";
 import TransformControls from "./components/Transform";
 import TrackballControls from "./components/TrackballControls";
 import { message } from "antd";
-import { JSDOM } from "jsdom";
+// import { JSDOM } from "jsdom";
 import ThreeProvider from "./ThreeProvider";
 const electron = window.require("electron");
 
@@ -24,7 +24,7 @@ class App extends Component {
     activeObj: null,
     objPresent: [],
     assetStack: [],
-    code: "",
+    code: "// Add your javascript over here 🙃",
     htmlCode: "",
     isDefaultLights: true,
     isCursor: false,
@@ -38,7 +38,6 @@ class App extends Component {
     activeStack: [],
     copyObj: null,
     editState: [],
-    animate: {}
   };
   objPresent = [];
   componentDidMount() {
@@ -52,8 +51,8 @@ class App extends Component {
             break;
           case "extractThreeData":
             electron.ipcRenderer.send("reciveThreeData", {
-              data: this.state.objPresent,
-              state: this.state
+              // data: this.state.objPresent,
+              // state: this.state
             });
             break;
 
@@ -112,8 +111,8 @@ class App extends Component {
             });
             break;
           case "updateCodeHtml":
-            let dom = new JSDOM(val["code"]);
-            console.log(dom.window.document.body);
+            // let dom = new JSDOM(val["code"]);
+            // console.log(dom.window.document.body);
             this.setState({
               htmlCode: val["code"]
             });
@@ -140,7 +139,7 @@ class App extends Component {
             });
             break;
           case "pasteObj":
-            this.reloadProject3D(this.state.copyObj, this.active);
+            this.paste3DObject(this.state.copyObj, this.active);
             break;
           case "animate":
             this.setAnimate()
@@ -153,17 +152,20 @@ class App extends Component {
     );
   }
   setAnimate = () => {
-    const { animate, active } = this.state;
-    const value = animate[active.objName]
-      ? [ ...animate[active.objName], basicAnimationsConfig ]
-      : [basicAnimationsConfig];
+    const { active } = this.state;
+    let copy = _.clone(basicAnimationsConfig.rotation)
+    copy.name=`Animation_${active.objAnimate.length+1}`
+    this.active.objAnimate =[...active.objAnimate,copy]
     this.setState({
-      animate: {
-        ...animate,
-        [active.objName]: value
-      }
+      active: this.active
     });
   };
+  updateAnimate = (data, index)=>{
+    this.active.objAnimate[index] = data
+    this.setState({
+      active: this.active
+    });
+  }
   setSceneObject = (scene, transformControls) => {
     this.setState({ scene, transformControls });
   };
@@ -180,10 +182,12 @@ class App extends Component {
     this.renderer.setSize(width, height);
   };
   addInScene = obj => {
-    const activeObj = this.state.objPresent.length;
+    const { objPresent, activeStack, numberOfObj } = this.state
+    const activeObj = objPresent.length;
     this.objPresent.push(obj);
-    this.active = obj;
-    const { activeStack } = this.state;
+    this.active = obj;    
+    const entityNumber = this.setNumberOfObj(obj)
+    obj.objName = `${obj.objName}_${entityNumber}`
     this.setState(
       {
         activeObj,
@@ -197,6 +201,28 @@ class App extends Component {
       }
     );
   };
+  setNumberOfObj = (obj)=>{
+    const { numberOfObj } = this.state
+    if(numberOfObj[obj.objName]){
+      let number = numberOfObj[obj.objName]+1
+      this.setState({
+        numberOfObj:{
+          ...numberOfObj,
+          [obj.objName]:number
+        }
+      })
+      return number
+    }
+    else{
+      this.setState({
+        numberOfObj:{
+          ...numberOfObj,
+          [obj.objName]:1
+        }
+      })
+      return 1
+    }
+  }
   reloadProject = (data, num, parent) => {
     let objData = [];
     this.clearScene();
@@ -209,6 +235,8 @@ class App extends Component {
         val.rotation,
         val.scale
       );
+      const entityNumber = this.setNumberOfObj(object)
+      object.objName = `${object.objName}_${entityNumber}`        
       this.reloadProject(val.children.slice(1), num + 1, object);
       if (!num > 0) {
         objData.push(object);
@@ -216,7 +244,7 @@ class App extends Component {
     });
     return objData;
   };
-  reloadProject3D = (data, parent) => {
+  paste3DObject = (data, parent) => {
     let newParent = AddGroupObj(
       data,
       data.objPrimitive,
@@ -225,10 +253,12 @@ class App extends Component {
       data.rotation,
       data.scale
     );
+    const entityNumber = this.setNumberOfObj(newParent)
+    newParent.objName = `${newParent.objName}_${entityNumber}`      
     if (data.children.length >= 2) {
       _.forEach(data.children, (val, i) => {
         if (i !== 0) {
-          this.reloadProject3D(val, newParent);
+          this.paste3DObject(val, newParent);
         }
       });
     }
@@ -255,7 +285,7 @@ class App extends Component {
     });
     this.active.add(light);
     _.forEach(copy, val => {
-      this.reloadProject3D(val, this.active);
+      this.paste3DObject(val, this.active);
     });
     this.setState({
       active: this.active
@@ -572,7 +602,7 @@ class App extends Component {
         <Route
           path="/code"
           render={() => (
-            <VrRenderer {...this.state} updateCode={this.updateCode} />
+            <VrRenderer {...this.state} updateCode={this.updateCode} updateAnimate={this.updateAnimate} />
           )}
         />
       </ThreeProvider>

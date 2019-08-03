@@ -6,7 +6,7 @@ const Range = props => {
     <RangeStyle
       className="slider"
       id="opacity"
-      data-name="opacity"
+      data-name={props.name || ""}
       type="range"
       min={props.min}
       max={props.max}

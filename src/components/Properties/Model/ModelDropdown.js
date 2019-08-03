@@ -19,42 +19,42 @@ export default class MenuDropdown extends Component {
     const data =
       "data:video/webm;base64," +
       fs.readFileSync(assetStack[i].path).toString("base64");
-    const data2 =
-      "data:video/webm;base64," +
-      fs
-        .readFileSync(assetStack[i].path.replace("obj", "mtl"))
-        .toString("base64");
-    const materials = new MTLLoader();
-    let objPresent;
-    modelLoader(this.props.active, {name:assetStack[i].name.replace(/[\W_]+/g, "") })
+    // const data2 =
+    //   "data:video/webm;base64," +
+    //   fs
+    //     .readFileSync(assetStack[i].path.replace("obj", "mtl"))
+    //     .toString("base64");
+    // const materials = new MTLLoader();
+    // let objPresent;
+    // modelLoader(this.props.active, {name:assetStack[i].name.replace(/[\W_]+/g, "") })
     // materials.load(data2, function(material) {
     //   material.preload();
     //   const loader = new THREE.OBJLoader();
     //   loader.setMaterials(material);
     //   // Load the resource
-    //   loader.load(
-    //     data,
-    //     function(object) {
-    //       object.material={}
-    //       changeObjectProp(object, "", "addObject");
-    //       changeObjectProp(
-    //         {
-    //           path: assetStack[i].path,
-    //           type: ".obj",
-    //           name: assetStack[i].name.replace(/[\W_]+/g, "")
-    //         },
-    //         "objModel"
-    //       );
-    //     },
-    //     function(xhr) {
-    //       // Loading is in progress
-    //       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-    //     },
-    //     function(error) {
-    //       console.log("An error happened");
-    //       console.log(error);
-    //     }
-    //   );
+    Loader.load(
+        data,
+        function(object) {
+          // object.material={}
+          changeObjectProp(object, "", "addObject");
+          changeObjectProp(
+            {
+              path: assetStack[i].path,
+              type: ".obj",
+              name: assetStack[i].name.replace(/[\W_]+/g, "")
+            },
+            "objModel"
+          );
+        },
+        function(xhr) {
+          // Loading is in progress
+          console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+        },
+        function(error) {
+          console.log("An error happened");
+          console.log(error);
+        }
+      );
     // });
     
               changeObjectProp(

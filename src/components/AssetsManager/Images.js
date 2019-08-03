@@ -1,7 +1,6 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
-import add from '../../assets/add.svg';
-import trash from '../../assets/trash.svg';
+// import add from '../../assets/add.svg';
 import _ from 'lodash'
 import Trigger from 'rc-trigger'
 import Poly from './Poly'
@@ -29,7 +28,7 @@ export default class Images extends Component{
             <Wrapper>
                 <Header>
                     <Title>{this.props.titleName}</Title>
-                    <Add src={add} onClick={this.handleAddAsset}/>
+                    {/* <Add src={add} onClick={this.handleAddAsset}/> */}
                 </Header>
                 {this.props.titleName==='Models'?
                     <Trigger action={['click']} popup={<div><Poly title={this.props.title}/></div>} prefixCls='dropdown' 

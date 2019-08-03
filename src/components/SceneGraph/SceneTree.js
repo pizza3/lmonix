@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import arrowWhite from "../../assets/arrowWhite.svg";
-import arrow from "../../assets/arrow.svg";
+// import arrowWhite from "../../assets/arrowWhite.svg";
+// import arrow from "../../assets/arrow.svg";
+
+import {arrow} from '../../assets/icon'
 import _ from "lodash";
 export default class SceneTree extends Component {
   state = {
@@ -124,10 +126,11 @@ export default class SceneTree extends Component {
           {obj.children.length > 1 ? (
             <ArrowContainer onClick={this.showGroup}>
               <ArrowImage
-                src={isActive ? arrowWhite : arrow}
-                alt={"open"}
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3.653 6.39"
                 showGroup={this.state.showGroup}
-              />
+              >
+                {arrow(isActive?"#ffffff":"#828282")}
+              </ArrowImage>
             </ArrowContainer>
           ) : null}
         </SceneGraphEl>
@@ -145,15 +148,16 @@ const Container = styled.div`
 `;
 
 const ArrowContainer = styled.button`
-  position: relative;
-  float: right;
-  width: 13px;
-  height: 15px;
-  border: none;
-  background: transparent;
+    position: absolute;
+    width: 13px;
+    right: 2px;
+    top: 4px;
+    height: 15px;
+    border: none;
+    background: transparent;
 `;
 
-const ArrowImage = styled.img`
+const ArrowImage = styled.svg`
   width: 5px;
   transform: ${props => (props.showGroup ? "rotate(90deg)" : "rotate(0deg)")};
 `;
