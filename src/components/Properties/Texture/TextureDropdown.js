@@ -2,11 +2,24 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import * as THREE from "../../ThreeLibManager";
 import { texture } from "../../../assets/icon";
+import { message} from 'antd'
 const fs = window.require("fs");
+const electron =  window.require('electron');
+
+const videoExt = [".webm",".mp4"]
+const imageExt = [".jpg",".webp",".png"]
 export default class MenuDropdown extends Component {
   addModel = obj => {
     this.props.addInScene(obj);
   };
+  handleAddAsset=()=>{
+    if(this.props.location!=='untitled*'){
+      electron.ipcRenderer.send("open-asset-modal",{location:this.props.location, filter:this.props.filterBy})
+    }
+    else{
+      message.warning("Project not saved, save it to add asset's.",7)
+    }
+}
   handleTexture = i => {
     const type = this.props.active.objPrimitive
     const data =
@@ -61,14 +74,7 @@ export default class MenuDropdown extends Component {
   render() {
     const { assetStack } = this.props;
     const Textures = assetStack.map((val, i) => {
-      if (
-        val.ext === ".jpg" ||
-        val.ext === ".webp " ||
-        val.ext === ".png" ||
-        val.ext === ".mtl" ||
-        val.ext === ".mp4" ||
-        val.ext === ".webm"
-      ) {
+      if ([...imageExt,...videoExt].includes(val.ext)) {
         return (
           <ObjButton
             key={i}
@@ -77,16 +83,20 @@ export default class MenuDropdown extends Component {
               this.handleTexture(i);
             }}
           >
-            <Img src={val.base} />
-            <Text>{val.name}</Text>
+            {val.ext==='.mp4'?<Video autoplay muted>
+            <source src={"data:video/mp4;base64," +val.data} type="video/mp4"/>
+            </Video>: <Img src={"data:video/webm;base64," +val.data} />}
+            <Text><Span>Name: </Span>{val.name}</Text>
+            <Text><Span>Type: </Span>{val.ext}</Text>
           </ObjButton>
         );
       }
     });
     return (
       <Container>
+        <Button onClick={this.handleAddAsset}>Add Texture</Button>
         {Textures.length ? (
-          Textures
+          <TextureContainer id="customScrollbar">{Textures}</TextureContainer>
         ) : (
           <>
             <TextureIcon>{texture}</TextureIcon>
@@ -101,20 +111,47 @@ export default class MenuDropdown extends Component {
 }
 
 const Container = styled.div`
-  position: fixed;
+  position: relative;
   overflow: auto;
   background: #f7f7f7;
   border: 2px solid #dbdbdb;
-  width: 200px;
-  height: 180px;
+  width: 255px;
+  height: 255px;
   z-index: 1;
   border-radius: 4px;
-  box-shadow: 0px 0px 24px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 35px -12px rgba(0, 0, 0, 0.75);
 `;
+
+const Button = styled.button`
+    width: 100%;
+    height: 26px;
+    background: #2F79EF;
+    color: #fff;
+    position: absolute;
+    bottom: 0px;
+    border: none;
+    font-size: 9px;
+    font-weight: 600;
+    outline: none;
+    transition: 0.3s;
+  &:hover {
+    background: #1a66e0;
+    color: #fff;
+  }
+`;
+
+const Span = styled.span`
+    font-size: 13px;
+    font-weight: 700;
+    float: left;
+    margin-right: 5px;
+    
+`
+
 
 const ObjButton = styled.button`
   width: 100%;
-  height: 46px;
+  height: 76px;
   border: none;
   border-bottom: 1px solid #dbdbdb;
   background: none;
@@ -129,22 +166,39 @@ const ObjButton = styled.button`
   text-overflow: ellipsis;
   padding: 6px;
   &:hover {
-    background: #dbdbdb;
-    color: #2f79ef;
+    background: #e4e4e4;
+    color: #1a66e0;
   }
 `;
 
 const Img = styled.img`
-  width: auto;
-  height: 34px;
+    height: auto;
+    width: 62px;
   float: left;
   position: relative;
 `;
 
-const Text = styled.span`
-  top: 10px;
+const Video = styled.video`
+  width: auto;
+  height: 62px;
+  float: left;
   position: relative;
-  margin-left: 11px;
+
+`
+const Text = styled.span`
+    top: 0px;
+    position: relative;
+    font-size: 11px;
+    width: 173px;
+    float: left;
+    font-weight: 400;
+    padding-left: 11px;
+    text-align: left;
+    margin-top: 4px;
+    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 `;
 
 const TextureIcon = styled.div`
@@ -161,3 +215,10 @@ const Message = styled.div`
   color: #a9a9a9;
   padding: 22px;
 `;
+
+const TextureContainer = styled.div`
+    position: relative;
+    overflow: auto;
+    height: calc(100% - 26px);
+
+`

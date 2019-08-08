@@ -65,6 +65,8 @@ export const updateGeometry = (type, obj, value) => {
 };
 
 export const updateLights = (type, obj) => {
+  console.log(obj);
+  
   switch (type) {
     case "AmbientLight":
       return new THREE.AmbientLight("#ffffff");
@@ -214,13 +216,11 @@ export const createScene = (threeData = [], animate = {}) => {
     } else if (val.objType === "Light") {
       dataString += `<a-entity id="${val.objName}" light="type: ${
         val.objPrimitive
-      }; color: ${val.hashColor}; intensity: ${
-        val.children[0].intensity
-      }" position="${val.position.x} ${val.position.y} ${
+      }; color: ${val.hashColor}; ${generateLigtProps(val.children[0])}" position="${val.position.x} ${val.position.y} ${
         val.position.z
       }" rotation="${val.rotation._x * (180 / 3.14)} ${val.rotation._y *
         (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"          
-        visible="${val.visible}" 
+        visible="${val.visible}"
         >
         ${createScene(val.children.slice(1))}
         </a-entity>`;
@@ -253,14 +253,26 @@ export const createScene = (threeData = [], animate = {}) => {
   return dataString;
 };
 
+const generateLigtProps = (object)=>{
+  let data = ""
+  const props = ['intensity','angle','distance','decay', 'penumbra', 'castShadow']
+  _.forEach(props, (val)=>{
+    if(object[val]){
+      let objValue = object[val]
+      if(val==='angle'){
+        objValue = object[val] * (180 / 3.14)
+      }
+      data += `${val}: ${objValue};`
+    }
+  })
+  return data
+
+}
+
 // obj-model="obj: 
 //       ${
 //         val.objModel ? "#" + val.objModel.name : ""
 //       };"  
-
-
-
-// animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 10000;"
 
 const setGeometryAframe = obj => {
   let str = "";
@@ -275,19 +287,28 @@ export const aframeTemplate = (
   sceneArr,
   animate,
   title,
-  isCursor,
-  isDefaultLights = true
+  isCursor = false,
+  isDefaultLights = true,
+  script = ""
 ) => {
   // a new template is only been made on when assets are added, a new project got created, project got saved.
   return `<html><head><meta content="text/html;charset=utf-8" http-equiv="Content-Type"><meta content="utf-8" http-equiv="encoding">
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script>
-  </head><body><a-scene light="defaultLightsEnabled: true"><a-camera>${
+  </head><body><a-scene vr-mode-ui="enabled: false" light="defaultLightsEnabled: false"><a-camera>${
     isCursor ? `<a-cursor></a-cursor>` : ``
   }</a-camera><a-assets>${createAssets(
     assetArr,
     title
-  )}</a-assets>${createScene(sceneArr, animate)}</a-scene>
+  )}</a-assets>
+  ${isDefaultLights?
+    `<a-entity light="type: ambient; color: #BBB" shadow="cast:true" ></a-entity>
+    <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1" shadow="cast:true"></a-entity>`
+  :""}
+  ${createScene(sceneArr, animate)}</a-scene>
+  <script type='text/javascript'>
+  ${script}
+  </script>
   </body></html>
   `;
 };

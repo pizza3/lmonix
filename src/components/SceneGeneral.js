@@ -21,8 +21,10 @@ const SceneGraphContainer = styled.div`
     position:relative;
     float:left;
     width: 191px;
-    height: 100%;
+    height: calc(100vh - 37px);
     z-index: 90;
+    margin-left: 41px;
+    margin-top: 37px;
     background: #F7F7F7;
     border-right: 2px solid #DBDBDB;
 `

@@ -34,9 +34,10 @@ export default class Lights extends Component {
   }
 
   handleChange = event => {
+    const {active}=this.props
     this.setState({ value: event.target.value });
     const type = primitiveMap[event.target.value];
-    const Lights = updateLights(event.target.value)
+    const Lights = updateLights(event.target.value, active.children[0])
     this.props.replaceLights(Lights,type);
   };
 

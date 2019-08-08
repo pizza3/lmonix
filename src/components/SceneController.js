@@ -41,18 +41,6 @@ export default class SceneController extends Component {
 
   render() {
     const { activeLogo } = this.state;
-    const SceneControllerContainer = styled.div`
-      position: absolute;
-      z-index: 102;
-      width: 37px;
-      height: 166px;
-      overflow: auto;
-      left: 232px;
-      border: 2px solid #e0e0e0;
-      border-top: none;
-      border-radius: 4px;
-      margin: 16px;
-    `;
     return (
       <SceneControllerContainer>
         <Trigger
@@ -249,4 +237,17 @@ const TooltipBody = styled.div`
   position: relative;
   font-weight: 600;
   font-size: 10px;
+`;
+
+const SceneControllerContainer = styled.div`
+  position: fixed;
+  z-index: 102;
+  width: 37px;
+  height: 166px;
+  overflow: auto;
+  left: 235px;
+  border: 2px solid #e0e0e0;
+  border-top: none;
+  border-radius: 4px;
+  margin: 16px;
 `;

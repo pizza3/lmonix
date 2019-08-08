@@ -338,76 +338,85 @@ function SetPopMenu(mainWindow, win) {
       },
     )
   )
-  mainWindow.on("context-menu", (e, params) => {
-    menu.popup(win, params.x, params.y);
-  });
+  // mainWindow.on("context-menu", (e, params) => {
+  //   menu.popup(win, params.x, params.y);
+  // });
   ipcMain.on("show-context-menu", (event, arg) => {
-    this.objNum = arg["dataNo"];
+    // this.objNum = arg["dataNo"];
+    console.log('ipcRenderer')
     const win = BrowserWindow.fromWebContents(event.sender);
     menu.popup(win);
   });
-  ipcMain.on("open-asset-modal", (event, arg) => {
-    const location = arg;
-    showAddDialog(mainWindow, location);
-  });
+  // return menu 
+  // ipcMain.on("open-asset-modal", (event, arg) => {
+  //   const location = arg;
+  //   showAddDialog(mainWindow, location);
+  // });
 
-  ipcMain.on("startlocal", (event, arg) => {
-    const { location } = arg;
-    const PORT = 9999;
-    const indexFile = () => fs.readFileSync(location + "/index.html");
-    const jsFile = () => fs.readFileSync(location + "/scripts/index.js");
-    // html file
-    expressapp.get("/", (req, res) => {
-      res.setHeader("Content-Type", "text/html");
-      res.send(indexFile());
-    });
-    // js file
-    expressapp.get("/scripts/index.js", (req, res) => {
-      res.setHeader("Content-Type", "text/javascript");
-      res.send(jsFile());
-    });
-    // asset file
-    expressapp.use("/Assets", express.static(location + "/Assets"));
-    // start local server
-    (async () => {
-      expressapp.listen(PORT, () =>
-        console.log(`App listening on port ${PORT}!`)
-      );
-    })();
-    let ip = "";
-    var networkInterfaces = Object.values(os.networkInterfaces())
-      .reduce((r, a) => {
-        r = r.concat(a);
-        return r;
-      }, [])
-      .filter(({ family, address }) => {
-        return (
-          family.toLowerCase().indexOf("v4") >= 0 && address !== "127.0.0.1"
-        );
-      })
-      .map(({ address }) => address);
-    ip = networkInterfaces.join(", ");
-    mainWindow.webContents.send("ipcRenderer", { option: "updateIP", ip: ip });
-  });
+  // ipcMain.on("startlocal", (event, arg) => {
+  //   const { location } = arg;
+  //   const PORT = 9999;
+  //   const indexFile = () => fs.readFileSync(location + "/index.html");
+  //   const jsFile = () => fs.readFileSync(location + "/scripts/index.js");
+  //   // html file
+  //   expressapp.get("/", (req, res) => {
+  //     res.setHeader("Content-Type", "text/html");
+  //     res.send(indexFile());
+  //   });
+  //   // js file
+  //   expressapp.get("/scripts/index.js", (req, res) => {
+  //     res.setHeader("Content-Type", "text/javascript");
+  //     res.send(jsFile());
+  //   });
+  //   // asset file
+  //   expressapp.use("/Assets", express.static(location + "/Assets"));
+  //   // start local server
+  //   (async () => {
+  //     server = expressapp.listen(PORT, () =>
+  //       console.log(`App listening on port ${PORT}!`)
+  //     );
+  //   })();
+  //   let ip = "";
+  //   var networkInterfaces = Object.values(os.networkInterfaces())
+  //     .reduce((r, a) => {
+  //       r = r.concat(a);
+  //       return r;
+  //     }, [])
+  //     .filter(({ family, address }) => {
+  //       return (
+  //         family.toLowerCase().indexOf("v4") >= 0 && address !== "127.0.0.1"
+  //       );
+  //     })
+  //     .map(({ address }) => address);
+  //   ip = networkInterfaces.join(", ");
+  //   mainWindow.webContents.send("ipcRenderer", { option: "updateIP", ip: ip });
+  // });
 
-  ipcMain.on("stoplocal", () => {
-    server.close();
-  });
+  // ipcMain.on("stoplocal", () => {
+  //   server.close();
+  // });
 
-  ipcMain.on("addModel", (event, arg) => {
-    const objPath = `${arg.title}/Assets/${arg.name}.obj`;
-    const writer = fs.createWriteStream(objPath);
-    console.log(arg.obj.resources);
-    https.get(arg.obj.root.url, function(response) {
-      const stream = response.pipe(writer);
-      stream.on('complete', function() {
-        console.log('Downloaded successfully');
-      });
-    });
-    const mtlPath = `${arg.title}/Assets/${arg.name}.mtl`;
-    const writer2 = fs.createWriteStream(mtlPath);
-    https.get(arg.obj.resources[0].url, function(response) {
-      response.pipe(writer2);
-    });
-  });
+  // ipcMain.on("addModel", (event, arg) => {
+  //   const objPath = `${arg.title}/Assets/${arg.name}.obj`;
+  //   const writer = fs.createWriteStream(objPath);
+  //   console.log(arg.obj.resources);
+  //   // https.get(arg.obj.root.url, function(response) {
+  //   //   const stream = response.pipe(writer);
+  //   //   stream.on('complete', function() {
+  //   //   });
+  //   // });
+  //   expressapp.get(arg.obj.root.url, function(req, res){
+  //     const file = `${arg.title}/Assets/${arg.name}.obj`;
+  //     res.download(file); // Set disposition and send it.
+  //     console.log('Downloaded successfully');
+  //     const stream = res.pipe(writer);
+
+  //   });
+    
+  //   // const mtlPath = `${arg.title}/Assets/${arg.name}.mtl`;
+  //   // const writer2 = fs.createWriteStream(mtlPath);
+  //   // https.get(arg.obj.resources[0].url, function(response) {
+  //   //   response.pipe(writer2);
+  //   // });
+  // });
 }

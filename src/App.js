@@ -9,6 +9,10 @@ import { basicAnimationsConfig } from "./components/Helpers/helpers";
 import * as THREE from "./components/ThreeLibManager";
 import TransformControls from "./components/Transform";
 import TrackballControls from "./components/TrackballControls";
+import MenuBar from "./components/MenuBar/index";
+import SceneLayer from "./components/SceneGraph/SceneLayer";
+import SceneGeneral from "./components/SceneGeneral";
+
 import { message } from "antd";
 // import { JSDOM } from "jsdom";
 import ThreeProvider from "./ThreeProvider";
@@ -38,6 +42,7 @@ class App extends Component {
     activeStack: [],
     copyObj: null,
     editState: [],
+    setMode: true
   };
   objPresent = [];
   componentDidMount() {
@@ -111,8 +116,6 @@ class App extends Component {
             });
             break;
           case "updateCodeHtml":
-            // let dom = new JSDOM(val["code"]);
-            // console.log(dom.window.document.body);
             this.setState({
               htmlCode: val["code"]
             });
@@ -142,30 +145,36 @@ class App extends Component {
             this.paste3DObject(this.state.copyObj, this.active);
             break;
           case "animate":
-            this.setAnimate()
+            this.setAnimate();
             break;
           default:
-            console.log("default");
+            // console.log("default");
             break;
         }
       }.bind(this)
     );
   }
+  changeSetMode = setMode => {
+    this.setState({
+      setMode
+    });
+  };
+
   setAnimate = () => {
     const { active } = this.state;
-    let copy = _.clone(basicAnimationsConfig.rotation)
-    copy.name=`Animation_${active.objAnimate.length+1}`
-    this.active.objAnimate =[...active.objAnimate,copy]
+    let copy = _.clone(basicAnimationsConfig.rotation);
+    copy.name = `Animation_${active.objAnimate.length + 1}`;
+    this.active.objAnimate = [...active.objAnimate, copy];
     this.setState({
       active: this.active
     });
   };
-  updateAnimate = (data, index)=>{
-    this.active.objAnimate[index] = data
+  updateAnimate = (data, index) => {
+    this.active.objAnimate[index] = data;
     this.setState({
       active: this.active
     });
-  }
+  };
   setSceneObject = (scene, transformControls) => {
     this.setState({ scene, transformControls });
   };
@@ -175,19 +184,24 @@ class App extends Component {
     });
   };
   handleResize = () => {
-    const width = window.innerWidth - 466;
+    const { objPresent } = this.state;    
+    const width = objPresent.length!==0
+      ? window.innerWidth - 232
+      : window.innerWidth - 466;
     const height = window.innerHeight - 37;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
   };
-  addInScene = obj => {
-    const { objPresent, activeStack, numberOfObj } = this.state
+  addInScene = obj => {    
+    const { objPresent, activeStack } = this.state;
     const activeObj = objPresent.length;
+    if(objPresent.length===0)
+    this.handleResize()
     this.objPresent.push(obj);
-    this.active = obj;    
-    const entityNumber = this.setNumberOfObj(obj)
-    obj.objName = `${obj.objName}_${entityNumber}`
+    this.active = obj;
+    const entityNumber = this.setNumberOfObj(obj);
+    obj.objName = `${obj.objName}_${entityNumber}`;
     this.setState(
       {
         activeObj,
@@ -201,28 +215,27 @@ class App extends Component {
       }
     );
   };
-  setNumberOfObj = (obj)=>{
-    const { numberOfObj } = this.state
-    if(numberOfObj[obj.objName]){
-      let number = numberOfObj[obj.objName]+1
+  setNumberOfObj = obj => {
+    const { numberOfObj } = this.state;
+    if (numberOfObj[obj.objName]) {
+      let number = numberOfObj[obj.objName] + 1;
       this.setState({
-        numberOfObj:{
+        numberOfObj: {
           ...numberOfObj,
-          [obj.objName]:number
+          [obj.objName]: number
         }
-      })
-      return number
-    }
-    else{
+      });
+      return number;
+    } else {
       this.setState({
-        numberOfObj:{
+        numberOfObj: {
           ...numberOfObj,
-          [obj.objName]:1
+          [obj.objName]: 1
         }
-      })
-      return 1
+      });
+      return 1;
     }
-  }
+  };
   reloadProject = (data, num, parent) => {
     let objData = [];
     this.clearScene();
@@ -235,8 +248,8 @@ class App extends Component {
         val.rotation,
         val.scale
       );
-      const entityNumber = this.setNumberOfObj(object)
-      object.objName = `${object.objName}_${entityNumber}`        
+      const entityNumber = this.setNumberOfObj(object);
+      object.objName = `${object.objName}_${entityNumber}`;
       this.reloadProject(val.children.slice(1), num + 1, object);
       if (!num > 0) {
         objData.push(object);
@@ -244,7 +257,7 @@ class App extends Component {
     });
     return objData;
   };
-  paste3DObject = (data, parent) => {
+  paste3DObject = (data, parent, removeData) => {
     let newParent = AddGroupObj(
       data,
       data.objPrimitive,
@@ -253,14 +266,17 @@ class App extends Component {
       data.rotation,
       data.scale
     );
-    const entityNumber = this.setNumberOfObj(newParent)
-    newParent.objName = `${newParent.objName}_${entityNumber}`      
+    const entityNumber = this.setNumberOfObj(newParent);
+    newParent.objName = `${newParent.objName}_${entityNumber}`;
     if (data.children.length >= 2) {
       _.forEach(data.children, (val, i) => {
         if (i !== 0) {
           this.paste3DObject(val, newParent);
         }
       });
+    }
+    if (removeData) {
+      this.deleteObject();
     }
   };
   replaceGeometry = (geometry, type) => {
@@ -349,10 +365,9 @@ class App extends Component {
         document.getElementById("obj" + obj.uuid).addEventListener(
           "contextmenu",
           function(e) {
-            electron.ipcRenderer.send("show-context-menu", {
-              dataNo: this.state.activeKey
-            });
-          }.bind(this)
+            console.log('ipcRenderer')
+            electron.ipcRenderer.send("show-context-menu");
+          }
         );
       }
     );
@@ -377,7 +392,10 @@ class App extends Component {
   };
 
   initScene = () => {
-    this.width = window.innerWidth - 466;
+    const { isDefaultLights, objPresent } = this.state;
+    this.width = objPresent.length
+      ? window.innerWidth - 466
+      : window.innerWidth - 232;
     this.height = window.innerHeight - 37;
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.GridHelper(30, 30));
@@ -405,7 +423,13 @@ class App extends Component {
     this.container.appendChild(this.renderer.domElement);
     //render the scene
     this.renderer.render(this.scene, this.camera);
-    this.defaultLights();
+    // set trackballControls
+    this.trackballControls = new THREE.TrackballControls(
+      this.camera,
+      this.renderer.domElement
+    );
+    if (isDefaultLights) this.defaultLights();
+
     if (this.objPresent.length > 0) {
       // checks if the props alresdy consists of objects
       this.objPresent.map(obj => {
@@ -427,6 +451,11 @@ class App extends Component {
     this.directionalLight.visible = visible;
     this.scene.add(this.directionalLight);
     this.scene.add(this.ambientLight);
+    //Set up shadow properties for the light
+    this.directionalLight.shadow.mapSize.width = 5012; // default
+    this.directionalLight.shadow.mapSize.height = 5012; // default
+    this.directionalLight.shadow.camera.near = 0.5; // default
+    this.directionalLight.shadow.camera.far = 5000; // default
   }
 
   startanimateScene() {
@@ -453,10 +482,7 @@ class App extends Component {
 
   setController = posChange => {
     //trackball and transform controls initialise
-    this.trackballControls = new THREE.TrackballControls(
-      this.camera,
-      this.renderer.domElement
-    );
+
     this.transformControls = new THREE.TransformControls(
       this.camera,
       this.renderer.domElement,
@@ -555,23 +581,58 @@ class App extends Component {
     }
   };
   render() {
-    const { objPresent, active, activeDrilldown, animate } = this.state;
+    const {
+      objPresent,
+      active,
+      activeDrilldown,
+      assetStack,
+      isDefaultLights,
+      isCursor,
+      scene
+    } = this.state;
     return (
-      <ThreeProvider
-        value={{
-          objPresent: objPresent || [],
-          active: active,
-          setActiveObj: this.setActiveObj,
-          updateActiveDrilldown: this.updateActiveDrilldown,
-          activeDrilldown: activeDrilldown,
-          changeObjectProp:this.changeObjectProp
-        }}
-      >
+      // <ThreeProvider
+      //   value={{
+      //     objPresent: objPresent || [],
+      //     active: active,
+      //     setActiveObj: this.setActiveObj,
+      //     updateActiveDrilldown: this.updateActiveDrilldown,
+      //     activeDrilldown: activeDrilldown,
+      //     changeObjectProp: this.changeObjectProp,
+      //     assetStack: assetStack
+      //   }}
+      // >
+      <>
         <TitleBar
           title={this.state.title}
           {...this.state}
           activeRoute={this.props.location.pathname}
         />
+        <MenuBar
+          changeSetMode={this.changeSetMode}
+          setMode={this.state.setMode}
+          scene={scene}
+          addInScene={this.addInScene}
+        />
+        {this.state.setMode ? (
+          <SceneLayer
+            objPresent={objPresent}
+            paste3DObject={this.paste3DObject}
+            active={active}
+            updateActiveDrilldown={this.updateActiveDrilldown}
+            setActiveObj={this.setActiveObj}
+            activeDrilldown={activeDrilldown}
+            changeObjectProp={this.changeObjectProp}
+          />
+        ) : (
+          <SceneGeneral
+            assetStack={assetStack}
+            setDefaultLights={this.setDefaultLights}
+            setCursor={this.setCursor}
+            isDefaultLights={isDefaultLights}
+            isCursor={isCursor}
+          />
+        )}
         <Route
           exact
           path="/design"
@@ -602,10 +663,14 @@ class App extends Component {
         <Route
           path="/code"
           render={() => (
-            <VrRenderer {...this.state} updateCode={this.updateCode} updateAnimate={this.updateAnimate} />
+            <VrRenderer
+              {...this.state}
+              updateCode={this.updateCode}
+              updateAnimate={this.updateAnimate}
+            />
           )}
         />
-      </ThreeProvider>
+      </>
     );
   }
 }

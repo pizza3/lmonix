@@ -1,16 +1,67 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-// import arrowWhite from "../../assets/arrowWhite.svg";
-// import arrow from "../../assets/arrow.svg";
-
-import {arrow} from '../../assets/icon'
+import {
+  sky,
+  point,
+  hemisphere,
+  arrow,
+  sphere,
+  cone,
+  boxLogo,
+  cylinder,
+  circle,
+  ring,
+  plane,
+  spot,
+  directional,
+  curvedImage,
+  model
+} from "../../assets/icon";
 import _ from "lodash";
+
+const elementFuncs = {
+  sphere: sphere,
+  cone: cone,
+  box: boxLogo,
+  cylinder: cylinder,
+  circle: circle,
+  ring: ring,
+  plane: plane,
+  spot: spot,
+  ambient: spot,
+  directional: directional,
+  hemisphere: hemisphere,
+  point: point,
+  sky: sky,
+  curvedimage: curvedImage,
+  '3DModel': model
+};
+
+const applyIcon = (entity, iconColor) => {
+  let viewBox="0 0 125 125"
+  if (entity === "sky" || entity === "3DModel") {
+    viewBox="0 0 512 512"
+  } else if (entity === "directional") {
+    viewBox="0 0 91 113.75"
+  } else if (entity === "text") {
+    return <TextLogo style={{ color: iconColor }}>T</TextLogo>;
+  } else if (entity === "curvedimage") {
+    viewBox="0 0 16 20"
+  }
+  return (
+    <Svg xmlns="http://www.w3.org/2000/svg" viewBox={viewBox}>
+      {elementFuncs[entity](iconColor)}
+    </Svg>
+  );
+};
+
 export default class SceneTree extends Component {
   state = {
     isGroup: false,
     showGroup: false,
     showInputBox: false,
-    nameValue: ""
+    nameValue: "",
+    mouseOver: false
   };
   componentDidMount() {
     this.timer = 0;
@@ -42,11 +93,8 @@ export default class SceneTree extends Component {
       }
     );
   };
-  doClickAction = () => {
-    console.log(" click");
-  };
+  doClickAction = () => {};
   doDoubleClickAction = () => {
-    console.log("Double Click");
     this.setState({
       showInputBox: true
     });
@@ -84,20 +132,51 @@ export default class SceneTree extends Component {
     this.setFocusOut();
   };
 
-  render() {
-    const { layer, obj, children, active, setActiveObj } = this.props;
+  handleMouseDown = () => {
+    const { setDragObj, obj, active, setActiveObj } = this.props;
     const isActive = obj.uuid === active.uuid;
-    const { showInputBox, nameValue } = this.state;
+    setActiveObj(obj);
+    setDragObj(obj, isActive);
+  };
+
+  handleMouseEnter = () => {
+    const { isDrag, setParent, obj } = this.props;
+    if (isDrag) {
+      this.setState(
+        {
+          mouseOver: true
+        },
+        () => {
+          setParent(obj);
+        }
+      );
+    }
+  };
+
+  handleMouseLeave = () => {
+    this.setState({
+      mouseOver: false
+    });
+  };
+
+  render() {
+    const { layer, obj, children, active, isDrag } = this.props;
+    const isActive = obj.uuid === active.uuid;
+    const { showInputBox, nameValue, mouseOver } = this.state;
+    const iconColor = isActive ? "#ffffff" : "#828282";
+
     return (
       <Container>
         <SceneGraphEl
           id={"obj" + obj.uuid}
           isActive={isActive}
           layer={layer}
-          onClick={() => {
-            setActiveObj(obj);
-          }}
+          ismouseOver={mouseOver && isDrag}
+          onMouseDown={this.handleMouseDown}
+          onMouseOver={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
         >
+          {applyIcon(obj.objPrimitive, iconColor)}
           <form
             id="form"
             onDoubleClick={this.handleDoubleClick.bind(this)}
@@ -115,21 +194,19 @@ export default class SceneTree extends Component {
                 autoFocus
               />
             ) : (
-              <EditInput
-                type="text"
-                value={nameValue}
-                disabled
-                style={{ color: isActive ? "#ffffff" : "#707070" }}
-              />
+              <Text style={{ color: isActive ? "#ffffff" : "#707070" }}>
+                {nameValue}
+              </Text>
             )}
           </form>
           {obj.children.length > 1 ? (
             <ArrowContainer onClick={this.showGroup}>
               <ArrowImage
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3.653 6.39"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 3.653 6.39"
                 showGroup={this.state.showGroup}
               >
-                {arrow(isActive?"#ffffff":"#828282")}
+                {arrow(isActive ? "#ffffff" : "#828282")}
               </ArrowImage>
             </ArrowContainer>
           ) : null}
@@ -148,13 +225,13 @@ const Container = styled.div`
 `;
 
 const ArrowContainer = styled.button`
-    position: absolute;
-    width: 13px;
-    right: 2px;
-    top: 4px;
-    height: 15px;
-    border: none;
-    background: transparent;
+  position: absolute;
+  width: 13px;
+  right: 2px;
+  top: 4px;
+  height: 15px;
+  border: none;
+  background: transparent;
 `;
 
 const ArrowImage = styled.svg`
@@ -172,6 +249,8 @@ const SceneGraphEl = styled.div`
   color: ${props => (props.isActive ? "#FFFFFF" : "#828282")};
   font-size: 10px;
   padding: ${props => `4px 2px 0px ${5 + 3 * props.layer}px`};
+  border-bottom: 2px solid
+    ${props => (props.ismouseOver ? "#9bc2ff" : "transparent")};
   &:hover {
     background: ${props => (props.isActive ? "#186AEB" : "#E6E6E6")};
   }
@@ -182,4 +261,27 @@ const EditInput = styled.input`
   background: none;
   color: #fff;
   border-radius: 2px;
+  user-select: none;
+`;
+
+const Text = styled.div`
+  color: #fff;
+`;
+
+const TextLogo = styled.div`
+  float: left;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 12px;
+  margin-right: 3px;
+  width: 13px;
+  text-align: center;
+`;
+
+const Svg = styled.svg`
+  position: relative;
+  float: left;
+  width: 13px;
+  margin-right: 3px;
+  margin-top: 1px;
 `;

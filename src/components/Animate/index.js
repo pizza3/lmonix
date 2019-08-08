@@ -8,14 +8,67 @@ export default class Animate extends Component {
 
   render() {
     const { active, updateAnimate } = this.props;
-    const animInfos =active? _.map(active.objAnimate, (val, index) => {
-      return <AnimInfo key={index} name={val.name} data={val} index={index} updateAnimate={updateAnimate} active={active}/>;
-    }):[];
+    const animInfos = active
+      ? _.map(active.objAnimate, (val, index) => {
+          return (
+            <AnimInfo
+              key={index}
+              name={val.name}
+              data={val}
+              index={index}
+              updateAnimate={updateAnimate}
+              active={active}
+            />
+          );
+        })
+      : [];
+    const message = (
+      <>
+        <Svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          x="0px"
+          y="0px"
+          viewBox="0 0 100 125"
+        >
+          <path
+            fill="#7b7a7a"
+            d="M90,40H70V10L36.667,60h20v30L90,40z M49.121,53.333l14.212-21.315v14.649h14.209L63.333,67.981V53.333H49.121z"
+          />
+          <rect fill="#7b7a7a" x="10" y="53.333" width="20" height="6.667" />
+          <rect
+            fill="#7b7a7a"
+            x="16.667"
+            y="40"
+            width="23.333"
+            height="6.667"
+          />
+          <rect
+            fill="#7b7a7a"
+            x="30"
+            y="26.667"
+            width="16.667"
+            height="6.667"
+          />
+          <rect
+            fill="#7b7a7a"
+            x="16.667"
+            y="66.667"
+            width="33.333"
+            height="6.666"
+          />
+        </Svg>
+        <Text>
+          Add animation to the selected entity, by right clicking on them > Add
+          to animate.
+        </Text>
+      </>
+    );
     return (
       <AnimGraphContainer>
         <AnimGraphTitle>Animation</AnimGraphTitle>
         <Container id="customScrollbar">
-            {animInfos}
+          {animInfos.length ? animInfos : message}
         </Container>
       </AnimGraphContainer>
     );
@@ -23,13 +76,13 @@ export default class Animate extends Component {
 }
 
 const AnimGraphContainer = styled.div`
-    position: relative;
-    float: left;
-    width: 231px;
-    height: calc(100vh - 37px);
-    z-index: 90;
-    background: #f7f7f7;
-    margin-top: 37px;
+  position: relative;
+  float: left;
+  width: 231px;
+  height: calc(100vh - 37px);
+  z-index: 90;
+  background: #f7f7f7;
+  margin-top: 37px;
 `;
 
 const AnimGraphTitle = styled.div`
@@ -48,4 +101,18 @@ const Container = styled.div`
   height: calc(100% - 35px);
   overflow: auto;
   width: 100%;
+`;
+
+const Svg = styled.svg`
+  width: 53px;
+  position: relative;
+  margin-left: 83px;
+  margin-top: 27px;
+`;
+
+const Text = styled.div`
+  text-align: center;
+  font-size: 9px;
+  padding: 0px 14px 0px 14px;
+  color: #a5a5a5;
 `;

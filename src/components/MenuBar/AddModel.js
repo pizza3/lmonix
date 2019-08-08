@@ -4,15 +4,15 @@ import textureLoader from "../Helpers/textureLoader";
 import videoLoader from "../Helpers/videoLoader";
 import modelLoader from "../Helpers/modelLoader";
 import _ from "lodash";
-import { helvetikerBold } from "../../assets/fonts";
+import { helvetikerBold, LatoPng, Lato } from "../../assets/fonts";
 import {updateGeometry} from '../Helpers/helpers'
-import Lato from "../../assets/Lato-Regular-16.fnt"
-import LatoPng from "../../assets/lato.png"
+// import Lato from "../../assets/Lato-Regular-16.fnt"
+// import {LatoPng} from "../../assets/lato.png"
 import {toCamelCase} from '../Helpers/helpers'
 // const loader = new THREE.FontLoader();
 const createGeometry = require("three-bmfont-text");
 const loadFont = require("load-bmfont");
-
+// const Lato =
 const AddCube = (
   scene,
   pos = { x: 0, y: 0, z: 0 },
@@ -26,7 +26,7 @@ const AddCube = (
 
   let obj = new THREE.Object3D();
   obj.name=""
-  obj["objName"] = "Box";
+  obj["objName"] = "Mesh";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "box";
   obj["hashColor"] = "#ef2d5e";
@@ -50,7 +50,7 @@ const AddPointLight = (
 ) => {
   let obj = new THREE.Object3D();
   let color = 0xffffff;
-  obj["objName"] = "PointLight";
+  obj["objName"] = "Light";
   obj["objType"] = "Light";
   obj["objPrimitive"] = "point";
   obj["hashColor"] = "#ffffff";
@@ -72,7 +72,7 @@ const AddSpotLight = (
 ) => {
   let obj = new THREE.Object3D();
   let color = 0xffffff;
-  obj["objName"] = "SpotLight";
+  obj["objName"] = "Light";
   obj["objType"] = "Light";
   obj["objPrimitive"] = "spot";
   obj["hashColor"] = "#ffffff";
@@ -106,7 +106,7 @@ const AddHemisphereLight = (
   let color = 0xffffff;
   let groundColor = 0xffffff;
   let intensity = 2;
-  obj["objName"] = "HemisphereLight";
+  obj["objName"] = "Light";
   obj["objType"] = "Light";
   obj["objPrimitive"] = "hemisphere";
   obj["hashColor"] = "#ffffff";
@@ -130,7 +130,7 @@ const AddDirectionalLight = (
   let obj = new THREE.Object3D();
   let color = 0xffffff;
   let intensity = 0.5;
-  obj["objName"] = "DirectionalLight";
+  obj["objName"] = "Light";
   obj["objType"] = "Light";
   obj["objPrimitive"] = "directional";
   obj["hashColor"] = "#ffffff";
@@ -153,7 +153,7 @@ const AddAmbientLight = (
   let obj = new THREE.Object3D();
   let color = 0xffffff;
   let intensity = 0.5;
-  obj["objName"] = "AmbientLight";
+  obj["objName"] = "Light";
   obj["objType"] = "Light";
   obj["objPrimitive"] = "ambient";
   obj["hashColor"] = "#ffffff";
@@ -232,72 +232,42 @@ const AddCurvedImage = (scene)=>{
     return object;
 }
 
-const AddText = (scene) => {
-  let obj;
-  let geometry;
-  let textureLoader;
-  let material
-  loadFont(Lato, function(err, font) {
-    // create a geometry of packed bitmap glyphs, 
-    // word wrapped to 300px and right-aligned
-    geometry = createGeometry({
-      width: 300,
-      align: 'right',
-      font: font
-    })
-   console.log(geometry);
-   
-    // change text and other options as desired
-    // the options sepcified in constructor will
-    // be used as defaults
-    // geometry.update('Lorem ipsum\nDolor sit amet.')
-    
-    // the resulting layout has metrics and bounds
-    console.log(geometry.layout.height)
-    console.log(geometry.layout.descender)
-      
-    // the texture atlas containing our glyphs
-    // textureLoader = new THREE.TextureLoader();
-    // textureLoader.load('fonts/Arial.png', function (texture) {
-      // we can use a simple ThreeJS material
-      // material = new THREE.MeshBasicMaterial({
-        // map: texture,
-        // transparent: true,
-        // color: 0xaaffff
-      // })
-
-      var textureLoader = new THREE.TextureLoader();
-      textureLoader.load(LatoPng, function (texture) {
-        // we can use a simple ThreeJS material
-        material = new THREE.MeshBasicMaterial({
-          map: texture,
-          transparent: true,
-          color: 0xaaffff
-        })
-    
-      })
-   
-      // now do something with our mesh!
-      // var mesh = new THREE.Mesh(geometry, material)
-    // })
-  })
-  obj = new THREE.Object3D();
-  obj.add(new THREE.Mesh(geometry, material));
-  obj.rotation.y = Math.PI;
-
-  // Scale text down
-  obj.scale.multiplyScalar(-0.005);
-
+const AddText = (scene, addInScene) => {
+  let obj = new THREE.Object3D();
   obj["objName"] = "Text";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "text";
   obj["hashColor"] = "#ceecf0";
-  scene.add(obj);
-  // obj.position.set(pos.x, pos.y, pos.z);
-  // obj.rotation._x = rot.x;
-  // obj.rotation._y = rot.y;
-  // obj.rotation._z = rot.z;
-  return obj;
+  let mesh
+  let geometry;
+  let textureLoader;
+
+loadFont(Lato, function(err, font) {
+  var geometry = createGeometry({
+    width: 300,
+    align: 'right',
+    font: font,
+    text: 'new text eofhweof wefwjlfpiw jww hruglieru erhg uer ure uer  eo georu ouerh goeho herog wrohg eohgohegohreugh eriugh erg erh gourhgoehrou he er gouerhgu egiuh eriuhg iuerhgiu ehguiheugheiruhg iueh guehiu eiuhg eiruhgoe' 
+  })
+  // geometry.update('Lorem ipsum\nDolor sit amet.')
+  console.log(geometry.layout.height)
+  console.log(geometry.layout.descender)
+    
+  var textureLoader = new THREE.TextureLoader();
+  textureLoader.load(LatoPng, function (texture) {
+    var material = new THREE.MeshBasicMaterial({
+      map: texture,
+      // transparent: true,
+      color: 0xaaffff
+    })
+    var mesh = new THREE.Mesh(geometry, material)
+    console.log('mesh',mesh)
+    obj.add(mesh);
+    scene.add(obj);
+    addInScene(obj)
+    // return obj;
+  })
+})
 };
 
 export const ApplyTexture = obj => {
@@ -347,7 +317,7 @@ const AddGroupObj =  (
   switch (type) {
     case "box":
       const geometry = updateGeometry('BoxBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Box";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "box";
       object["hashColor"] = obj.hashColor || "#ef2d5e";      
@@ -364,7 +334,7 @@ const AddGroupObj =  (
       return object;
     case "sphere":
       let geometrySphere =updateGeometry('SphereBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Sphere";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
       object["objPrimitive"] = "sphere";
@@ -377,7 +347,7 @@ const AddGroupObj =  (
       return object;
     case "plane":
       let geometryPlane = updateGeometry('PlaneBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Plane";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "plane";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -390,7 +360,7 @@ const AddGroupObj =  (
       return object;
     case "cylinder":
       let geometryCylinder = updateGeometry('CylinderBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Cylinder";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "cone";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -403,7 +373,7 @@ const AddGroupObj =  (
       return object;
     case "cone":
       let geometryCone = updateGeometry('ConeBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Cone";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "cone";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -416,7 +386,7 @@ const AddGroupObj =  (
       return object;
     case "ring":
       let geometryRing = updateGeometry('RingBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Ring";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "ring";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -429,7 +399,7 @@ const AddGroupObj =  (
       return object;
     case "circle":
       let geometryCircle = updateGeometry('CircleBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"Circle";
+      object["objName"] =obj.objName? obj.objName:"Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "circle";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
@@ -476,7 +446,7 @@ const AddGroupObj =  (
       object.receiveShadow = obj.receiveShadow;
       return object;
     case "point":
-      object["objName"] =obj.objName? obj.objName:"PointLight";
+      object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "point";
       object["hashColor"] = "#ffffff";
@@ -487,11 +457,11 @@ const AddGroupObj =  (
       scene.add(object);
       return object;
     case "spot":
-      object["objName"] =obj.objName? obj.objName:"SpotLight";
+      object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "spot";
       object["hashColor"] = "#ffffff";
-      let spotlight = new THREE.SpotLight(obj.hashColor);
+      let spotlight = new THREE.SpotLight(obj.hashColor,1,100,1.05);
       spotlight.position.set(100, 1000, 100);
       spotlight.castShadow = true;
       spotlight.shadow.mapSize.width = 1024;
@@ -505,7 +475,7 @@ const AddGroupObj =  (
     case "hemisphere":
       let groundColor = 0xffffff;
       let intensity = 2;
-      object["objName"] =obj.objName? obj.objName:"HemisphereLight";
+      object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "hemisphere";
       object["hashColor"] = "#ffffff";
@@ -519,7 +489,7 @@ const AddGroupObj =  (
       return object;
     case "directional":
       let directionalintensity = 0.5;
-      object["objName"] =obj.objName? obj.objName:"DirectionalLight";
+      object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "directional";
       object["hashColor"] = "#ffffff";
@@ -531,7 +501,7 @@ const AddGroupObj =  (
       scene.add(object);
       return object;
     case "ambient":
-      object["objName"] =obj.objName? obj.objName:"AmbientLight";
+      object["objName"] =obj.objName? obj.objName:"Light ";
       object["objType"] = "Light";
       object["objPrimitive"] = "ambient";
       object["hashColor"] = "#ffffff";
@@ -566,11 +536,11 @@ const AddGroupObj =  (
       return object;
     case "curvedimage":
       let geometryCurvedimage = updateGeometry('CylinderBufferGeometry',{},geometryParams);
-      object["objName"] =obj.objName? obj.objName:"CurvedImage";
+      object["objName"] = obj.objName? obj.objName:"CurvedImage";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "curvedimage";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
-      material.side=THREE.DoubleSide
+      material.side = THREE.DoubleSide
       object.add(new THREE.Mesh(geometryCurvedimage, material));
       scene.add(object);
       return object;

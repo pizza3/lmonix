@@ -23,7 +23,8 @@ export const PropertiesEditorContainer = styled.div`
   position: relative;
   float: right;
   width: 234px;
-  height: 100%;
+  height: auto;
+  min-height:100%;
   z-index: 90;
   background: #f7f7f7;
   border-left: 2px solid #dbdbdb;
@@ -49,12 +50,14 @@ export const Section = styled.div`
   width: 100%;
   border-bottom: 2px solid #dbdbdb;
   margin-bottom: 20px;
-  overflow: hidden;
-`;
+  height: auto;
+  float: left;
+  `;
 
 export const ScrollBarContainer = styled.div`
-  margin-top: 35px;
-  height: calc(100% - 35px);
-  overflow: auto;
-  padding-top: 18px;
+    margin-top: 35px;
+    position: relative;
+    height: auto;
+    overflow: visible;
+    padding-top: 18px;
 `;

@@ -3,19 +3,12 @@ import styled from "styled-components";
 import CodeMirror from "react-codemirror";
 import VrPreview from "./CodeEditor/VrPreview";
 import JsMirror from "./CodeEditor/JsMirror";
-import SceneLayer from "./SceneGraph/SceneLayer";
 import Animate from "./Animate/index";
 import { eye, code } from "../assets/icon";
 import Trigger from "rc-trigger";
 import "codemirror/mode/javascript/javascript.js";
 import "codemirror/mode/htmlembedded/htmlembedded";
 
-const optionshtml = {
-  mode: "text/html",
-  indentUnit: 4,
-  lineNumbers: true,
-  matchBrackets: true
-};
 export default class VrRenderer extends Component {
   state = {
     tabName: 0
@@ -38,6 +31,9 @@ export default class VrRenderer extends Component {
               objPresent={this.props.objPresent}
               assetStack={this.props.assetStack}
               animate={this.props.animate}
+              isCursor={this.props.isCursor}
+              isDefaultLights={this.props.isDefaultLights}        
+              code={this.props.code}
             />
           </div>
           <div style={{ float: "left", width: "50%" }}>
@@ -59,6 +55,9 @@ export default class VrRenderer extends Component {
         objPresent={this.props.objPresent}
         assetStack={this.props.assetStack}
         animate={this.props.animate}
+        isCursor={this.props.isCursor}
+        isDefaultLights={this.props.isDefaultLights}
+        code={this.props.code}
       />
     );
   };
@@ -67,9 +66,6 @@ export default class VrRenderer extends Component {
     const editor = this.showEditor()
     return (
       <div>
-        <SceneLayerContainer>
-          <SceneLayer objPresent={this.props.objPresent} />
-        </SceneLayerContainer>
         <Container>
           <EditorContainer id="container">
             <FileTabs>
@@ -176,11 +172,6 @@ export default class VrRenderer extends Component {
   }
 }
 
-const SceneLayerContainer = styled.div`
-  height: calc(100vh - 37px);
-  margin-top: 37px;
-  float: left;
-`;
 
 const EditorContainer = styled.div`
   height: calc(100vh - 37px);
@@ -249,8 +240,10 @@ const TabIcon = styled.svg`
 const Container = styled.div`
   position: relative;
   float: left;
-  width: calc(100% - 422px);
+  width: calc(100% - 463px);
+  margin-left: 232px;
   height: 100%;
+  overflow:hidden;
 `;
 
 const TooltipBody = styled.div`

@@ -14,12 +14,19 @@ function createWindow(event, win) {
   height: 700,
   titleBarStyle: "hiddenInset",
   nodeIntegration: false,
-  webPreferences: { webSecurity: false, allowRunningInsecureContent: true }
 });
   mainWindow.loadURL(isDev ? 'http://localhost:3006/design' : `file://${path.join(__dirname, '../build/index.html/design')}`);
   mainWindow.on('closed', () => mainWindow = null);
   setMainMenu(mainWindow);
-  SetPopMenu(mainWindow,win)
+  let menu = SetPopMenu(mainWindow,win)
+  // mainWindow.on("context-menu", (e, params) => {
+  //   menu.popup(win, params.x, params.y);
+  // });
+  // ipcMain.on("show-context-menu", (event, arg) => {
+  //   // this.objNum = arg["dataNo"];
+  //   const win = BrowserWindow.fromWebContents(event.sender);
+  //   menu.popup(win);
+  // });
 }
 // const installExtensions = async () => {
 //   return installExtension(REACT_DEVELOPER_TOOLS)

@@ -12,16 +12,17 @@ export default class SceneRenderer extends Component {
         id="SceneRenderer"
         onMouseLeave={this.props.handleLeave}
         onMouseEnter={this.props.handleOver}
+        objPresent={this.props.objPresent}
       />
     );
   }
 }
 
 const SceneRendererContainer = styled.div`
-  position: relative;
+  position: fixed;
   float: left;
-  width: calc(100% - 466px);
+  width: ${props=>props.objPresent?"calc(100% - 234px)":"100%"};
   height: 100%;
-  z-index: 100;
+  z-index: 89;
   background: #f7f7f7;
 `;

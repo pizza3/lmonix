@@ -1,6 +1,6 @@
 import React ,{Component} from 'react'
 import styled from 'styled-components'
-import img from '../../assets/GoogleCardboard.png'
+import {vrLogo} from '../../assets/icon'
 import { message} from 'antd'
 const electron =  window.require('electron');
 
@@ -25,7 +25,7 @@ export default class LocalServer extends Component{
             }
         }
         else{
-            message.warning('Please Save the project first.',7)
+            message.warning('Project not saved, please save it to run preview.',7)
         }
     }
     render(){
@@ -33,7 +33,7 @@ export default class LocalServer extends Component{
         return(
             <PopContainer>
                 <Header>Preview</Header>
-                <Logo src={img}/>
+                <Logo src={vrLogo}/>
                 {status?
                 <Cont>
                 <Desc>To preview your creation's you can start the localhost server and access it on any device within the same network.</Desc>

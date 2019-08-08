@@ -10,6 +10,7 @@ import Model from "./Model";
 import Intensity from "./Intensity";
 import Opacity from "./Opacity";
 import Transparent from "./Transparent";
+import Distance from "./Distance"
 // import Material from "./Properties/Material";
 import CustomGeometry from "./CustomGeometry";
 import Geometry from "./Geometry";
@@ -78,6 +79,26 @@ export default class PropertiesEditor extends Component {
     }
     return false;
   };
+  checkSpot = ()=>{
+    const { active, objPresent } = this.props;
+    if (objPresent.length > 0) {
+      if (active.objPrimitive === "spot") {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
+  checkText = ()=>{
+    const { active, objPresent } = this.props;
+    if (objPresent.length > 0) {
+      if (active.objPrimitive === "text") {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
   updateGeometry = (value, prop) => {
     const { replaceGeometry, active } = this.props;
     const geometryType = active.children[0].geometry.type;
@@ -93,8 +114,9 @@ export default class PropertiesEditor extends Component {
     const { active, objPresent } = this.props;
     const isModel = this.checkModel();
     const isLight = this.checkLight();
+    const isText = this.checkText()
     const objectsPresent = objPresent.length;
-    if (objectsPresent&&!isModel && !isLight) {
+    if (objectsPresent&&!isModel && !isLight && !isText) {
       let keys = _.keys(active.children[0].geometry.parameters);
       const filterList = CustomGeometryConfig.filter((val, i) => {
         const title = toCamelCase(val.title);
@@ -124,10 +146,12 @@ export default class PropertiesEditor extends Component {
     const isColor = this.checkColor();
     const isModel = this.checkModel();
     const isLight = this.checkLight();
+    const isSpot = this.checkSpot()
     const isHemisphere = this.checkHemisphere();
     const isSky = this.checkSky();
+    const isText = this.checkText()
     const objectsPresent = objPresent.length;
-    const isGeometry = this.checkGeometry(isModel, isLight, objectsPresent);
+    const isGeometry = this.checkGeometry(isModel, isLight, objectsPresent, isText);
     const finalGeometries = this.createCustomGeometry()
     return (
       <PropertiesEditorContainer>
@@ -138,14 +162,14 @@ export default class PropertiesEditor extends Component {
             !isLight &&
             objectsPresent &&
             active.objPrimitive !== "curvedimage" &&
-            !isSky ? (
+            !isSky && !isText ? (
               <Geometry {...this.props} />
             ) : (
               []
             )}
             {isLight && objectsPresent ? <Lights {...this.props} /> : []}
             <Section>
-              <Transform {...this.props} />
+              {objectsPresent?<Transform {...this.props} />:[]}
             </Section>
             {finalGeometries.length?<Section>{finalGeometries}</Section>:[]}
             <Section>
@@ -155,6 +179,7 @@ export default class PropertiesEditor extends Component {
               {isHemisphere ? <GroundColor {...this.props} /> : null}
               {isModel && !isLight ? <Model {...this.props} /> : null}
               {isLight ? <Intensity {...this.props} /> : null}
+              {isSpot? <Distance active={active} />: null}
               {this.props.objPresent.length > 0 && !isLight && !isModel ? (
                 <Opacity {...this.props} />
               ) : null}
