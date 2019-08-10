@@ -27,9 +27,7 @@ const modelLoader = async (threeDobj, obj) => {
         console.log("An error happened");
       }
     );
-  });
-  console.log(finalObject);
-  
+  });  
 //   return finalObject
 };
 

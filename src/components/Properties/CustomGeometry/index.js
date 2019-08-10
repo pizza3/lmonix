@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { geometryExist, toCamelCase } from "../../Helpers/helpers";
 import Switch from "../../../designLib/Switch";
 import Range from "../../../designLib/Range";
+import InputNumber from "../../../designLib/Number";
 import { Container, Title } from "../styled";
 export default class CustomGeometry extends Component {
   state = {
@@ -93,7 +94,7 @@ export default class CustomGeometry extends Component {
         />
       );
     } else {
-      return <Input type="number" value={value} onChange={this.updateValue} />;
+      return <InputNumber value={value} onChange={this.updateValue} />;
     }
   };
 
@@ -110,26 +111,3 @@ export default class CustomGeometry extends Component {
     );
   }
 }
-
-const Input = styled.input`
-  width: 36px;
-  height: 25px;
-  border: 2px solid #dbdbdb;
-  background: #dbdbdb;
-  border-radius: 3px;
-  font-size: 9px;
-  font-weight: 600;
-  color: #737373;
-  float: right;
-  margin-right: 6px;
-  &:focus {
-    outline: none;
-    background: #2f79ef;
-    color: #fff;
-    border: 2px solid #2f79ef;
-  }
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-`;

@@ -16,7 +16,7 @@ const SelectBox = styled.select`
   float: right;
   margin-right: 7px;
   width: 141px;
-  background: #dbdbdb;
+  background: #2d2d2d;
   border: none;
   color: #969696;
   outline: 0;

@@ -122,8 +122,8 @@ const Input = styled.div`
   float: right;
   width: 141px;
   height: 25px;
-  border: 2px solid #dbdbdb;
-  background: #dbdbdb;
+  border: 2px solid #2d2d2d;
+  background: #2d2d2d;
   border-radius: 3px;
   margin-right: 6px;
   font-size: 10px;

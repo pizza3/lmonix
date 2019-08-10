@@ -8,8 +8,8 @@ const Number = props => {
 const Input = styled.input`
   width: ${props=>props.Width?`${props.Width}px`:`36px`};
   height: 25px;
-  border: 2px solid #dbdbdb !important;
-  background: #dbdbdb;
+  border: 2px solid #2d2d2d !important;
+  background: #2d2d2d;
   border-radius: 3px !important;
   font-size: 9px;
   font-weight: 600;
@@ -18,9 +18,9 @@ const Input = styled.input`
   margin-right: 6px;
   &:focus {
     outline: none;
-    background: #2f79ef !important;
+    background: #4f74f9 !important;
     color: #fff !important;
-    border: 2px solid #2f79ef !important;
+    border: 2px solid #4f74f9 !important;
   }
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;

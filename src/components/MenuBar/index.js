@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { image, model, box, general, sky, sun, layer } from "../../assets/icon";
-import {MenuContainer, TooltipBody, TooltipOverlay, TooltipText, ImgContainer,  ImgContainerSvg, ImgContainerCircleSvg, Text, ImgContainerAbsSvg} from './styled'
-import Trigger from "rc-trigger";
+import {MenuContainer, ImgContainer,  ImgContainerSvg, ImgContainerCircleSvg, Text, ImgContainerAbsSvg} from './styled';
 import {
   AddCube,
   AddSky,
@@ -11,6 +10,7 @@ import {
   AddCurvedImage,
   AddGroupObj
 } from "./AddModel";
+import Tooltip from '../../designLib/Tooltip';
 
 export default class MenuBar extends Component {
   addModel =  obj => {
@@ -20,19 +20,9 @@ export default class MenuBar extends Component {
     const { scene, addInScene } = this.props;
     return (
       <MenuContainer>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Basic Objects</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        <Tooltip
+          align='right'
+          name='Basic Objects'
         >
           <ImgContainerSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -43,20 +33,10 @@ export default class MenuBar extends Component {
           >
             {box}
           </ImgContainerSvg>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Basic Lights</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+        align='right'
+        name='Basic Lights'
         >
           <ImgContainerCircleSvg
             style={{
@@ -71,20 +51,10 @@ export default class MenuBar extends Component {
           >
             {sun}
           </ImgContainerCircleSvg>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Sky</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+                align='right'
+                name='Sky'
         >
           <ImgContainerCircleSvg
             xmlns="http://www.w3.org/2000/svg" 
@@ -96,20 +66,10 @@ export default class MenuBar extends Component {
           >
             {sky()}
           </ImgContainerCircleSvg>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Text</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+          align='right'
+          name='Text'
         >
           <ImgContainer
             onClick={() => {
@@ -118,20 +78,10 @@ export default class MenuBar extends Component {
           >
             <Text>T</Text>
           </ImgContainer>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Images/Videos</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+          align='right'
+          name='Images/Videos'
         >
           <ImgContainerSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -142,20 +92,10 @@ export default class MenuBar extends Component {
           >
             {image}
           </ImgContainerSvg>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>3D Model</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+                  align='right'
+                  name='3D Model'
         >
           <ImgContainerSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -166,20 +106,11 @@ export default class MenuBar extends Component {
           >
             {model()}
           </ImgContainerSvg>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>General</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+                          align='right'
+                          name='General'
+
         >
           <ImgContainerAbsSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -189,22 +120,12 @@ export default class MenuBar extends Component {
               this.props.changeSetMode(false);
             }}
           >
-            {!this.props.setMode ? general("#2f79ef") : general("#707070")}
+            {!this.props.setMode ? general("#4f74f9") : general("#707070")}
           </ImgContainerAbsSvg>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Scene</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+                 align='right'
+                 name='Scene'
         >
           <ImgContainerAbsSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -214,9 +135,9 @@ export default class MenuBar extends Component {
               this.props.changeSetMode(true);
             }}
           >
-            {this.props.setMode ? layer("#2f79ef") : layer("#707070")}
+            {this.props.setMode ? layer("#4f74f9") : layer("#707070")}
           </ImgContainerAbsSvg>
-        </Trigger>
+        </Tooltip>
       </MenuContainer>
     );
   }

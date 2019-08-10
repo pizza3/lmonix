@@ -18,8 +18,8 @@ export const MenuContainer = styled.div`
   height: calc(100vh - 37px);
   margin-top: 37px;
   z-index: 90;
-  background: #f7f7f7;
-  border-right: 2px solid #dbdbdb;
+  background: #1b1b1b;
+  border-right: 2px solid #2d2d2d;
 `;
 
 export const ImgContainer = styled.div`
@@ -53,33 +53,4 @@ export const ImgContainerAbsSvg = styled.svg`
   right: 0px;
   margin-left: auto;
   margin-right: auto;
-`;
-
-export const TooltipBody = styled.div`
-  width: auto;
-  height: auto;
-  padding: 7px;
-  box-sizing: content-box;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-  font-weight: 600;
-  font-size: 10px;
-`;
-
-export const TooltipOverlay = styled.div`
-  background: #000;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-  left: 0%;
-  top: 0%;
-  z-index: -1;
-`;
-
-export const TooltipText = styled.div`
-  z-index: 1;
-  color: white;
-  position: relative;
 `;

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { run, cloud } from "../../assets/icon";
-import CloudExport from "./CloudExport";
 import LocalServer from "./LocalServer";
 import { Link } from "react-router-dom";
 import Trigger from "rc-trigger";
@@ -25,41 +24,6 @@ export default class TitleBar extends Component {
           </TitleLinkCode>
         </Link>
         <Title>{this.props.title}</Title>
-        <Trigger
-          action={["click"]}
-          popup={
-            <div>
-              <CloudExport {...this.props} location={this.props.title} />
-            </div>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["bc", "tl"],
-            offset: [-210, 30]
-          }}
-        >
-          <Trigger
-            action={["hover"]}
-            popup={
-              <TooltipBody>
-                <TooltipOverlay />
-                <TooltipText>Deploy</TooltipText>
-              </TooltipBody>
-            }
-            prefixCls="dropdown"
-            popupAlign={{
-              points: ["tc", "bc"],
-              offset: [0, 10]
-            }}
-          >
-            <SvgContainer
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 17.873 11.168"
-            >
-              {cloud}
-            </SvgContainer>
-          </Trigger>
-        </Trigger>
         <Trigger
           action={["click"]}
           popup={
@@ -108,8 +72,8 @@ const TitleContainer = styled.div`
   width: 100%;
   height: 37px;
   z-index: 100;
-  background: #f7f7f7;
-  border-bottom: 2px solid #dbdbdb;
+  background: #1b1b1b;
+  border-bottom: 2px solid #2d2d2d;
 `;
 
 const TitleOverlay = styled.div`
@@ -128,7 +92,7 @@ const SvgContainer = styled.svg`
   margin-right: 27px;
 `;
 
-const Title = styled.div`
+const Title = styled.div` 
   position: absolute;
   left: 0;
   right: 0;

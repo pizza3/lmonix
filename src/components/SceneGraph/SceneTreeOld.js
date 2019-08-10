@@ -1,5 +1,7 @@
+
 import React, { Component } from "react";
 import styled from "styled-components";
+import _ from "lodash";
 import {
   sky,
   point,
@@ -17,7 +19,6 @@ import {
   curvedImage,
   model
 } from "../../assets/icon";
-import _ from "lodash";
 
 const elementFuncs = {
   sphere: sphere,
@@ -34,19 +35,19 @@ const elementFuncs = {
   point: point,
   sky: sky,
   curvedimage: curvedImage,
-  '3DModel': model
+  "3DModel": model
 };
 
 const applyIcon = (entity, iconColor) => {
-  let viewBox="0 0 125 125"
+  let viewBox = "0 0 125 125";
   if (entity === "sky" || entity === "3DModel") {
-    viewBox="0 0 512 512"
+    viewBox = "0 0 512 512";
   } else if (entity === "directional") {
-    viewBox="0 0 91 113.75"
+    viewBox = "0 0 91 113.75";
   } else if (entity === "text") {
     return <TextLogo style={{ color: iconColor }}>T</TextLogo>;
   } else if (entity === "curvedimage") {
-    viewBox="0 0 16 20"
+    viewBox = "0 0 16 20";
   }
   return (
     <Svg xmlns="http://www.w3.org/2000/svg" viewBox={viewBox}>
@@ -54,27 +55,25 @@ const applyIcon = (entity, iconColor) => {
     </Svg>
   );
 };
-
 export default class SceneTree extends Component {
   state = {
     isGroup: false,
     showGroup: false,
     showInputBox: false,
-    nameValue: "",
-    mouseOver: false
+    nameValue: ""
   };
   componentDidMount() {
+    const { activeDrilldown, name } = this.props;
     this.timer = 0;
     this.delay = 200;
     this.prevent = false;
-    const { activeDrilldown, obj, name } = this.props;
-    if (_.isUndefined(activeDrilldown[obj.uuid])) {
+    if (_.isUndefined(activeDrilldown[this.props.obj.uuid])) {
       this.setState({
         showGroup: false
       });
     } else {
       this.setState({
-        showGroup: activeDrilldown[obj.uuid]
+        showGroup: activeDrilldown[this.props.obj.uuid]
       });
     }
     this.setState({
@@ -83,17 +82,15 @@ export default class SceneTree extends Component {
   }
   showGroup = () => {
     const { showGroup } = this.state;
-    const { updateActiveDrilldown, obj } = this.props;
     this.setState(
       {
         showGroup: !showGroup
       },
       () => {
-        updateActiveDrilldown(obj.uuid, !showGroup);
+        this.props.updateActiveDrilldown(this.props.obj.uuid, !showGroup);
       }
     );
   };
-  doClickAction = () => {};
   doDoubleClickAction = () => {
     this.setState({
       showInputBox: true
@@ -115,60 +112,11 @@ export default class SceneTree extends Component {
     this.prevent = true;
     this.doDoubleClickAction();
   };
-  handlenameChange = e => {
-    this.setState({
-      nameValue: e.target.value
-    });
-  };
-  setFocusOut = e => {
-    this.setState({
-      showInputBox: false
-    });
-  };
-  handleSubmit = e => {
-    e.preventDefault();
-    const { nameValue } = this.state;
-    this.props.changeObjectProp(nameValue, "name");
-    this.setFocusOut();
-  };
-
-  handleMouseDown = (event) => {
-    event.preventDefault();
-    console.log('got clicked');
-    
-    const { setDragObj, obj, active, setActiveObj } = this.props;
-    const isActive = obj.uuid === active.uuid;
-    setActiveObj(obj);
-    setDragObj(obj, isActive);
-  };
-
-  handleMouseEnter = () => {
-    const { isDrag, setParent, obj } = this.props;
-    if (isDrag) {
-      this.setState(
-        {
-          mouseOver: true
-        },
-        () => {
-          setParent(obj);
-        }
-      );
-    }
-  };
-
-  handleMouseLeave = () => {
-    console.log('leaves');
-    
-    this.setState({
-      mouseOver: false
-    });
-  };
 
   render() {
-    const { layer, obj, children, active, isDrag } = this.props;
-    const isActive = obj.uuid === active.uuid;
-    const { showInputBox, nameValue, mouseOver } = this.state;
-    const iconColor = isActive ? "#ffffff" : "#828282";
+    const { layer, active, obj } = this.props;
+    const { showInputBox, nameValue } = this.state;
+    const isActive = this.props.obj.uuid === active.uuid;
     const SceneGraphEl = styled.div`
       position: relative;
       width: 100%;
@@ -178,46 +126,32 @@ export default class SceneTree extends Component {
       left: 0%;
       color: ${isActive ? "#FFFFFF" : "#828282"};
       font-size: 10px;
-      padding: ${props => `4px 2px 0px ${5 + 3 * layer}px`};
-      border-bottom: 2px solid
-        ${mouseOver && isDrag && !isActive ? "#9bc2ff" : "transparent"};
+      padding: 4px 2px 0px ${5 + 3 * layer}px;
       &:hover {
         background: ${isActive ? "#186AEB" : "#E6E6E6"};
-      }`;
-
-    // const style={
-    //   position: "relative",
-    //   width: "100%",
-    //   height: "22px",
-    //   background: isActive ? "#2F79EF" : "transparent",
-    //   borderRadius: "0px",
-    //   left: "0%",
-    //   color: isActive ? "#FFFFFF" : "#828282",
-    //   fontSize: "10px",
-    //   padding: `4px 2px 0px ${5 + 3 * layer}px`,
-    //   borderBottom: `2px solid ${mouseOver && isDrag ? "#9bc2ff" : "transparent"}`,
-    // }
+      }
+    `;
+    const iconColor = isActive ? "#ffffff" : "#828282";
     return (
-      <Container id={"obj" + obj.uuid}>
+      <Container>
         <SceneGraphEl
-          // isActive={isActive}
-          layer={layer}
-          // style={style}
-          // ismouseOver={mouseOver && isDrag}
-          onClick={this.handleMouseDown}
-          // onMouseOver={this.handleMouseEnter}
-          // onMouseLeave={this.handleMouseLeave}
+          id={"obj" + this.props.obj.uuid}
+          onClick={() => {
+            this.props.setActiveObj(this.props.obj);
+          }}
+          isActive={isActive}
         >
           {applyIcon(obj.objPrimitive, iconColor)}
           <form
             id="form"
-            onDoubleClick={this.handleDoubleClick.bind(this)}
+            onDoubleClick={this.handleDoubleClick}
             onSubmit={this.handleSubmit}
           >
             {showInputBox ? (
               <EditInput
                 type="text"
                 value={nameValue}
+                // disabled
                 onChange={this.handlenameChange}
                 style={{
                   background: "#4c94ff"
@@ -243,7 +177,7 @@ export default class SceneTree extends Component {
             </ArrowContainer>
           ) : null}
         </SceneGraphEl>
-        {this.state.showGroup ? children : []}
+        {this.state.showGroup ? this.props.children : []}
       </Container>
     );
   }
@@ -257,46 +191,17 @@ const Container = styled.div`
 `;
 
 const ArrowContainer = styled.button`
-  position: absolute;
+  position: relative;
+  float: right;
   width: 13px;
-  right: 2px;
-  top: 4px;
   height: 15px;
   border: none;
   background: transparent;
 `;
 
-// const SceneGraphEl = styled.div`
-// position: relative;
-// width: 100%;
-// height: 22px;
-// background: ${props => (props.isActive ? "#2F79EF" : "transparent")};
-// border-radius: 0px;
-// left: 0%;
-// color: ${props => (props.isActive ? "#FFFFFF" : "#828282")};
-// font-size: 10px;
-// padding: ${props => `4px 2px 0px ${5 + 3 * props.layer}px`};
-// border-bottom: 2px solid
-//   ${props => (props.ismouseOver ? "#9bc2ff" : "transparent")};
-// &:hover {
-//   background: ${props => (props.isActive ? "#186AEB" : "#E6E6E6")};
-// }`;
-
 const ArrowImage = styled.svg`
   width: 5px;
   transform: ${props => (props.showGroup ? "rotate(90deg)" : "rotate(0deg)")};
-`;
-
-const EditInput = styled.input`
-  border: none;
-  background: none;
-  color: #fff;
-  border-radius: 2px;
-  user-select: none;
-`;
-
-const Text = styled.div`
-  color: #fff;
 `;
 
 const TextLogo = styled.div`
@@ -315,4 +220,16 @@ const Svg = styled.svg`
   width: 13px;
   margin-right: 3px;
   margin-top: 1px;
+`;
+
+const EditInput = styled.input`
+  border: none;
+  background: none;
+  color: #fff;
+  border-radius: 2px;
+  user-select: none;
+`;
+
+const Text = styled.div`
+  color: #fff;
 `;

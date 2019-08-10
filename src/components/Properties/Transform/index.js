@@ -317,17 +317,17 @@ const Prop = styled.div`
 const Input = styled.input`
   width: 36px;
   height: 25px;
-  border: 2px solid #dbdbdb;
-  background: #dbdbdb;
+  border: 2px solid #2d2d2d;
+  background: #2d2d2d;
   border-radius: 3px;
   font-size: 9px;
   font-weight: 600;
   color: #737373;
   &:focus {
     outline: none;
-    background: #2f79ef;
+    background: #4f74f9;
     color: #fff;
-    border: 2px solid #2f79ef;
+    border: 2px solid #4f74f9;
   }
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;

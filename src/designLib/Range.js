@@ -19,8 +19,8 @@ const Range = props => {
 
 const RangeStyle = styled.input`
   -webkit-appearance: none;
-  background-color: #2f79ef;
-  border: 1px solid #ffffff;
+  background-color: #4f74f9;
+  /* border: 1px solid #ffffff; */
   width: 139px;
   float: right;
   height: 4px;

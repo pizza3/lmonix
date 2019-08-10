@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import TitleBar from "./components/TitleBar/TitleBar";
-import VrRenderer from "./components/CodeEditor";
+import CodeEditor from "./components/CodeEditor";
 import SceneEditor from "./components/SceneEditor";
 import _ from "lodash";
 import { AddGroupObj, ApplyTexture } from "./components/MenuBar/AddModel";
@@ -42,7 +42,8 @@ class App extends Component {
     activeStack: [],
     copyObj: null,
     editState: [],
-    setMode: true
+    setMode: true,
+    codeTab:2
   };
   objPresent = [];
   componentDidMount() {
@@ -159,7 +160,13 @@ class App extends Component {
       setMode
     });
   };
-
+  handleActiveTab = val => {
+    this.setState((state, props) => {
+      return {
+        codeTab: val
+      };
+    });
+  };
   setAnimate = () => {
     const { active } = this.state;
     let copy = _.clone(basicAnimationsConfig.rotation);
@@ -588,20 +595,23 @@ class App extends Component {
       assetStack,
       isDefaultLights,
       isCursor,
-      scene
+      scene,
+      codeTab
     } = this.state;
     return (
-      // <ThreeProvider
-      //   value={{
-      //     objPresent: objPresent || [],
-      //     active: active,
-      //     setActiveObj: this.setActiveObj,
-      //     updateActiveDrilldown: this.updateActiveDrilldown,
-      //     activeDrilldown: activeDrilldown,
-      //     changeObjectProp: this.changeObjectProp,
-      //     assetStack: assetStack
-      //   }}
-      // >
+      <ThreeProvider
+        value={{
+          objPresent: objPresent || [],
+          active: active,
+          setActiveObj: this.setActiveObj,
+          updateActiveDrilldown: this.updateActiveDrilldown,
+          activeDrilldown: activeDrilldown,
+          changeObjectProp: this.changeObjectProp,
+          assetStack: assetStack,
+          handleActiveTab:this.handleActiveTab,
+          codeTab:codeTab
+        }}
+      >
       <>
         <TitleBar
           title={this.state.title}
@@ -663,14 +673,16 @@ class App extends Component {
         <Route
           path="/code"
           render={() => (
-            <VrRenderer
+            <CodeEditor
               {...this.state}
               updateCode={this.updateCode}
               updateAnimate={this.updateAnimate}
+              handleActiveTab={this.handleActiveTab}
             />
           )}
         />
       </>
+      </ThreeProvider>
     );
   }
 }

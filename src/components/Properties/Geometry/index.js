@@ -55,7 +55,7 @@ export default class Geometry extends Component {
     return (
       <Container
         style={{
-          borderBottom: "2px solid #dbdbdb",
+          borderBottom: "2px solid #2d2d2d",
           marginBottom: "20px"
         }}
       >

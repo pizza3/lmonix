@@ -355,8 +355,8 @@ export default class ColorPickerDropdown extends Component{
 
 const Container = styled.div`
     position: relative;
-    background: #F7F7F7;
-    border: 2px solid #DBDBDB;
+    background: #1b1b1b;
+    border: 2px solid #2d2d2d;
     width: 255px;
     height: 255px;
     z-index: 1;

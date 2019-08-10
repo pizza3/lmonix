@@ -24,5 +24,5 @@ const SceneRendererContainer = styled.div`
   width: ${props=>props.objPresent?"calc(100% - 234px)":"100%"};
   height: 100%;
   z-index: 89;
-  background: #f7f7f7;
+  background: #1b1b1b;
 `;

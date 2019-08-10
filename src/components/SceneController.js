@@ -174,13 +174,13 @@ const SelectController = styled.div`
   position: relative;
   width: 33px;
   height: 33px;
-  background: ${props=>props.active?'#2F79EF':'#f7f7f7'};
-  border-top: 2px solid #dbdbdb;
+  background: ${props=>props.active?'#4f74f9':'#1b1b1b'};
+  border-top: 2px solid #2d2d2d;
   opacity: 1;
   -webkit-transition: 0.2s;
   transition: 0.2s;
   &:hover {
-    background : ${props=>props.active?'#1a66e0':'#dbdbdb'};
+    background : ${props=>props.active?'#4f74f9':'#1b1b1b'};
   }
 `;
 
@@ -246,7 +246,7 @@ const SceneControllerContainer = styled.div`
   height: 166px;
   overflow: auto;
   left: 235px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #2d2d2d;
   border-top: none;
   border-radius: 4px;
   margin: 16px;
