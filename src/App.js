@@ -599,19 +599,19 @@ class App extends Component {
       codeTab
     } = this.state;
     return (
-      // <ThreeProvider
-      //   value={{
-      //     objPresent: objPresent || [],
-      //     active: active,
-      //     setActiveObj: this.setActiveObj,
-      //     updateActiveDrilldown: this.updateActiveDrilldown,
-      //     activeDrilldown: activeDrilldown,
-      //     changeObjectProp: this.changeObjectProp,
-      //     assetStack: assetStack,
-      //     handleActiveTab:this.handleActiveTab,
-      //     codeTab:codeTab
-      //   }}
-      // >
+      <ThreeProvider
+        value={{
+          objPresent: objPresent || [],
+          active: active,
+          setActiveObj: this.setActiveObj,
+          updateActiveDrilldown: this.updateActiveDrilldown,
+          activeDrilldown: activeDrilldown,
+          changeObjectProp: this.changeObjectProp,
+          assetStack: assetStack,
+          handleActiveTab:this.handleActiveTab,
+          codeTab:codeTab
+        }}
+      >
       <>
         <TitleBar
           title={this.state.title}
@@ -683,7 +683,7 @@ class App extends Component {
           )}
         />
       </>
-      // </ThreeProvider>
+      </ThreeProvider>
     );
   }
 }
