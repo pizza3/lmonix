@@ -3,7 +3,7 @@ import styled from "styled-components";
 import VrPreview from "./VrPreview";
 import Animate from "../Animate/index";
 import { eye, code } from "../../assets/icon";
-import * as monaco from "monaco-editor";
+// import * as monaco from "monaco-editor";
 import Tooltip from '../../designLib/Tooltip'
 
 export default class VrRenderer extends Component {                                                                                                                           
@@ -14,20 +14,20 @@ export default class VrRenderer extends Component {
     this.createEditor()
   }
   createEditor=()=>{
-    this.editor = monaco.editor.create(document.getElementById("monacocontainer"), {
-      value: this.props.code,
-      language: "javascript",
-      theme: "vs-dark",
-      fontFamily:'unset',
-      fontSize: 13,
-    });
-    this.editor.onKeyDown((e)=>{
-      clearTimeout(this.typingTimer);
-    })
-    this.editor.onKeyUp((e)=>{
-      clearTimeout(this.typingTimer);
-      this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);    
-    })
+    // this.editor = monaco.editor.create(document.getElementById("monacocontainer"), {
+    //   value: this.props.code,
+    //   language: "javascript",
+    //   theme: "vs-dark",
+    //   fontFamily:'unset',
+    //   fontSize: 13,
+    // });
+    // this.editor.onKeyDown((e)=>{
+    //   clearTimeout(this.typingTimer);
+    // })
+    // this.editor.onKeyUp((e)=>{
+    //   clearTimeout(this.typingTimer);
+    //   this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);    
+    // })
   }
   componentDidUpdate(prevProps){
     const { codeTab } = this.props;

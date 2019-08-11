@@ -13,20 +13,12 @@ function createWindow(event, win) {
   width: 1300, 
   height: 700,
   titleBarStyle: "hiddenInset",
-  nodeIntegration: false,
+  nodeIntegration: true,
 });
-  mainWindow.loadURL(isDev ? 'http://localhost:3006/design' : `file://${path.join(__dirname, '../build/index.html/design')}`);
+  mainWindow.loadURL(isDev ? 'http://localhost:3006/' : `file://${path.join(__dirname, '../build/index.html/')}`);
   mainWindow.on('closed', () => mainWindow = null);
   setMainMenu(mainWindow);
-  let menu = SetPopMenu(mainWindow,win)
-  // mainWindow.on("context-menu", (e, params) => {
-  //   menu.popup(win, params.x, params.y);
-  // });
-  // ipcMain.on("show-context-menu", (event, arg) => {
-  //   // this.objNum = arg["dataNo"];
-  //   const win = BrowserWindow.fromWebContents(event.sender);
-  //   menu.popup(win);
-  // });
+  SetPopMenu(mainWindow,win)
 }
 // const installExtensions = async () => {
 //   return installExtension(REACT_DEVELOPER_TOOLS)
@@ -36,9 +28,6 @@ function createWindow(event, win) {
 
 
 app.on('ready', async ()=>{
-    // if(!isDev){
-    //   await installExtensions();
-    // }
     createWindow()
 });
 

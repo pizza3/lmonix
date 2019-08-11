@@ -13,8 +13,8 @@ export default class TitleBar extends Component {
     return (
       <TitleContainer id="titleBar">
         <TitleOverlay />
-        <Link to="/design">
-          <TitleLink active={this.props.activeRoute === "/design" ? 3 : 0}>
+        <Link to="/">
+          <TitleLink active={this.props.activeRoute === "/" ? 3 : 0}>
             Design
           </TitleLink>
         </Link>

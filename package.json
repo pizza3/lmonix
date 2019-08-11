@@ -25,8 +25,6 @@
     "jsdom": "15.1.1",
     "load-bmfont": "^1.4.0",
     "lodash": "^4.17.11",
-    "monaco-editor": "^0.16.0",
-    "monaco-editor-webpack-plugin": "^1.7.0",
     "rc-trigger": "^2.6.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
@@ -61,7 +59,6 @@
     "concurrently": "^4.1.0",
     "electron": "^4.0.6",
     "electron-builder": "^20.38.5",
-    "electron-devtools-installer": "^2.2.4",
     "typescript": "^3.5.3",
     "wait-on": "^3.2.0"
   }
