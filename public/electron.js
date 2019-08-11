@@ -15,7 +15,7 @@ function createWindow(event, win) {
   titleBarStyle: "hiddenInset",
   nodeIntegration: true,
 });
-  mainWindow.loadURL(isDev ? 'http://localhost:3006/' : `file://${path.join(__dirname, '../build/index.html/')}`);
+  mainWindow.loadURL(isDev ? 'http://localhost:3006/' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
   setMainMenu(mainWindow);
   SetPopMenu(mainWindow,win)
