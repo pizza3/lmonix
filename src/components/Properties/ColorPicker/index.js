@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Trigger from "rc-trigger";
-import ColorPickerDropdown from "./ColorPickerDropdown";
+import ColorPickerDropdown from "../../../designLib/ColorPicker";
 import _ from "lodash";
 const element = document.getElementById("properties-scroll");
 export default class ColorPicker extends Component {

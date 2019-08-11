@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { aframeTemplate } from "../Helpers/helpers";
+import { aframeTemplate } from "../../Helpers/helpers";
 import  jsdom  from "jsdom";
 // const JSDOM = new jsdom()
 // console.log(JSDOM);

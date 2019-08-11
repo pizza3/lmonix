@@ -1,12 +1,12 @@
 /* eslint-disable no-case-declarations */
-import * as THREE from "../ThreeLibManager";
-import textureLoader from "../Helpers/textureLoader";
-import videoLoader from "../Helpers/videoLoader";
-import modelLoader from "../Helpers/modelLoader";
+import * as THREE from "../../Helpers/ThreeLibManager";
+import textureLoader from "../../Helpers/textureLoader";
+import videoLoader from "../../Helpers/videoLoader";
+import modelLoader from "../../Helpers/modelLoader";
 import _ from "lodash";
-import {updateGeometry} from '../Helpers/helpers'
+import {updateGeometry} from '../../Helpers/helpers'
 // import Lato from "../../assets/Lato-Regular-16.fnt"
-import {toCamelCase} from '../Helpers/helpers'
+import {toCamelCase} from '../../Helpers/helpers'
 // const loader = new THREE.FontLoader();
 const createGeometry = require("three-bmfont-text");
 const loadFont = require("load-bmfont");

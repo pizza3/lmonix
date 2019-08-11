@@ -1,4 +1,4 @@
-import * as THREE from '../ThreeLibManager';
+import * as THREE from '../Helpers/ThreeLibManager';
 const fs = window.require("fs");
 const textureLoader = (path)=>{
     let data =

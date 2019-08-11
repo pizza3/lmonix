@@ -1,4 +1,4 @@
-import * as THREE from "../ThreeLibManager";
+import * as THREE from "./ThreeLibManager";
 const mtlLoader = new THREE.MTLLoader();
 const objLoader = new THREE.OBJLoader();
 // const fs = window.require("fs");

@@ -1,7 +1,7 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
 import Trigger from 'rc-trigger'
-import ColorPickerDropdown from '../ColorPicker/ColorPickerDropdown'
+import ColorPickerDropdown from '../../../designLib/ColorPicker'
 
 export default class GroundColor extends Component{
     state = {

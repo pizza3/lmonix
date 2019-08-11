@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import SceneRenderer from "./SceneRenderer";
-import PropertiesEditor from "./Properties/PropertiesEditor";
+import PropertiesEditor from "../Properties/PropertiesEditor";
 import SceneController from "./SceneController";
 
 export default class SceneEditor extends Component {
@@ -13,7 +13,7 @@ export default class SceneEditor extends Component {
     return (
       <SceneEditorContainer>
         <SceneEditorContainerScroll id="customScrollbar">
-          <SceneController {...this.props} />
+          <SceneController transformControls={this.props.transformControls}/>
           <SceneRenderer
             renderSceneOnMount={this.props.renderSceneOnMount}
             handleLeave={this.props.handleLeave}
@@ -23,6 +23,9 @@ export default class SceneEditor extends Component {
           {objPresent ? (
             <PropertiesEditor
               {...this.props}
+              active={this.props.active}
+              replaceGeometry={this.props.replaceGeometry}
+              objPresent={this.props.objPresent}
               changeObjectProp={this.props.changeObjectProp}
             />
           ) : (

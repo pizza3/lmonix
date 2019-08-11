@@ -25,7 +25,7 @@ import {
   updateGeometry,
   toCamelCase,
   CustomGeometryConfig
-} from "../Helpers/helpers";
+} from "../../Helpers/helpers";
 import _ from "lodash";
 export default class PropertiesEditor extends Component {
   checkColor = () => {
@@ -142,7 +142,7 @@ export default class PropertiesEditor extends Component {
     return [];
   };
   render() {
-    const { active, objPresent } = this.props;
+    const { active, objPresent, changeObjectProp } = this.props;
     const isColor = this.checkColor();
     const isModel = this.checkModel();
     const isLight = this.checkLight();
@@ -163,11 +163,11 @@ export default class PropertiesEditor extends Component {
             objectsPresent &&
             active.objPrimitive !== "curvedimage" &&
             !isSky && !isText ? (
-              <Geometry {...this.props} />
+              <Geometry active={active} />
             ) : (
               []
             )}
-            {isLight && objectsPresent ? <Lights {...this.props} /> : []}
+            {isLight && objectsPresent ? <Lights active={active} /> : []}
             <Section>
               {objectsPresent?<Transform {...this.props} />:[]}
             </Section>
@@ -175,18 +175,18 @@ export default class PropertiesEditor extends Component {
             <Section>
               {/* {!isLight&&!isModel ? <Material {...this.props} /> : null} */}
               {!isLight ? <Texture {...this.props} /> : null}
-              {/* {isColor ? <ColorPicker {...this.props} /> : null} */}
+              {isColor ? <ColorPicker {...this.props} /> : null}
               {isHemisphere ? <GroundColor {...this.props} /> : null}
               {isModel && !isLight ? <Model {...this.props} /> : null}
-              {isLight ? <Intensity {...this.props} /> : null}
+              {isLight ? <Intensity changeObjectProp={changeObjectProp} active={active} /> : null}
               {isSpot? <Distance active={active} />: null}
               {this.props.objPresent.length > 0 && !isLight && !isModel ? (
-                <Opacity {...this.props} />
+                <Opacity changeObjectProp={changeObjectProp} active={active} />
               ) : null}
               {this.props.objPresent.length > 0 && !isLight && !isModel ? (
-                <Transparent {...this.props} />
+                <Transparent changeObjectProp={changeObjectProp} active={active} />
               ) : null}
-              <Visible {...this.props} />
+              <Visible changeObjectProp={changeObjectProp} active={active} />
             </Section>
             <Section>
               <CastShadow isModel={isModel} {...this.props} />

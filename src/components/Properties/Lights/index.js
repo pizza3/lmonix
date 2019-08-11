@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import _ from 'lodash'
-import { updateGeometry, updateLights} from '../../Helpers/helpers'
+import { updateGeometry, updateLights} from '../../../Helpers/helpers'
 import {Container, Title} from '../styled'
 import Select from "../../../designLib/Select";
 

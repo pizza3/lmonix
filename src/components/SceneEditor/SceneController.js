@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { walk, grid, scale, translate, rotate } from "../assets/icon";
-import Trigger from "rc-trigger";
-
+import { walk, grid, scale, translate, rotate } from "../../assets/icon";
+import Tooltip from '../../designLib/Tooltip'
 export default class SceneController extends Component {
   state = {
     active: true,
@@ -43,19 +42,9 @@ export default class SceneController extends Component {
     const { activeLogo } = this.state;
     return (
       <SceneControllerContainer>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Free Roam</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        <Tooltip
+          align='right'
+          name='Free Roam'
         >
           <SelectController
             onClick={() => {
@@ -67,40 +56,20 @@ export default class SceneController extends Component {
             </Svg>
             <Img src={walk} />
           </SelectController>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Grid</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+         align='right'
+         name='Grid'
         >
           <SelectController id="grid">
             <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.151 10.151">
               {grid()}
             </Svg>
           </SelectController>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Scale</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+          align='right'
+          name='Scale'
         >
           <SelectController
             active={activeLogo === 1} 
@@ -112,20 +81,10 @@ export default class SceneController extends Component {
               {scale(activeLogo === 1 ? "#ffffff" : "#707070")}
             </Svg>
           </SelectController>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Rotate</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+         align='right'
+         name='Rotate'
         >
           <SelectController
            active={activeLogo === 2} 
@@ -138,20 +97,10 @@ export default class SceneController extends Component {
             </Svg>
             <Img src={rotate} />
           </SelectController>
-        </Trigger>
-        <Trigger
-          action={["hover"]}
-          popup={
-            <TooltipBody>
-              <TooltipOverlay />
-              <TooltipText>Translate</TooltipText>
-            </TooltipBody>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tl", "tc"],
-            offset: [20, 0]
-          }}
+        </Tooltip>
+        <Tooltip
+          align='right'
+          name='Translate'
         >
           <SelectController
             active={activeLogo === 3} 
@@ -164,7 +113,7 @@ export default class SceneController extends Component {
               {translate(activeLogo === 3 ? "#ffffff" : "#707070")}
             </Svg>
           </SelectController>
-        </Trigger>
+        </Tooltip>
       </SceneControllerContainer>
     );
   }
@@ -208,35 +157,6 @@ const Img = styled.img`
   bottom: 0;
   margin-top: auto;
   margin-bottom: auto;
-`;
-
-const TooltipOverlay = styled.div`
-  background: #000;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-  left: 0%;
-  top: 0%;
-  z-index: -1;
-`;
-
-const TooltipText = styled.div`
-  z-index: 1;
-  color: white;
-  position: relative;
-`;
-
-const TooltipBody = styled.div`
-  width: auto;
-  height: auto;
-  padding: 7px;
-  box-sizing: content-box;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-  font-weight: 600;
-  font-size: 10px;
 `;
 
 const SceneControllerContainer = styled.div`

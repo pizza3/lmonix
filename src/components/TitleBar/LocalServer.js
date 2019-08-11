@@ -54,12 +54,11 @@ const PopContainer = styled.div`
     width: 248px;
     position: fixed;
     height: 295px;
-    background: #f7f7f7;
     border-radius: 4px;
-    border: 2px solid #d4d4d4;
     z-index: 100;
     padding: 15px;
-
+    background: #1b1b1b;
+    border: 2px solid #2d2d2d;
 `
 
 const Header = styled.div`
@@ -110,14 +109,11 @@ const StartButton = styled.button`
     width: 130px;
     height: 25px;
     border-radius: 3px;
-    background: #2F79EF;
+    background: #4f74f9;
     color: #fff;
     font-weight: 700;
     font-size: 10px;
     border: none;
     margin-top: 33px;
     margin-left: calc(57% - 79px);
-    &:hover{
-        background: #186AEB;
-    }
 `

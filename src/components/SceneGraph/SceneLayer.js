@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {Svg, Text, SceneGraphContainer, SceneGraphTitle, Container} from './styled'
 import SceneTree from "./SceneTreeNew";
 import _ from "lodash";
-import ThreeContext from "../../ThreeContext";
+import ThreeContext from "../../context/ThreeContext";
 
 const message = (
   <>

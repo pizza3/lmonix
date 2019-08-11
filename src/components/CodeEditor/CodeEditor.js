@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import VrPreview from "./CodeEditor/VrPreview";
-import Animate from "./Animate/index";
-import { eye, code } from "../assets/icon";
+import VrPreview from "./VrPreview";
+import Animate from "../Animate/index";
+import { eye, code } from "../../assets/icon";
 import * as monaco from "monaco-editor";
-import Tooltip from '../designLib/Tooltip'
+import Tooltip from '../../designLib/Tooltip'
 
 export default class VrRenderer extends Component {                                                                                                                           
   componentDidMount() {
@@ -48,7 +48,6 @@ export default class VrRenderer extends Component {
               title={this.props.title}
               objPresent={this.props.objPresent}
               assetStack={this.props.assetStack}
-              animate={this.props.animate}
               isCursor={this.props.isCursor}
               isDefaultLights={this.props.isDefaultLights}
               code={this.props.code}
@@ -75,7 +74,6 @@ export default class VrRenderer extends Component {
         title={this.props.title}
         objPresent={this.props.objPresent}
         assetStack={this.props.assetStack}
-        animate={this.props.animate}
         isCursor={this.props.isCursor}
         isDefaultLights={this.props.isDefaultLights}
         code={this.props.code}

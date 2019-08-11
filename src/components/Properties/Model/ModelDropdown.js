@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import * as THREE from "../../ThreeLibManager";
+import * as THREE from "../../../Helpers/ThreeLibManager";
 import * as MaterialLoader from "three-mtl-loader";
-import * as ObjectLoader from "../../Helpers/three-obj-loader";
-import modelLoader from '../../Helpers/modelLoader' 
+import * as ObjectLoader from "../../../Helpers/three-obj-loader";
+import modelLoader from '../../../Helpers/modelLoader' 
 const fs = window.require("fs");
 const Loader = new THREE.OBJLoader();
 const OBJLoader = ObjectLoader.default;

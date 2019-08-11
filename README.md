@@ -1,5 +1,5 @@
 # Introduction
-Lmonix is a desktop application for creating webvr application, the tool consist's of a simple design editor for creating the static scene and a prototype editor for creating animation's and creting logic using scripts. It is powered by aframe and threejs.
+Lmonix is a desktop application for creating webvr application, the tool consist's of a simple design editor for creating the static scene and a prototype editor for creating animation's and creting logic using scripts. It is powered by aframe and threejs. The 
 
 # Design
 The design editor is used for building the static scene, you can add entities such ad basic 3D objects, lighting, environments, images/videos, 3D models etc.

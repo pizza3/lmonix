@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { geometryExist, toCamelCase } from "../../Helpers/helpers";
+import { geometryExist, toCamelCase } from "../../../Helpers/helpers";
 import Switch from "../../../designLib/Switch";
 import Range from "../../../designLib/Range";
 import InputNumber from "../../../designLib/Number";

@@ -13,7 +13,7 @@ import {
   directions,
   easeFuncsList,
   basicAnimationsConfig
-} from "../Helpers/helpers";
+} from "../../Helpers/helpers";
 export default class AnimDropdown extends Component {
   // over here we have basic/common props needed for animation
   state = {
@@ -273,8 +273,8 @@ const AnimContainer = styled.div`
   color: #707070;
   font-weight: 600;
   padding: 3px 7px 1px 1px;
-  background: #f1f1f1;
-  border-bottom: 2px solid #e0e0e0;
+  background: #1b1b1b;
+  border-bottom: 2px solid #2d2d2d;
 `;
 const AnimText = styled.div`
   position: relative;
@@ -296,19 +296,15 @@ const AnimConfigIcon = styled.svg`
   padding: 2px;
   position: relative;
   border-radius: 2px;
-  background: #e0e0e0;
-  &:hover {
-    background: #d0d0d0;
-  }
 `;
 
 const AnimConfigDropdown = styled.div`
   width: 248px;
   position: fixed;
   height: 295px;
-  background: #f9f9f9;
+  background: #1b1b1b;
   border-radius: 4px;
-  border: 2px solid #d4d4d4;
+  border: 2px solid #2d2d2d;
   z-index: 100;
   padding: 7px 7px 15px 7px;
   overflow: auto;

@@ -1,4 +1,4 @@
-import * as THREE from "../../components/ThreeLibManager";
+import * as THREE from "./ThreeLibManager";
 import _ from "lodash";
 const fs = window.require("fs");
 export const updateGeometry = (type, obj, value) => {

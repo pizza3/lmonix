@@ -17,12 +17,10 @@ export default class Visible extends Component {
 
   componentDidUpdate(prevProps) {
     if (!_.isEqual(prevProps.active, this.props.active)) {
-      if (this.props.objPresent.length) {
         let val = this.props.active.visible || false;
         this.setState({
           visible: val
         });
-      }
     }
   }
 
@@ -38,16 +36,11 @@ export default class Visible extends Component {
     );
   };
   render() {
-    const isObjectPresent = this.props.objPresent.length;
     const { visible } = this.state;
     return (
       <Container>
         <Title>Visible</Title>
-        {isObjectPresent ? (
           <Switch checked={visible} onChange={this.handleInputChange} />
-        ) : (
-          <Switch disabled={true} checked={visible} />
-        )}
       </Container>
     );
   }

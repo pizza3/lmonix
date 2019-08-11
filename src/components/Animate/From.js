@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { PropertyName, PropertyContainer } from "./styled";
 import Range from "../../designLib/Range";
 import styled from "styled-components";
-import ColorPickerDropdown from "../Properties/ColorPicker/ColorPickerDropdown";
+import ColorPickerDropdown from "../../designLib/ColorPicker";
 import Trigger from "rc-trigger";
 export default class From extends Component {
   state = {

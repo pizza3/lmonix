@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { run, cloud } from "../../assets/icon";
+import { run } from "../../assets/icon";
 import LocalServer from "./LocalServer";
 import { Link } from "react-router-dom";
 import Trigger from "rc-trigger";

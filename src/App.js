@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import TitleBar from "./components/TitleBar/TitleBar";
-import CodeEditor from "./components/CodeEditor";
-import SceneEditor from "./components/SceneEditor";
+import CodeEditor from "./components/CodeEditor/CodeEditor";
+import SceneEditor from "./components/SceneEditor/SceneEditor";
 import _ from "lodash";
 import { AddGroupObj, ApplyTexture } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
-import { basicAnimationsConfig } from "./components/Helpers/helpers";
-import * as THREE from "./components/ThreeLibManager";
-import TransformControls from "./components/Transform";
-import TrackballControls from "./components/TrackballControls";
+import { basicAnimationsConfig } from "./Helpers/helpers";
+import * as THREE from "./Helpers/ThreeLibManager";
+import TransformControls from "./Helpers/Transform";
+import TrackballControls from "./Helpers/TrackballControls";
 import MenuBar from "./components/MenuBar/index";
 import SceneLayer from "./components/SceneGraph/SceneLayer";
 import SceneGeneral from "./components/SceneGeneral";
 
 import { message } from "antd";
 // import { JSDOM } from "jsdom";
-import ThreeProvider from "./ThreeProvider";
+import ThreeProvider from "./context/ThreeProvider";
 const electron = window.require("electron");
 
 class App extends Component {
@@ -615,7 +615,7 @@ class App extends Component {
       <>
         <TitleBar
           title={this.state.title}
-          {...this.state}
+          localIP={this.state.localIP}
           activeRoute={this.props.location.pathname}
         />
         <MenuBar
@@ -628,11 +628,6 @@ class App extends Component {
           <SceneLayer
             objPresent={objPresent}
             paste3DObject={this.paste3DObject}
-            active={active}
-            updateActiveDrilldown={this.updateActiveDrilldown}
-            setActiveObj={this.setActiveObj}
-            activeDrilldown={activeDrilldown}
-            changeObjectProp={this.changeObjectProp}
           />
         ) : (
           <SceneGeneral
@@ -674,7 +669,13 @@ class App extends Component {
           path="/code"
           render={() => (
             <CodeEditor
-              {...this.state}
+              title={this.state.title}
+              objPresent={this.state.objPresent}
+              assetStack={this.state.assetStack}
+              isCursor={this.state.isCursor}
+              isDefaultLights={this.state.isDefaultLights}
+              code={this.state.code}
+              codeTab={this.state.codeTab}
               updateCode={this.updateCode}
               updateAnimate={this.updateAnimate}
               handleActiveTab={this.handleActiveTab}

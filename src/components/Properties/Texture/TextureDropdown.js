@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import * as THREE from "../../ThreeLibManager";
+import * as THREE from "../../../Helpers/ThreeLibManager";
 import { texture } from "../../../assets/icon";
-import { message} from 'antd'
+import { message } from 'antd'
+
 const fs = window.require("fs");
 const electron =  window.require('electron');
-
 const videoExt = [".webm",".mp4"]
 const imageExt = [".jpg",".webp",".png"]
+
 export default class MenuDropdown extends Component {
   addModel = obj => {
     this.props.addInScene(obj);
@@ -113,9 +114,8 @@ export default class MenuDropdown extends Component {
 const Container = styled.div`
   position: relative;
   overflow: auto;
-  background: #f7f7f7;
-  border: 2px solid #dbdbdb;
-  width: 255px;
+  background: #1b1b1b;
+  border: 2px solid #2d2d2d;  width: 255px;
   height: 255px;
   z-index: 1;
   border-radius: 4px;
@@ -125,7 +125,7 @@ const Container = styled.div`
 const Button = styled.button`
     width: 100%;
     height: 26px;
-    background: #2F79EF;
+    background: #4f74f9;
     color: #fff;
     position: absolute;
     bottom: 0px;
@@ -135,7 +135,7 @@ const Button = styled.button`
     outline: none;
     transition: 0.3s;
   &:hover {
-    background: #1a66e0;
+    background: #4f74f9;
     color: #fff;
   }
 `;
@@ -203,7 +203,7 @@ const Text = styled.span`
 
 const TextureIcon = styled.div`
   text-align: center;
-  margin-top: 32px;
+  margin-top: 51px;
 `;
 
 const Message = styled.div`
