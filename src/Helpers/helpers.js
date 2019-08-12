@@ -199,20 +199,37 @@ export const createScene = (threeData = [], animate = {}) => {
         >
         ${createScene(val.children.slice(1))}
         </a-curvedimage> \n`;
-    } else if (val.objPrimitive === "3DModel") {      
-      dataString += `<a-entity id="${val.objName}"
-      obj-model="obj: url(${val.objModel.path});"
-      position="${val.position.x} ${val.position.y} ${
-        val.position.z
-      }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
-        .rotation._x *
-        (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
-        (180 / 3.14)}"
-        shadow="receive:${val.receiveShadow};cast:${val.castShadow}" 
-        visible="${val.visible}" 
-        >
-        ${createScene(val.children.slice(1))}
-        </a-entity> \n`;
+    } else if (val.objPrimitive === "3DModel") {
+      if(val.objModel.type==='poly'){
+        dataString += `<a-gltf-model id="${val.objName}"
+        src="${val.objModel.path}"
+        position="${val.position.x} ${val.position.y} ${
+          val.position.z
+        }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
+          .rotation._x *
+          (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
+          (180 / 3.14)}"
+          visible="${val.visible}" 
+          >
+          ${createScene(val.children.slice(1))}
+          </a-gltf-model> \n`;
+      } 
+      else{
+        dataString += `<a-entity id="${val.objName}"
+        obj-model="obj: url(${val.objModel.path});"
+        position="${val.position.x} ${val.position.y} ${
+          val.position.z
+        }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
+          .rotation._x *
+          (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
+          (180 / 3.14)}"
+          shadow="receive:${val.receiveShadow};cast:${val.castShadow}" 
+          visible="${val.visible}" 
+          >
+          ${createScene(val.children.slice(1))}
+          </a-entity> \n`;
+      }     
+
     } else if (val.objType === "Light") {
       dataString += `<a-entity id="${val.objName}" light="type: ${
         val.objPrimitive

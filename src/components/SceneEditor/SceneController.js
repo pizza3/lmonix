@@ -54,7 +54,6 @@ export default class SceneController extends Component {
             <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7.449 10.845">
               {walk()}
             </Svg>
-            <Img src={walk} />
           </SelectController>
         </Tooltip>
         <Tooltip
@@ -95,7 +94,6 @@ export default class SceneController extends Component {
             <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13.133 13.127">
               {rotate(activeLogo === 2 ? "#ffffff" : "#707070")}
             </Svg>
-            <Img src={rotate} />
           </SelectController>
         </Tooltip>
         <Tooltip

@@ -174,7 +174,7 @@ export default class PropertiesEditor extends Component {
             {finalGeometries.length?<Section>{finalGeometries}</Section>:[]}
             <Section>
               {/* {!isLight&&!isModel ? <Material {...this.props} /> : null} */}
-              {!isLight ? <Texture {...this.props} /> : null}
+              {!isLight && !isModel ? <Texture {...this.props} /> : null}
               {isColor ? <ColorPicker {...this.props} /> : null}
               {isHemisphere ? <GroundColor {...this.props} /> : null}
               {isModel && !isLight ? <Model {...this.props} /> : null}

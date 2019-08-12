@@ -1,28 +1,30 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import * as THREE from "../../../Helpers/ThreeLibManager";
-import { texture } from "../../../assets/icon";
-import { message } from 'antd'
-
+import { texture, addCircle } from "../../../assets/icon";
+import Tooltip from '../../../designLib/Tooltip'
+import { message } from "antd";
 const fs = window.require("fs");
-const electron =  window.require('electron');
-const videoExt = [".webm",".mp4"]
-const imageExt = [".jpg",".webp",".png"]
+const electron = window.require("electron");
+const videoExt = [".webm", ".mp4"];
+const imageExt = [".jpg", ".webp", ".png"];
 
 export default class MenuDropdown extends Component {
   addModel = obj => {
     this.props.addInScene(obj);
   };
-  handleAddAsset=()=>{
-    if(this.props.location!=='untitled*'){
-      electron.ipcRenderer.send("open-asset-modal",{location:this.props.location, filter:this.props.filterBy})
+  handleAddAsset = () => {
+    if (this.props.location !== "untitled*") {
+      electron.ipcRenderer.send("open-asset-modal", {
+        location: this.props.location,
+        filter: ['mp4','webm','jpg','png','webp']
+      });
+    } else {
+      message.warning("Project not saved, save it to add asset's.", 3);
     }
-    else{
-      message.warning("Project not saved, save it to add asset's.",7)
-    }
-}
+  };
   handleTexture = i => {
-    const type = this.props.active.objPrimitive
+    const type = this.props.active.objPrimitive;
     const data =
       "data:video/webm;base64," +
       fs.readFileSync(this.props.assetStack[i].path).toString("base64");
@@ -65,7 +67,7 @@ export default class MenuDropdown extends Component {
       };
       const point = new THREE.Vector2(0.5, 0.5);
       texture.center = point;
-      if(type!=='sky')texture.rotation = 3.14;
+      if (type !== "sky") texture.rotation = 3.14;
       this.props.changeObjectProp(texture, "map", "material");
       this.props.changeObjectProp(true, "needsUpdate", "material");
       this.props.changeObjectProp(objTexture, "objTexture");
@@ -75,7 +77,7 @@ export default class MenuDropdown extends Component {
   render() {
     const { assetStack } = this.props;
     const Textures = assetStack.map((val, i) => {
-      if ([...imageExt,...videoExt].includes(val.ext)) {
+      if ([...imageExt, ...videoExt].includes(val.ext)) {
         return (
           <ObjButton
             key={i}
@@ -84,18 +86,36 @@ export default class MenuDropdown extends Component {
               this.handleTexture(i);
             }}
           >
-            {val.ext==='.mp4'?<Video autoplay muted>
-            <source src={"data:video/mp4;base64," +val.data} type="video/mp4"/>
-            </Video>: <Img src={"data:video/webm;base64," +val.data} />}
-            <Text><Span>Name: </Span>{val.name}</Text>
-            <Text><Span>Type: </Span>{val.ext}</Text>
+            {val.ext === ".mp4" ? (
+              <Video autoplay muted>
+                <source
+                  src={"data:video/mp4;base64," + val.data}
+                  type="video/mp4"
+                />
+              </Video>
+            ) : (
+              <Img src={"data:video/webm;base64," + val.data} />
+            )}
+            <Text>
+              <Span>Name: </Span>
+              {val.name}
+            </Text>
+            <Text>
+              <Span>Type: </Span>
+              {val.ext}
+            </Text>
           </ObjButton>
         );
       }
     });
     return (
       <Container>
-        <Button onClick={this.handleAddAsset}>Add Texture</Button>
+        <Title>Textures</Title>
+        <Tooltip align='bottom' name='Add Textures'>
+          <Add  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={this.handleAddAsset}>
+            {addCircle("#4f74f9")}
+          </Add>
+        </Tooltip>
         {Textures.length ? (
           <TextureContainer id="customScrollbar">{Textures}</TextureContainer>
         ) : (
@@ -115,45 +135,26 @@ const Container = styled.div`
   position: relative;
   overflow: auto;
   background: #1b1b1b;
-  border: 2px solid #2d2d2d;  width: 255px;
+  border: 2px solid #2d2d2d;
+  width: 255px;
   height: 255px;
   z-index: 1;
   border-radius: 4px;
   box-shadow: 0px 0px 35px -12px rgba(0, 0, 0, 0.75);
 `;
 
-const Button = styled.button`
-    width: 100%;
-    height: 26px;
-    background: #4f74f9;
-    color: #fff;
-    position: absolute;
-    bottom: 0px;
-    border: none;
-    font-size: 9px;
-    font-weight: 600;
-    outline: none;
-    transition: 0.3s;
-  &:hover {
-    background: #4f74f9;
-    color: #fff;
-  }
-`;
-
 const Span = styled.span`
-    font-size: 13px;
-    font-weight: 700;
-    float: left;
-    margin-right: 5px;
-    
-`
-
+  font-size: 13px;
+  font-weight: 700;
+  float: left;
+  margin-right: 5px;
+`;
 
 const ObjButton = styled.button`
   width: 100%;
   height: 76px;
   border: none;
-  border-bottom: 1px solid #dbdbdb;
+  border-bottom: 2px solid #2d2d2d;
   background: none;
   color: #8a8a8a;
   font-size: 12px;
@@ -166,14 +167,14 @@ const ObjButton = styled.button`
   text-overflow: ellipsis;
   padding: 6px;
   &:hover {
-    background: #e4e4e4;
-    color: #1a66e0;
+    background: #4f74f9;
+    color: #ececec;
   }
 `;
 
 const Img = styled.img`
-    height: auto;
-    width: 62px;
+  height: auto;
+  width: 62px;
   float: left;
   position: relative;
 `;
@@ -183,28 +184,26 @@ const Video = styled.video`
   height: 62px;
   float: left;
   position: relative;
-
-`
+`;
 const Text = styled.span`
-    top: 0px;
-    position: relative;
-    font-size: 11px;
-    width: 173px;
-    float: left;
-    font-weight: 400;
-    padding-left: 11px;
-    text-align: left;
-    margin-top: 4px;
-    white-space: nowrap;
+  top: 0px;
+  position: relative;
+  font-size: 11px;
+  width: 173px;
+  float: left;
+  font-weight: 400;
+  padding-left: 11px;
+  text-align: left;
+  margin-top: 4px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
 `;
 
 const TextureIcon = styled.div`
   text-align: center;
-  margin-top: 51px;
-`;
+  margin-top: 77px;
+  `;
 
 const Message = styled.div`
   text-align: center;
@@ -217,8 +216,28 @@ const Message = styled.div`
 `;
 
 const TextureContainer = styled.div`
-    position: relative;
-    overflow: auto;
-    height: calc(100% - 26px);
+  position: relative;
+  overflow: auto;
+  float: left;
+  height: calc(100% - 34px);
+`;
 
-`
+const Title = styled.div`
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 35px;
+  background: #1b1b1b;
+  border-bottom: 2px solid #2d2d2d;
+  padding-left: 5px;
+  color: #ececec;
+  font-weight: bold;
+  font-size: 27px;
+`;
+
+const Add = styled.svg`
+  position: absolute;
+  right: 3px;
+  top: 2px;
+  width: 28px;
+`;

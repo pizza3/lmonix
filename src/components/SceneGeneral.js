@@ -1,6 +1,5 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
-import AssetManager from './AssetsManager/AssetManager';
 import GeneralSettings from './GeneralSettings'
 export default class SceneGeneral extends Component{
     render(){
@@ -10,7 +9,6 @@ export default class SceneGeneral extends Component{
                     General
                 </SceneGraphTitle>
                 <GeneralSettings/>
-                {/* <AssetManager {...this.props}/> */}
             </SceneGraphContainer>
         )
     }

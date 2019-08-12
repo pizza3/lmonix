@@ -4,6 +4,7 @@ import { run } from "../../assets/icon";
 import LocalServer from "./LocalServer";
 import { Link } from "react-router-dom";
 import Trigger from "rc-trigger";
+import Tooltip from "../../designLib/Tooltip";
 
 export default class TitleBar extends Component {
   state = {
@@ -24,15 +25,14 @@ export default class TitleBar extends Component {
           </TitleLinkCode>
         </Link>
         <Title>{this.props.title}</Title>
+          <Tooltip name="Preview" align="bottom">
         <Trigger
           action={["click"]}
           popup={
-            <div>
-              <LocalServer
-                location={this.props.title}
-                ip={this.props.localIP}
-              />
-            </div>
+            <LocalServer
+              location={this.props.title}
+              ip={this.props.localIP}
+            />
           }
           prefixCls="dropdown"
           popupAlign={{
@@ -40,28 +40,14 @@ export default class TitleBar extends Component {
             offset: [-230, 30]
           }}
         >
-          <Trigger
-            action={["hover"]}
-            popup={
-              <TooltipBody>
-                <TooltipOverlay />
-                <TooltipText>Preview</TooltipText>
-              </TooltipBody>
-            }
-            prefixCls="dropdown"
-            popupAlign={{
-              points: ["tc", "bc"],
-              offset: [0, 10]
-            }}
-          >
             <SvgContainer
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 12.109 11.177"
             >
               {run}
             </SvgContainer>
-          </Trigger>
         </Trigger>
+          </Tooltip>
       </TitleContainer>
     );
   }
@@ -92,7 +78,7 @@ const SvgContainer = styled.svg`
   margin-right: 27px;
 `;
 
-const Title = styled.div` 
+const Title = styled.div`
   position: absolute;
   left: 0;
   right: 0;

@@ -143,7 +143,8 @@ function showAddDialog(browserWindow, arg) {
     browserWindow,
     {
       defaultPath: app.getPath("documents"),
-      filters: [{ name: "Images", extensions: arg.filter }]
+      filters: [{ name: "Images", extensions: arg.filter }],
+      properties:["openFile","multiSelections"]
     },
     filepaths => {
       if (filepaths && filepaths.length) {

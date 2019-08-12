@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { getPolyData } from "./api";
 import _ from "lodash";
-import { message} from 'antd'
+import { message } from "antd";
 const electron = window.require("electron");
 
 export default class Poly extends Component {
@@ -29,55 +29,35 @@ export default class Poly extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.setState({
-      loaded: false
-    },()=>{
-      getPolyData(this.state.value).then(obj => {
-        if (_.isEmpty(obj)) {
-          this.setState({
-            data: [],
-            loaded: true
-          });
-        } else {
-          const data = obj.assets;
-          this.setState({
-            data,
-            loaded: true
-          });
-        }
-      });
-    });
-  };
-  handleAddModel = data => {
-    const { title } = this.props;
-    if(title!=='untitled*'){
-      data.formats.forEach((obj, i) => {
-        if ((obj.formatType = "OBJ")) {
-          electron.ipcRenderer.send("addModel", {
-            title,
-            obj,
-            name: data.displayName.replace(/\s/g, "")
-          });
-        }
-      });
-    }
-    else{
-      message.warning("Save the project first, to add model's.",7)
-    }
+    this.setState(
+      {
+        loaded: false
+      },
+      () => {
+        getPolyData(this.state.value).then(obj => {
+          if (_.isEmpty(obj)) {
+            this.setState({
+              data: [],
+              loaded: true
+            });
+          } else {
+            const data = obj.assets;
+            this.setState({
+              data,
+              loaded: true
+            });
+          }
+        });
+      }
+    );
   };
   render() {
+    const {applyPolyTexture} = this.props
     const { loaded, data } = this.state;
     const images = data.map((val, i) => {
       return (
-        <ImgCont key={i}>
+        <ImgCont key={i} onClick={()=>{applyPolyTexture(val)}}>
           <Img key={i} src={val.thumbnail.url} />
-          <Add
-            onClick={() => {
-              this.handleAddModel(val);
-            }}
-          >
-            +
-          </Add>
         </ImgCont>
       );
     });
@@ -111,50 +91,54 @@ export default class Poly extends Component {
 }
 
 const Container = styled.div`
-  position: fixed;
-  background: #f7f7f7;
-  border: 2px solid #dbdbdb;
-  width: 340px;
-  height: 255px;
+  position: relative;
+  width: 250px;
+  height: 217px;
   z-index: 1;
-  border-radius: 4px;
   box-shadow: 0px 0px 24px -3px rgba(0, 0, 0, 0.1);
-  padding: 0px 6px 0px 6px;
   overflow: auto;
 `;
 const Input = styled.input`
-  width: 324px;
-  background: #e0e0e0;
-  border: 1px solid #d0d0d0;
+  width: 240px;
+  background: #313131;
+  border: 1px solid #5d5d5d;
+  color: #ececec;
   height: 31px;
   border-radius: 4px;
   position: fixed;
   font-weight: 700;
   font-size: 16px;
   padding-left: 5px;
+  margin-left: 5px;
+  &:focus {
+    outline: none !important;
+    border: 1px solid #4f74f9;
+  }
 `;
 const InputContainer = styled.div`
   width: 100%;
   height: 43px;
-  position: fixed;
-  background: #f7f7f7;
+  position: relative;
   padding-top: 6px;
 `;
 const ImgCont = styled.div`
-  width: 48%;
+  width: 47%;
   position: relative;
   float: left;
-  margin-right: 6px;
-  border-radius: 4px;
-  margin-bottom: 7px;
+  margin-bottom: 1px;
   overflow: hidden;
+  margin-left: 2%;
 `;
 
 const Img = styled.img`
   width: 100%;
+  border-radius: 4px;
 `;
 const ImgContainer = styled.div`
-  margin-top: 46px;
+  width: 100%;
+  height: 80%;
+  position: relative;
+  overflow: auto;
 `;
 
 const Add = styled.button`
@@ -173,6 +157,8 @@ const Add = styled.button`
 const Message = styled.div`
   text-align: center;
   font-weight: 700;
-  top: 73px;
+  top: 66px;
   position: relative;
+  color: #fff;
+  font-size: 10px;
 `;

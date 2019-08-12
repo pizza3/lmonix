@@ -338,20 +338,33 @@ function SetPopMenu(mainWindow, win) {
       },
     )
   )
-  // mainWindow.on("context-menu", (e, params) => {
-  //   menu.popup(win, params.x, params.y);
-  // });
+  menu.append(
+    new MenuItem(
+      {
+        type: "separator"
+      }
+    )
+  )
+  menu.append(
+    new MenuItem(
+      {
+        label: "Add to animate",
+        click:function() {
+          mainWindow.webContents.send("ipcRenderer", {
+            option: "Add to Script",
+          });
+        }
+      },
+    )
+  )
   ipcMain.on("show-context-menu", (event, arg) => {
-    // this.objNum = arg["dataNo"];
-    console.log('ipcRenderer')
     const win = BrowserWindow.fromWebContents(event.sender);
     menu.popup(win);
   });
-  // return menu 
-  // ipcMain.on("open-asset-modal", (event, arg) => {
-  //   const location = arg;
-  //   showAddDialog(mainWindow, location);
-  // });
+  ipcMain.on("open-asset-modal", (event, arg) => {
+    const location = arg;
+    showAddDialog(mainWindow, location);
+  });
 
   // ipcMain.on("startlocal", (event, arg) => {
   //   const { location } = arg;

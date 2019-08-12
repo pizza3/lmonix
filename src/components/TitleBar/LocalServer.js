@@ -25,7 +25,7 @@ export default class LocalServer extends Component{
             }
         }
         else{
-            message.warning('Project not saved, please save it to run preview.',7)
+            message.warning('Project not saved, please save it to run preview.',3)
         }
     }
     render(){

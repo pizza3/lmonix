@@ -1,5 +1,7 @@
 import * as THREE from "./ThreeLibManager";
 const mtlLoader = new THREE.MTLLoader();
+mtlLoader.setCrossOrigin( true );
+
 const objLoader = new THREE.OBJLoader();
 // const fs = window.require("fs");
 

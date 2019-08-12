@@ -142,6 +142,6 @@ const Delete = styled.svg`
   top: 2px;
   border-radius: 3px;
   &:hover {
-    background: #c7c7c7;
+    background: #212121;
   }
 `;

@@ -12,12 +12,9 @@ import TrackballControls from "./Helpers/TrackballControls";
 import MenuBar from "./components/MenuBar/index";
 import SceneLayer from "./components/SceneGraph/SceneLayer";
 import SceneGeneral from "./components/SceneGeneral";
-
 import { message } from "antd";
-// import { JSDOM } from "jsdom";
 import ThreeProvider from "./context/ThreeProvider";
 const electron = window.require("electron");
-
 class App extends Component {
   state = {
     numberOfObj: {},
@@ -315,7 +312,9 @@ class App extends Component {
     });
   };
   clearScene = () => {
-    this.transformControls.detach(this.active);
+    if(this.active && this.objPresent.length){
+      this.transformControls.detach(this.active);
+    }
     _.forEach(this.objPresent, val => {
       this.scene.remove(val);
     });

@@ -32,12 +32,17 @@
 .loader {
   margin: 114px auto;
   font-size: 3px;
-  position: relative;
+  position: absolute;
+  margin: auto;
+  left: 0px;
+  right: 0pc;
+  top: 0px;
+  bottom: 0px;
   text-indent: -9999em;
-  border-top: 1.1em solid rgba(29,136,255, 0.2);
-  border-right: 1.1em solid rgba(29,136,255, 0.2);
-  border-bottom: 1.1em solid rgba(29,136,255, 0.2);
-  border-left: 1.1em solid #1d88ff;
+  border-top: 1.1em solid rgba(35, 38, 250, 0.2);
+  border-right: 1.1em solid rgba(35, 38, 250, 0.2);
+  border-bottom: 1.1em solid rgba(35, 38, 250, 0.2);
+  border-left: 1.1em solid #4f74f9;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
@@ -118,7 +123,7 @@
   display: inline-block;
   border-radius: 4px;
   padding: 3px 16px;
-  background: #020202;
+  background: #4f74f9;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
@@ -129,21 +134,21 @@
   /* margin-top: 24px; */
 }
 .ant-message-success .anticon {
-  color: #52c41a;
+  color: #94ff60;
 }
 .ant-message-error .anticon {
-  color: #f5222d;
+  color: #f97272;
 }
-.ant-message-warning .anticon {
-  color: #faad14;
+.ant-message-warning .anticon { 
+  color: #ffbc50;
 }
 .ant-message-info .anticon,
 .ant-message-loading .anticon {
-  color: #1890ff;
+  color: #ffffff;
 }
 .ant-message .anticon {
   position: relative;
-  top: 1px;
+  top: 3px;
   margin-right: 8px;
   font-size: 16px;
 }
