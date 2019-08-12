@@ -8,10 +8,13 @@ import Tooltip from '../../designLib/Tooltip'
 
 export default class VrRenderer extends Component {                                                                                                                           
   componentDidMount() {
+    const { codeTab } = this.props;
     this.editor = null;
     this.typingTimer = null;  //timer identifier
     this.doneTypingInterval = 2500;  //time in ms, 5 second for example
-    this.createEditor()
+    if(codeTab===1 || codeTab===2){
+      this.createEditor()
+    }
   }
   createEditor=()=>{
     this.editor = monaco.editor.create(document.getElementById("monacocontainer"), {

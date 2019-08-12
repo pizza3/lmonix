@@ -601,15 +601,21 @@ class App extends Component {
     return (
       <ThreeProvider
         value={{
+          // states
           objPresent: objPresent || [],
           active: active,
+          activeDrilldown: activeDrilldown,
+          assetStack: assetStack,
+          codeTab:codeTab,
+          isCursor:isCursor,
+          isDefaultLights:isDefaultLights,
+          // methods
           setActiveObj: this.setActiveObj,
           updateActiveDrilldown: this.updateActiveDrilldown,
-          activeDrilldown: activeDrilldown,
           changeObjectProp: this.changeObjectProp,
-          assetStack: assetStack,
+          setCursor:this.setCursor,
           handleActiveTab:this.handleActiveTab,
-          codeTab:codeTab
+          setDefaultLights:this.setDefaultLights
         }}
       >
       <>
@@ -630,13 +636,7 @@ class App extends Component {
             paste3DObject={this.paste3DObject}
           />
         ) : (
-          <SceneGeneral
-            assetStack={assetStack}
-            setDefaultLights={this.setDefaultLights}
-            setCursor={this.setCursor}
-            isDefaultLights={isDefaultLights}
-            isCursor={isCursor}
-          />
+          <SceneGeneral/>
         )}
         <Route
           exact

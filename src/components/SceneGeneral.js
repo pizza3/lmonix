@@ -9,8 +9,8 @@ export default class SceneGeneral extends Component{
                 <SceneGraphTitle>
                     General
                 </SceneGraphTitle>
-                <GeneralSettings {...this.props}/>
-                <AssetManager {...this.props}/>
+                <GeneralSettings/>
+                {/* <AssetManager {...this.props}/> */}
             </SceneGraphContainer>
         )
     }

@@ -1,16 +1,23 @@
-import React from 'react'
-import {Wrapper, Header, Title} from './styled'
-import Switch from '../../designLib/Switch'
+import React from "react";
+import { Wrapper, Header, Title } from "./styled";
+import Switch from "../../designLib/Switch";
+import ThreeContext from "../../context/ThreeContext";
 
-
-const DefaultLights = (props)=>{
-    return(
+const DefaultLights = () => {
+  return (
+    <ThreeContext.Consumer>
+      {context => (
         <Wrapper>
-            <Header>
-                <Title>Default Lights</Title>
-                <Switch checked={props.isDefaultLights} onChange={props.setDefaultLights}/>
-            </Header>
+          <Header>
+            <Title>Default Lights</Title>
+            <Switch
+              checked={context.isDefaultLights}
+              onChange={context.setDefaultLights}
+            />
+          </Header>
         </Wrapper>
-    )
-}
-export default DefaultLights
+      )}
+    </ThreeContext.Consumer>
+  );
+};
+export default DefaultLights;
