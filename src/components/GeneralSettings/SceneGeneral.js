@@ -1,6 +1,6 @@
 import React ,{Component} from 'react';
 import styled from 'styled-components';
-import GeneralSettings from './GeneralSettings'
+import GeneralSettings from './index'
 export default class SceneGeneral extends Component{
     render(){
         return(

@@ -114,7 +114,7 @@ function SetPopMenu(mainWindow, win) {
   menu.append(
     new MenuItem(
       {
-        label: "Add To Group",
+        label: "Add Child",
         submenu: [
           {
             label: "Box",
@@ -348,12 +348,17 @@ function SetPopMenu(mainWindow, win) {
   menu.append(
     new MenuItem(
       {
-        label: "Add to animate",
-        click:function() {
-          mainWindow.webContents.send("ipcRenderer", {
-            option: "Add to Script",
-          });
-        }
+        label: "Add Snippet",
+        submenu: [
+          {
+            label: "Click",
+            click: function() {
+              mainWindow.webContents.send("addSnippet", {
+                option: "click"
+              });
+            }
+          },
+        ]
       },
     )
   )

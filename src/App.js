@@ -11,7 +11,7 @@ import TransformControls from "./Helpers/Transform";
 import TrackballControls from "./Helpers/TrackballControls";
 import MenuBar from "./components/MenuBar/index";
 import SceneLayer from "./components/SceneGraph/SceneLayer";
-import SceneGeneral from "./components/SceneGeneral";
+import SceneGeneral from "./components/GeneralSettings/SceneGeneral";
 import { message } from "antd";
 import ThreeProvider from "./context/ThreeProvider";
 const electron = window.require("electron");

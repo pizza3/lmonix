@@ -15,7 +15,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	this.object = object;
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
-	console.log('this.domElement',this.domElement);
 	
 	// API
 

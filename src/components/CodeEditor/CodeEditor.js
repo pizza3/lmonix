@@ -1,42 +1,68 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import VrPreview from "./VrPreview";
 import Animate from "../Animate/index";
 import { eye, code } from "../../assets/icon";
-import * as monaco from "monaco-editor";
-import Tooltip from '../../designLib/Tooltip'
-
-export default class VrRenderer extends Component {                                                                                                                           
+import Tooltip from "../../designLib/Tooltip";
+import * as CodeMirror from "codemirror";
+import "codemirror/addon/hint/show-hint";
+import "codemirror/addon/hint/javascript-hint";
+import "codemirror/mode/javascript/javascript";
+import "../../codemirror.css";
+import "../../show-hint.css";
+import "../../yonce.css";
+import styled from "styled-components";
+import _ from 'lodash';
+export default class VrRenderer extends Component {
   componentDidMount() {
     const { codeTab } = this.props;
     this.editor = null;
-    this.typingTimer = null;  //timer identifier
-    this.doneTypingInterval = 2500;  //time in ms, 5 second for example
-    if(codeTab===1 || codeTab===2){
-      this.createEditor()
+    this.typingTimer = null;
+    this.doneTypingInterval = 2500;
+    if (codeTab === 1 || codeTab === 2) {
+      setTimeout(() => {
+        this.createEditor();
+      }, 200);
     }
   }
-  createEditor=()=>{
-    this.editor = monaco.editor.create(document.getElementById("monacocontainer"), {
+  createEditor = () => {
+    const editorDom = document.getElementById("monacocontainer");
+    const height = editorDom.offsetHeight;
+    const width = editorDom.offsetWidth;
+    this.editor = CodeMirror(editorDom, {
       value: this.props.code,
-      language: "javascript",
-      theme: "vs-dark",
-      fontFamily:'unset',
-      fontSize: 13,
+      mode: { name: "javascript", globalVars: true },
+      lineNumbers: true,
+      matchBrackets: true,
+      continueComments: "Enter",
+      theme: "yonce"
     });
-    this.editor.onKeyDown((e)=>{
+    this.editor.setSize(width, height);
+    this.editor.on("keyup", (cm, event) => {
+      if (
+        !cm.state
+          .completionActive /*Enables keyboard navigation in autocomplete list*/ &&
+        event.keyCode !== 13 &&
+        event.code !== "Space"
+      ) {
+        /*Enter - do not open autocomplete list just after item has been selected in it*/
+        CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
+      }
+      if(!_.isNull(this.typingTimer))
       clearTimeout(this.typingTimer);
-    })
-    this.editor.onKeyUp((e)=>{
+
+      this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);
+
+    });
+    this.editor.on("keydown", (cm, event) => {
+      if(!_.isNull(this.typingTimer))
       clearTimeout(this.typingTimer);
-      this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);    
-    })
-  }
-  componentDidUpdate(prevProps){
+    });
+  };
+  componentDidUpdate(prevProps) {
     const { codeTab } = this.props;
-    if(prevProps.codeTab !== codeTab){    
-      if(codeTab===1 || codeTab===2){
-        this.createEditor()
+    if (prevProps.codeTab !== codeTab) {
+      if (codeTab === 1 || codeTab === 2) {
+        this.createEditor();
       }
     }
   }
@@ -56,17 +82,14 @@ export default class VrRenderer extends Component {
               code={this.props.code}
             />
           </div>
-          <EditorDiv
-           id="monacocontainer"
-           width="50%"
-           height="100%"
-          />
+          <EditorDiv id="monacocontainer" width="50%" height="100%" />
         </>
       );
     } else if (codeTab === 2) {
       return (
         <EditorDiv
           id="monacocontainer"
+          // style={{ position: "relative", width: "100%", height: "100%" }}
           width="100%"
           height="100%"
         />
@@ -92,10 +115,7 @@ export default class VrRenderer extends Component {
           <EditorContainer id="container">
             <FileTabs>
               <TabsContainer>
-                <Tooltip
-                  align='bottom'
-                  name='Render'
-                >
+                <Tooltip align="bottom" name="Render">
                   <Tabs
                     background={codeTab === 0 ? "#4f74f9" : "#2d2d2d"}
                     onClick={() => {
@@ -110,11 +130,7 @@ export default class VrRenderer extends Component {
                     </TabIcon>
                   </Tabs>
                 </Tooltip>
-                <Tooltip
-                  align='bottom'
-                  name='Render | Script'
-
-                >
+                <Tooltip align="bottom" name="Render | Script">
                   <TabsCenter
                     background={codeTab === 1 ? "#4f74f9" : "#2d2d2d"}
                     onClick={() => {
@@ -136,10 +152,7 @@ export default class VrRenderer extends Component {
                     </TabCenterIcon>
                   </TabsCenter>
                 </Tooltip>
-                <Tooltip
-                  align='bottom'
-                  name='Script'
-                >
+                <Tooltip align="bottom" name="Script">
                   <Tabs
                     background={codeTab === 2 ? "#4f74f9" : "#2d2d2d"}
                     onClick={() => {
@@ -220,7 +233,7 @@ const TabsCenterSeperator = styled.div`
   height: 20px;
   float: left;
   border-radius: 5px;
-  background: ${props=>props.active?'#708fff':'#484848'};
+  background: ${props => (props.active ? "#708fff" : "#484848")};
   margin: 0px 3px 0px 5px;
 `;
 
@@ -243,8 +256,8 @@ const Container = styled.div`
 `;
 
 const EditorDiv = styled.div`
-    font-family: unset;
-    float: left;
-    width: ${props=>props.width};
-    height: ${props=>props.height};
-`
+  font-family: unset;
+  float: left;
+  width: ${props => props.width};
+  height: ${props => props.height};
+`;
