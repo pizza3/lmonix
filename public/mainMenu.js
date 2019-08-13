@@ -329,7 +329,7 @@ function SetPopMenu(mainWindow, win) {
   menu.append(
     new MenuItem(
       {
-        label: "Add to animate",
+        label: "Add Animation",
         click:function() {
           mainWindow.webContents.send("ipcRenderer", {
             option: "animate",
@@ -351,13 +351,35 @@ function SetPopMenu(mainWindow, win) {
         label: "Add Snippet",
         submenu: [
           {
-            label: "Click",
-            click: function() {
-              mainWindow.webContents.send("addSnippet", {
-                option: "click"
-              });
-            }
+            label:"Cursor",
+            submenu: [          
+              {
+                label: "Click",
+                click: function() {
+                  mainWindow.webContents.send("addSnippet", {
+                    option: "click"
+                  });
+                }
+              },
+              {
+                label: "mouseEnter",
+                click: function() {
+                  mainWindow.webContents.send("addSnippet", {
+                    option: "mouseEnter"
+                  });
+                }
+              },
+              {
+                label: "mouseLeave",
+                click: function() {
+                  mainWindow.webContents.send("addSnippet", {
+                    option: "mouseLeave"
+                  });
+                }
+              },
+          ]
           },
+
         ]
       },
     )

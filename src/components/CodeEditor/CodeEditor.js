@@ -3,7 +3,6 @@ import VrPreview from "./VrPreview";
 import Animate from "../Animate/index";
 import { eye, code } from "../../assets/icon";
 import Tooltip from "../../designLib/Tooltip";
-import * as CodeMirror from "codemirror";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/javascript-hint";
 import "codemirror/mode/javascript/javascript";
@@ -20,42 +19,44 @@ export default class VrRenderer extends Component {
     this.doneTypingInterval = 2500;
     if (codeTab === 1 || codeTab === 2) {
       setTimeout(() => {
-        this.createEditor();
+          this.createEditor()      
       }, 200);
     }
   }
   createEditor = () => {
-    const editorDom = document.getElementById("monacocontainer");
-    const height = editorDom.offsetHeight;
-    const width = editorDom.offsetWidth;
-    this.editor = CodeMirror(editorDom, {
-      value: this.props.code,
-      mode: { name: "javascript", globalVars: true },
-      lineNumbers: true,
-      matchBrackets: true,
-      continueComments: "Enter",
-      theme: "yonce"
-    });
-    this.editor.setSize(width, height);
-    this.editor.on("keyup", (cm, event) => {
-      if (
-        !cm.state
-          .completionActive /*Enables keyboard navigation in autocomplete list*/ &&
-        event.keyCode !== 13 &&
-        event.code !== "Space"
-      ) {
-        /*Enter - do not open autocomplete list just after item has been selected in it*/
-        CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
-      }
-      if(!_.isNull(this.typingTimer))
-      clearTimeout(this.typingTimer);
+    import("codemirror").then(CodeMirror => {      
+      const editorDom = document.getElementById("monacocontainer");
+      const height = editorDom.offsetHeight;
+      const width = editorDom.offsetWidth;
+      this.editor = CodeMirror.default(editorDom, {
+        value: this.props.code,
+        mode: { name: "javascript", globalVars: true },
+        lineNumbers: true,
+        matchBrackets: true,
+        continueComments: "Enter",
+        theme: "yonce"
+      });
+      this.editor.setSize(width, height);
+      this.editor.on("keyup", (cm, event) => {
+        if (
+          !cm.state
+            .completionActive /*Enables keyboard navigation in autocomplete list*/ &&
+          event.keyCode !== 13 &&
+          event.code !== "Space"
+        ) {
+          /*Enter - do not open autocomplete list just after item has been selected in it*/
+          CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
+        }
+        if(!_.isNull(this.typingTimer))
+        clearTimeout(this.typingTimer);
 
-      this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);
+        this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);
 
-    });
-    this.editor.on("keydown", (cm, event) => {
-      if(!_.isNull(this.typingTimer))
-      clearTimeout(this.typingTimer);
+      });
+      this.editor.on("keydown", (cm, event) => {
+        if(!_.isNull(this.typingTimer))
+        clearTimeout(this.typingTimer);
+      });
     });
   };
   componentDidUpdate(prevProps) {
@@ -89,7 +90,6 @@ export default class VrRenderer extends Component {
       return (
         <EditorDiv
           id="monacocontainer"
-          // style={{ position: "relative", width: "100%", height: "100%" }}
           width="100%"
           height="100%"
         />
@@ -188,11 +188,13 @@ const EditorContainer = styled.div`
   margin-top: 37px;
   float: left;
   border-right: 2px solid #2d2d2d;
+  position: relative;
 `;
 
 const FileTabs = styled.div`
   width: 100%;
   height: 35px;
+  position: relative;
   background: #1b1b1b;
   border-bottom: 2px solid #2d2d2d;
   padding-top: 4px;
@@ -259,5 +261,7 @@ const EditorDiv = styled.div`
   font-family: unset;
   float: left;
   width: ${props => props.width};
-  height: ${props => props.height};
+  /* height: ${props => props.height - 35}; */
+  height: calc(100% - 35px);
+  position: relative;
 `;

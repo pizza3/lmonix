@@ -7,10 +7,10 @@
 
 */
 .cm-s-yonce{
-    font-family: monaco, Consolas, "Lucida Console", monospace
+    font-family: monaco, Consolas, "Lucida Console" !important;
 }
 .cm-s-yonce.CodeMirror { background: #1C1C1C; color: #d4d4d4; } /**/
-.cm-s-yonce div.CodeMirror-selected { background: rgba(69, 103, 252, 0.478);border-radius:2px;box-sizing: initial;padding: 0px 2px 0px 2px;margin-left: -2px;} /**/
+.cm-s-yonce div.CodeMirror-selected { background: rgba(69, 103, 252, 0.478);} /**/
 .cm-s-yonce .CodeMirror-selectedtext,
 .cm-s-yonce .CodeMirror-selected,
 .cm-s-yonce .CodeMirror-line::selection,
@@ -29,33 +29,33 @@
 .cm-s-yonce .cm-searching { background: rgb(243, 155, 53, .3) !important; outline: 1px solid #F39B35; }
 .cm-s-yonce .cm-searching.CodeMirror-selectedtext { background: rgb(243, 155, 53, .7) !important; color: white; }
 
-.cm-s-yonce .cm-keyword { color: #00A7AA; } /**/
-.cm-s-yonce .cm-atom { color: #F39B35; }
-.cm-s-yonce .cm-number, .cm-s-yonce span.cm-type { color:  #A06FCA; } /**/
-.cm-s-yonce .cm-def { color: #98E342; }
+.cm-s-yonce .cm-keyword { font-family: monaco, Consolas, "Lucida Console" !important; color: #00A7AA; } /**/
+.cm-s-yonce .cm-atom { font-family: monaco, Consolas, "Lucida Console" !important; color: #F39B35; }
+.cm-s-yonce .cm-number, .cm-s-yonce span.cm-type { font-family: monaco, Consolas, "Lucida Console" !important; color:  #A06FCA; } /**/
+.cm-s-yonce .cm-def { font-family: monaco, Consolas, "Lucida Console" !important; color: #98E342; }
 .cm-s-yonce .cm-property,
-.cm-s-yonce span.cm-variable { color: #D4D4D4; font-style: italic; }
-.cm-s-yonce span.cm-variable-2 { color: #da7dae; font-style: italic; }
-.cm-s-yonce span.cm-variable-3 { color: #A06FCA; }
-.cm-s-yonce .cm-type.cm-def { color: #FC4384; font-style: normal; text-decoration: underline; }
-.cm-s-yonce .cm-property.cm-def { color: #FC4384; font-style: normal; }
-.cm-s-yonce .cm-callee { color: #FC4384; font-style: normal; }
-.cm-s-yonce .cm-operator { color: #FC4384; } /**/
+.cm-s-yonce span.cm-variable { font-family: monaco, Consolas, "Lucida Console" !important; color: #D4D4D4; font-style: italic; }
+.cm-s-yonce span.cm-variable-2 { font-family: monaco, Consolas, "Lucida Console" !important; color: #da7dae; font-style: italic; }
+.cm-s-yonce span.cm-variable-3 { font-family: monaco, Consolas, "Lucida Console" !important; color: #A06FCA; }
+.cm-s-yonce .cm-type.cm-def { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384; font-style: normal; text-decoration: underline; }
+.cm-s-yonce .cm-property.cm-def { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384; font-style: normal; }
+.cm-s-yonce .cm-callee { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384; font-style: normal; }
+.cm-s-yonce .cm-operator { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384; } /**/
 .cm-s-yonce .cm-qualifier,
-.cm-s-yonce .cm-tag { color: #FC4384; }
-.cm-s-yonce .cm-tag.cm-bracket { color: #D4D4D4; }
-.cm-s-yonce .cm-attribute { color: #A06FCA; }
-.cm-s-yonce .cm-comment { color:#696d70; font-style:italic; font-weight:normal; } /**/
-.cm-s-yonce .cm-comment.cm-tag { color: #FC4384 }
-.cm-s-yonce .cm-comment.cm-attribute { color: #D4D4D4; }
-.cm-s-yonce .cm-string { color:#E6DB74; } /**/
-.cm-s-yonce .cm-string-2 { color:#F39B35; } /*?*/
-.cm-s-yonce .cm-meta { color: #D4D4D4; background: inherit; }
-.cm-s-yonce .cm-builtin { color: #FC4384; } /*?*/
-.cm-s-yonce .cm-header { color: #da7dae; }
-.cm-s-yonce .cm-hr { color: #98E342; }
-.cm-s-yonce .cm-link { color:#696d70; font-style:italic; text-decoration:none; } /**/
+.cm-s-yonce .cm-tag { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384; }
+.cm-s-yonce .cm-tag.cm-bracket { font-family: monaco, Consolas, "Lucida Console" !important; color: #D4D4D4; }
+.cm-s-yonce .cm-attribute { font-family: monaco, Consolas, "Lucida Console" !important; color: #A06FCA; }
+.cm-s-yonce .cm-comment { font-family: monaco, Consolas, "Lucida Console" !important; color:#696d70; font-style:italic; font-weight:normal; } /**/
+.cm-s-yonce .cm-comment.cm-tag { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384 }
+.cm-s-yonce .cm-comment.cm-attribute { font-family: monaco, Consolas, "Lucida Console" !important; color: #D4D4D4; }
+.cm-s-yonce .cm-string { font-family: monaco, Consolas, "Lucida Console" !important; color:#E6DB74; } /**/
+.cm-s-yonce .cm-string-2 { font-family: monaco, Consolas, "Lucida Console" !important; color:#F39B35; } /*?*/
+.cm-s-yonce .cm-meta { font-family: monaco, Consolas, "Lucida Console" !important; color: #D4D4D4; background: inherit; }
+.cm-s-yonce .cm-builtin { font-family: monaco, Consolas, "Lucida Console" !important; color: #FC4384; } /*?*/
+.cm-s-yonce .cm-header { font-family: monaco, Consolas, "Lucida Console" !important; color: #da7dae; }
+.cm-s-yonce .cm-hr { font-family: monaco, Consolas, "Lucida Console" !important; color: #98E342; }
+.cm-s-yonce .cm-link { font-family: monaco, Consolas, "Lucida Console" !important; color:#696d70; font-style:italic; text-decoration:none; } /**/
 .cm-s-yonce .cm-error { border-bottom: 1px solid #C42412; }
 
 .cm-s-yonce .CodeMirror-activeline-background { background: #272727; }
-.cm-s-yonce .CodeMirror-matchingbracket { outline:1px solid grey; color:#D4D4D4 !important; }
+.cm-s-yonce .CodeMirror-matchingbracket { outline:1px solid grey; font-family: monaco, Consolas, "Lucida Console" !important; color:#D4D4D4 !important; }
