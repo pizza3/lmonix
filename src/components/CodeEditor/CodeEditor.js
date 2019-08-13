@@ -6,9 +6,9 @@ import Tooltip from "../../designLib/Tooltip";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/javascript-hint";
 import "codemirror/mode/javascript/javascript";
-import "../../codemirror.css";
-import "../../show-hint.css";
-import "../../yonce.css";
+import "../../styles/codemirror.css";
+import "../../styles/show-hint.css";
+import "../../styles/yonce.css";
 import styled from "styled-components";
 import _ from 'lodash';
 export default class VrRenderer extends Component {
