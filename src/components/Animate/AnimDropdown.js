@@ -5,15 +5,14 @@ import Number from "../../designLib/Number";
 import Switch from "../../designLib/Switch";
 import _ from "lodash";
 import From from "./From";
-import { config } from "../../assets/icon";
+import { config, swap, time, switchProp, ease} from "../../assets/icon";
 import { PropertyName, PropertyContainer } from "./styled";
-import Trigger from "rc-trigger";
 import {
   genericProperties,
   directions,
   easeFuncsList,
   basicAnimationsConfig
-} from "../../Helpers/helpers";
+} from "../../helpers/helpers";
 export default class AnimDropdown extends Component {
   // over here we have basic/common props needed for animation
   state = {
@@ -27,7 +26,8 @@ export default class AnimDropdown extends Component {
     loopValue: 0,
     from: null,
     to: null,
-    elasticity:0
+    elasticity: 0,
+    showConfig: false
   };
 
   componentDidMount() {
@@ -35,11 +35,10 @@ export default class AnimDropdown extends Component {
   }
 
   handleChange = e => {
-    if(e.persist)
-    e.persist();    
+    if (e.persist) e.persist();
     const { from, to, property } = this.state;
     let propname = e.name || e.target.dataset.name || e.target.name;
-    let value = e.value ||  e.target.value ;
+    let value = e.value || e.target.value;
     propname = propname.toLowerCase();
     if (
       property === "rotation" ||
@@ -60,13 +59,11 @@ export default class AnimDropdown extends Component {
           [prop]: value
         };
       }
-    }
-    else if(property === "color" || property === "opacity"){
+    } else if (property === "color" || property === "opacity") {
       if (propname.includes("from")) {
-        propname = 'from'
-      }
-      else if (propname.includes("to")) {
-        propname = 'to'
+        propname = "from";
+      } else if (propname.includes("to")) {
+        propname = "to";
       }
     }
     if (propname === "property") {
@@ -94,8 +91,7 @@ export default class AnimDropdown extends Component {
       };
     } else if (property === "color") {
       from = active.hashColor;
-    }
-    else if (property === "opacity") {
+    } else if (property === "opacity") {
       from = active.children[0].material.opacity;
     }
     this.setState({
@@ -112,6 +108,13 @@ export default class AnimDropdown extends Component {
     });
   };
 
+  toggleConfig = () => {
+    const { showConfig } = this.state;
+    this.setState({
+      showConfig: !showConfig
+    });
+  };
+
   render() {
     const {
       property,
@@ -122,7 +125,8 @@ export default class AnimDropdown extends Component {
       loop,
       from,
       to,
-      elasticity
+      elasticity,
+      showConfig
     } = this.state;
     const { name } = this.props;
     const propoptions = _.map(genericProperties, (prop, index) => {
@@ -153,16 +157,25 @@ export default class AnimDropdown extends Component {
       );
     });
     return (
-      <AnimContainer>
+      <AnimContainer showConfig={showConfig}>
         <AnimText>{name}</AnimText>
-        <Trigger
-          action={["click"]}
-          popup={
-            <AnimConfigDropdown id="customScrollbar">
-              <AnimConfigTitle>Property</AnimConfigTitle>
+        <AnimConfigIcon
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          onClick={this.toggleConfig}
+        >
+          {config}
+        </AnimConfigIcon>
+        <div>
+          {showConfig ? (
+            <AnimConfigDropdown>
+               <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                {switchProp('#698bff')}
+              </Icon>
+              <IconTitle>Property</IconTitle>
               <AnimConfigSeperator>
                 <PropertyContainer>
-                  <PropertyName>Property</PropertyName>
+                  <PropertyName>Type</PropertyName>
                   <Select
                     value={property}
                     onChange={this.handleChange}
@@ -170,7 +183,6 @@ export default class AnimDropdown extends Component {
                     name={"property"}
                   />
                 </PropertyContainer>
-
                 <From
                   name={"From"}
                   property={property}
@@ -184,6 +196,10 @@ export default class AnimDropdown extends Component {
                   onChange={this.handleChange}
                 />
               </AnimConfigSeperator>
+              <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                {time('#698bff')}
+              </Icon>
+              <IconTitle>Timing</IconTitle>
               <AnimConfigSeperator>
                 <PropertyContainer>
                   <PropertyName>Duration</PropertyName>
@@ -206,6 +222,10 @@ export default class AnimDropdown extends Component {
                   />
                 </PropertyContainer>
               </AnimConfigSeperator>
+              <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                {swap('#698bff')}
+              </Icon>
+              <IconTitle>Order</IconTitle>
               <AnimConfigSeperator>
                 <PropertyContainer>
                   <PropertyName>Direction</PropertyName>
@@ -225,6 +245,10 @@ export default class AnimDropdown extends Component {
                   />
                 </PropertyContainer>
               </AnimConfigSeperator>
+              <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 120">
+                {ease('#698bff')}
+              </Icon>
+              <IconTitle>Easing</IconTitle>
               <AnimConfigSeperator>
                 <PropertyContainer>
                   <PropertyName>Easing</PropertyName>
@@ -246,20 +270,10 @@ export default class AnimDropdown extends Component {
                 </PropertyContainer>
               </AnimConfigSeperator>
             </AnimConfigDropdown>
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["tr", "bl"],
-            offset: [-222, 3]
-          }}
-        >
-          <AnimConfigIcon
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
-          >
-            {config}
-          </AnimConfigIcon>
-        </Trigger>
+          ) : (
+            []
+          )}
+        </div>
       </AnimContainer>
     );
   }
@@ -269,11 +283,13 @@ const AnimContainer = styled.div`
   position: relative;
   float: left;
   width: 100%;
-  height: 32px;
+  height: ${props => (props.showConfig ? "245px" : "32px")};
   color: #707070;
   font-weight: 600;
-  padding: 3px 7px 1px 1px;
+  padding: 3px 7px 5px 1px;
   background: #1b1b1b;
+  transition: 0.2s;
+  overflow: hidden;
   border-bottom: 2px solid #2d2d2d;
 `;
 const AnimText = styled.div`
@@ -299,17 +315,15 @@ const AnimConfigIcon = styled.svg`
 `;
 
 const AnimConfigDropdown = styled.div`
-  width: 248px;
-  position: fixed;
-  height: 295px;
-  background: #1b1b1b;
-  border-radius: 4px;
-  border: 2px solid #2d2d2d;
+  width: 103%;
+  position: relative;
+  height: 211px;
+  top: 5px;
+  background: #151515;
   z-index: 100;
-  padding: 7px 7px 15px 7px;
+  padding: 14px 7px 0px 7px;
   overflow: auto;
-  border-right: none;
-  box-shadow: 0px 0px 35px -12px rgba(0, 0, 0, 0.75);
+  border-top: 2px solid #2d2d2d;
 `;
 
 const AnimConfigTitle = styled.div`
@@ -325,5 +339,22 @@ const AnimConfigSeperator = styled.div`
   padding-left: 5px;
   padding-bottom: 7px;
   width: 100%;
-  margin-top: 15px;
+  /* background: #1f1f1f; */
+  margin-bottom: 21px;
 `;
+
+const Icon = styled.svg`
+  position: relative;
+  width:24px;
+  float: left;
+`
+
+const IconTitle = styled.div`
+  position: relative;
+  float: left;
+  font-size:13px;
+  font-weight:900;
+  top:4px;
+  color:#ececec;
+  left:5px;
+`

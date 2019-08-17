@@ -5,14 +5,14 @@ import SceneEditor from "./components/SceneEditor/SceneEditor";
 import _ from "lodash";
 import { AddGroupObj, ApplyTexture } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
-import { basicAnimationsConfig } from "./Helpers/helpers";
-import * as THREE from "./Helpers/ThreeLibManager";
-import TransformControls from "./Helpers/Transform";
-import TrackballControls from "./Helpers/TrackballControls";
+import { basicAnimationsConfig } from "./helpers/helpers";
+import * as THREE from "./helpers/ThreeLibManager";
+import TransformControls from "./helpers/Transform";
+import TrackballControls from "./helpers/TrackballControls";
 import MenuBar from "./components/MenuBar/index";
 import SceneLayer from "./components/SceneGraph/SceneLayer";
 import SceneGeneral from "./components/GeneralSettings/SceneGeneral";
-import { message } from "antd";
+import  message from "antd/lib/message/index";
 import ThreeProvider from "./context/ThreeProvider";
 const electron = window.require("electron");
 class App extends Component {
@@ -30,7 +30,7 @@ class App extends Component {
     isDefaultLights: true,
     isCursor: false,
     localIP: null,
-    activeScript: "js",
+    isGrid:true,
     loaded: false,
     active: null,
     activeKey: null,
@@ -40,7 +40,8 @@ class App extends Component {
     copyObj: null,
     editState: [],
     setMode: true,
-    codeTab:2
+    codeTab:2,
+    consoles:[]
   };
   objPresent = [];
   componentDidMount() {
@@ -52,10 +53,10 @@ class App extends Component {
           case "message":
             message[val["type"]](val["message"], 3);
             break;
-          case "extractThreeData":
+          case "extractThreeData":            
             electron.ipcRenderer.send("reciveThreeData", {
-              // data: this.state.objPresent,
-              // state: this.state
+              data: this.state.objPresent,
+              state: this.state
             });
             break;
 
@@ -68,7 +69,7 @@ class App extends Component {
             break;
           case "updateProject":
             let parsedObj = JSON.parse(val["obj"]);
-            this.clearScene();
+            // this.clearScene();
             const data = this.reloadProject(parsedObj["data"], 0);
             this.objPresent = data;
             this.setState(
@@ -92,6 +93,11 @@ class App extends Component {
           case "changeTitle":
             this.setState({
               title: val["title"]
+            },()=>{
+              electron.ipcRenderer.send("stopAssetServer");
+              electron.ipcRenderer.send("startAssetServer",{
+                location: val["title"]
+              });
             });
             break;
           case "addGroupObj":
@@ -145,12 +151,30 @@ class App extends Component {
           case "animate":
             this.setAnimate();
             break;
+          case "routeDesign":
+            this.props.history.push('/')
+            break;
+          case "routePrototype":
+            this.props.history.push('/code')
+            break;
           default:
             // console.log("default");
             break;
         }
       }.bind(this)
     );
+    electron.ipcRenderer.on('addSnippet',function(e,params) {
+      const {option}=params
+      const {code}=this.state
+      const name = this.active.name.length?this.active.name:this.active.objName
+        let eventcode = `
+document.getElementById('${name}').addEventListener('${option}',function(e){
+
+})`
+        let newCode = code + eventcode
+        this.updateCode(newCode)
+    }.bind(this))
+
   }
   changeSetMode = setMode => {
     this.setState({
@@ -189,9 +213,9 @@ class App extends Component {
   };
   handleResize = () => {
     const { objPresent } = this.state;    
-    const width = objPresent.length!==0
-      ? window.innerWidth - 232
-      : window.innerWidth - 466;
+    const width = objPresent.length===0?
+     window.innerWidth - 232:
+      window.innerWidth - 466;
     const height = window.innerHeight - 37;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -206,6 +230,7 @@ class App extends Component {
     this.active = obj;
     const entityNumber = this.setNumberOfObj(obj);
     obj.objName = `${obj.objName}_${entityNumber}`;
+    this.scene.add(obj)
     this.setState(
       {
         activeObj,
@@ -214,19 +239,36 @@ class App extends Component {
         activeStack: [...activeStack, obj]
       },
       () => {
-        this.transformControls.attach(this.objPresent[this.state.activeObj]);
+        if(this.transformControls){
+          this.transformControls.attach(this.objPresent[this.state.activeObj]);
+        }
         this.scene.add(this.transformControls);
       }
     );
   };
+  toggleGridMesh = ()=>{
+    const {isGrid} = this.state
+    this.setState({
+      isGrid:!isGrid
+    },()=>{
+      if(!isGrid){
+        this.scene.add(this.gridHelper)
+      }else{
+        this.scene.remove(this.gridHelper)
+      }
+    })
+  }
+  // togglePointerLock = ()=>{
+
+  // }
   setNumberOfObj = obj => {
-    const { numberOfObj } = this.state;
-    if (numberOfObj[obj.objName]) {
-      let number = numberOfObj[obj.objName] + 1;
+    const { numberOfObj } = this.state;    
+    if (numberOfObj[obj.objType]) {
+      let number = numberOfObj[obj.objType] + 1;
       this.setState({
         numberOfObj: {
           ...numberOfObj,
-          [obj.objName]: number
+          [obj.objType]: number
         }
       });
       return number;
@@ -234,7 +276,7 @@ class App extends Component {
       this.setState({
         numberOfObj: {
           ...numberOfObj,
-          [obj.objName]: 1
+          [obj.objType]: 1
         }
       });
       return 1;
@@ -271,7 +313,7 @@ class App extends Component {
       data.scale
     );
     const entityNumber = this.setNumberOfObj(newParent);
-    newParent.objName = `${newParent.objName}_${entityNumber}`;
+    newParent.objName = `${newParent.objType}_${entityNumber}`;
     if (data.children.length >= 2) {
       _.forEach(data.children, (val, i) => {
         if (i !== 0) {
@@ -352,6 +394,9 @@ class App extends Component {
               this.setActiveObj(this.state.objPresent[index]);
             }
           }
+          else{
+            this.handleResize()        
+          }
         }
       );
     } else {
@@ -368,13 +413,6 @@ class App extends Component {
       () => {
         this.transformControls.attach(obj);
         this.scene.add(this.transformControls);
-        document.getElementById("obj" + obj.uuid).addEventListener(
-          "contextmenu",
-          function(e) {
-            console.log('ipcRenderer')
-            electron.ipcRenderer.send("show-context-menu");
-          }
-        );
       }
     );
   };
@@ -404,7 +442,8 @@ class App extends Component {
       : window.innerWidth - 232;
     this.height = window.innerHeight - 37;
     this.scene = new THREE.Scene();
-    this.scene.add(new THREE.GridHelper(30, 30));
+    this.gridHelper = new THREE.GridHelper(30, 30)
+    this.scene.add(this.gridHelper);
     const nearPlane = 1,
       farPlane = 70000,
       fieldOfView = 70,
@@ -465,30 +504,36 @@ class App extends Component {
   }
 
   startanimateScene() {
-    if (!this._frameId) {
-      this._frameId = window.requestAnimationFrame(this.animateScene);
-    }
+    this._frameId = window.requestAnimationFrame(this.animateScene);
   }
 
   animateScene = () => {
     this.trackballControls.update();
+    if(this.active){
+      this.active.updateMatrix()
+    }    
     this.renderer.render(this.scene, this.camera);
     this._frameId = window.requestAnimationFrame(this.animateScene.bind(this));
   };
 
-  stopanimateScene() {
+  stopanimateScene=()=> {
+    this.renderer.forceContextLoss();
+    this.renderer.context = null;
+    this.renderer.domElement = null;
+    this.renderer = null;
+
     window.cancelAnimationFrame(this._frameId);
     // Note: no need to worry if the loop has already been cancelled
     // cancelAnimationFrame() won't throw an error
   }
 
-  renderScene() {
+  renderScene=()=> {
+    if(this.renderer)
     this.renderer.render(this.scene, this.camera);
   }
 
   setController = posChange => {
     //trackball and transform controls initialise
-
     this.transformControls = new THREE.TransformControls(
       this.camera,
       this.renderer.domElement,
@@ -528,10 +573,7 @@ class App extends Component {
 
   renderSceneOnMount = () => {
     this.initScene();
-    this.startanimateScene();
-    document.getElementById("grid").addEventListener("click", function() {
-      this.stopanimateScene();
-    });
+    this.startanimateScene();  
   };
 
   updateActiveDrilldown = (obj, bool) => {
@@ -569,8 +611,10 @@ class App extends Component {
       case "colorMaterial":
         if (this.active) {
           let hex = parseInt(value.replace(/^#/, ""), 16);
-          this.active.children[0].material[prop].setHex(hex);
-          this.active.hashColor = value;
+          if(this.active.children[0].material){
+            this.active.children[0].material[prop].setHex(hex);
+            this.active.hashColor = value;
+          }
         }
         break;
       case "colorLight":
@@ -579,13 +623,40 @@ class App extends Component {
         this.active.hashColor = value;
         break;
       case "addObject":
-        this.active.add(value);
+        if(this.active.children[0].children.length){
+          this.updateObject3D(value)
+        }else{
+          this.active.children[0].add(value);
+          this.setState({
+            active:this.active
+          })
+        }
         break;
       default:
         this.active[prop] = value;
         break;
     }
   };
+
+  removeObject3D = ()=>{
+    this.active.objModel={}
+    _.forEach(this.active.children[0].children,(child, key)=>{
+      this.active.children[0].remove(child)
+    })
+    this.setState({
+      active:this.active
+    })
+  }
+  updateObject3D = (object) => {
+    // this is a trade off for replacing 3D geometry, still needs to find a better way.
+    _.forEach(this.active.children[0].children,(child, key)=>{
+      this.active.children[0].remove(child)
+    })
+    this.active.children[0].add(object) 
+    this.setState({
+      active:this.active
+    })
+  }
   render() {
     const {
       objPresent,
@@ -595,7 +666,9 @@ class App extends Component {
       isDefaultLights,
       isCursor,
       scene,
-      codeTab
+      codeTab,
+      isGrid,
+      consoles
     } = this.state;
     return (
       <ThreeProvider
@@ -661,6 +734,10 @@ class App extends Component {
               setMaterial={this.setMaterial}
               replaceGeometry={this.replaceGeometry}
               replaceLights={this.replaceLights}
+              handleResize={this.handleResize}
+              toggleGridMesh={this.toggleGridMesh}
+              isGrid={isGrid}
+              removeObject3D={this.removeObject3D}
             />
           )}
         />
@@ -669,15 +746,18 @@ class App extends Component {
           render={() => (
             <CodeEditor
               title={this.state.title}
+              active={this.state.active}
               objPresent={this.state.objPresent}
               assetStack={this.state.assetStack}
               isCursor={this.state.isCursor}
               isDefaultLights={this.state.isDefaultLights}
+              stopanimateScene={this.stopanimateScene}
               code={this.state.code}
               codeTab={this.state.codeTab}
               updateCode={this.updateCode}
               updateAnimate={this.updateAnimate}
               handleActiveTab={this.handleActiveTab}
+              consoles={consoles}
             />
           )}
         />

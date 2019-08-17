@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { getPolyData } from "./api";
 import _ from "lodash";
-import { message } from "antd";
+import message from "antd/lib/message/index";
 const electron = window.require("electron");
 
 export default class Poly extends Component {

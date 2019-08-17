@@ -1,4 +1,4 @@
-import * as THREE from '../Helpers/ThreeLibManager';
+import * as THREE from './ThreeLibManager';
 const fs = window.require("fs");
 
 

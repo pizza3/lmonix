@@ -59,7 +59,7 @@ export default class SceneTree extends Component {
   state = {
     isGroup: false,
     showGroup: false,
-    showInputBox: false,
+    showInputBox: true,
     nameValue: "",
     mouseOver: false
   };

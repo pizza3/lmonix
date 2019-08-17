@@ -1,62 +1,72 @@
 import React, { Component } from "react";
-import { aframeTemplate } from "../../Helpers/helpers";
-import  jsdom  from "jsdom";
-// const JSDOM = new jsdom()
-// console.log(JSDOM);
-
-// const virtualConsole = new jsdom.VirtualConsole();
-// virtualConsole.sendTo(console);
-// virtualConsole.sendTo(console);
-
+import { aframeTemplate } from "../../helpers/helpers";
+// import { webviewTag } from "electron";
+import _ from 'lodash'
+import CodeMenu from './CodeMenu'
+const electron = window.require("electron");
+const webview = electron.webviewTag;
 export default class VrPreview extends Component {
+  state = {
+    src: "",
+    isLoaded:false,
+  };
   componentDidMount() {
-    // electron.ipcRenderer.on("updateVRView", () => {
-    //   document.getElementById("webview").reload();
-    // });
-    // // console.log(this.props.objPresent);
-    // const doc = aframeTemplate(
-    //   this.props.assetStack,
-    //   this.props.objPresent,
-    //   this.props.animate,
-    //   "file://" + this.props.title,
-    //   this.props.isCursor,
-    //   this.props.isDefaultLights
-
-    // );
-    // const dom = new jsdom(doc, {
-    //   virtualConsole: virtualConsole,
-    //   userAgent: "Node.js",
-    //   runScripts: "dangerously",
-    //   resources: "usable"
-    // });
-    // virtualConsole.on("error", (e) => { console.log('error',e);
-    // });
-    // virtualConsole.on("warn", () => {
-    // });
-    // virtualConsole.on("info", () => {
-    // });
+    const { code }=this.props
+    this.handleCode=null
+    document
+      .getElementById("webview")
+      .addEventListener("did-finish-load", function(params) {
+        this.executeJavaScript(code);        
+      });
   }
+
+  componentDidUpdate(prevProps) {
+    const {code, isCursor, isDefaultLights, objPresent}=this.props
+    if(prevProps.code!==code){
+      document.getElementById("webview").executeJavaScript(code)
+    }
+    else if(prevProps.isCursor!==isCursor){
+      document.getElementById("webview").executeJavaScript(code)
+    }
+    else if(prevProps.isDefaultLights!==isDefaultLights){
+      document.getElementById("webview").executeJavaScript(code)
+    }
+    else if(!_.isEqual(prevProps.objPresent,objPresent)){
+      document.getElementById("webview").executeJavaScript(code)
+    }
+  }
+
+  toggleDevTool = (bool)=>{
+    if(bool){
+      document.getElementById("webview").openDevTools()
+    }
+    else{
+      document.getElementById("webview").closeDevTools()
+    }
+  }
+
   render() {
     const doc = aframeTemplate(
       this.props.assetStack,
       this.props.objPresent,
-      this.props.animate,
-      "file://" + this.props.title,
       this.props.isCursor,
       this.props.isDefaultLights,
-      this.props.code,
+      this.props.code
     );
     return (
-      // eslint-disable-next-line jsx-a11y/iframe-has-title
-      <iframe
-        srcDoc={doc}
-        style={{
-          height: "calc(100% - 37px)",
-          width: "100%",
-          float: "left",
-          border: "none"
-        }}
-      />
+      <>
+        <webview
+          id="webview"
+          style={{
+            height: "calc(100% - 72px)",
+            width: "100%",
+            float: "left",
+            border: "none"
+          }}
+          src={"data:text/html," + doc}
+        />
+        <CodeMenu toggleDevTool={this.toggleDevTool}/>
+      </>
     );
   }
 }

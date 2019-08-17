@@ -25,7 +25,7 @@ import {
   updateGeometry,
   toCamelCase,
   CustomGeometryConfig
-} from "../../Helpers/helpers";
+} from "../../helpers/helpers";
 import _ from "lodash";
 export default class PropertiesEditor extends Component {
   checkColor = () => {
@@ -142,7 +142,7 @@ export default class PropertiesEditor extends Component {
     return [];
   };
   render() {
-    const { active, objPresent, changeObjectProp } = this.props;
+    const { active, assetStack, objPresent, addInScene, changeObjectProp, replaceGeometry, removeObject3D, location } = this.props;
     const isColor = this.checkColor();
     const isModel = this.checkModel();
     const isLight = this.checkLight();
@@ -163,7 +163,7 @@ export default class PropertiesEditor extends Component {
             objectsPresent &&
             active.objPrimitive !== "curvedimage" &&
             !isSky && !isText ? (
-              <Geometry active={active} />
+              <Geometry active={active} replaceGeometry={replaceGeometry} />
             ) : (
               []
             )}
@@ -177,7 +177,7 @@ export default class PropertiesEditor extends Component {
               {!isLight && !isModel ? <Texture {...this.props} /> : null}
               {isColor ? <ColorPicker {...this.props} /> : null}
               {isHemisphere ? <GroundColor {...this.props} /> : null}
-              {isModel && !isLight ? <Model {...this.props} /> : null}
+              {isModel && !isLight ? <Model {...this.props} addInScene={addInScene} assetStack={assetStack} location={location} changeObjectProp={changeObjectProp} removeObject3D={removeObject3D} /> : null}
               {isLight ? <Intensity changeObjectProp={changeObjectProp} active={active} /> : null}
               {isSpot? <Distance active={active} />: null}
               {this.props.objPresent.length > 0 && !isLight && !isModel ? (

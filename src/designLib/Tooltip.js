@@ -10,6 +10,10 @@ const position = {
   right: {
     points: ["tl", "tc"],
     offset: [20, 0]
+  },
+  top: {
+    points: ["bc", "tc"],
+    offset: [0, -10]
   }
 };
 
@@ -49,7 +53,7 @@ const TooltipBody = styled.div`
 `;
 
 const TooltipOverlay = styled.div`
-  background: #464646;
+  background: #353535;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -59,7 +63,7 @@ const TooltipOverlay = styled.div`
   z-index: -1;
   border-radius: 4px;
   box-shadow: 0px 0px 16px -4px rgba(0, 0, 0, 0.75);
-  border: 1px solid #7d7d7d;
+  border: 1px solid #525252;
 `;
 
 const TooltipText = styled.div`

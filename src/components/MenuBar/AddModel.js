@@ -1,17 +1,17 @@
 /* eslint-disable no-case-declarations */
-import * as THREE from "../../Helpers/ThreeLibManager";
-import textureLoader from "../../Helpers/textureLoader";
-import videoLoader from "../../Helpers/videoLoader";
-import modelLoader from "../../Helpers/modelLoader";
+import * as THREE from "../../helpers/ThreeLibManager";
+import textureLoader from "../../helpers/textureLoader";
+import videoLoader from "../../helpers/videoLoader";
+import modelLoader from "../../helpers/modelLoader";
 import _ from "lodash";
-import {updateGeometry} from '../../Helpers/helpers'
+import {updateGeometry} from '../../helpers/helpers'
+import {modelLoaderGltf} from '../../helpers/modelLoaderGltf'
 // import Lato from "../../assets/Lato-Regular-16.fnt"
-import {toCamelCase} from '../../Helpers/helpers'
 // const loader = new THREE.FontLoader();
 const createGeometry = require("three-bmfont-text");
 const loadFont = require("load-bmfont");
+var gltfLoader = new THREE.GLTFLoader();
 var MSDFShader = require('three-bmfont-text/shaders/msdf')
-// const Lato =
 const AddCube = (
   scene,
   pos = { x: 0, y: 0, z: 0 },
@@ -24,6 +24,7 @@ const AddCube = (
   });
 
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   obj.name=""
   obj["objName"] = "Mesh";
   obj["objType"] = "Mesh";
@@ -31,11 +32,11 @@ const AddCube = (
   obj["hashColor"] = "#ef2d5e";
   obj["objAnimate"] = [];
   obj.add(new THREE.Mesh(geometry, material));
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
+  // scene.add(obj);
+  // obj.position.set(pos.x, pos.y, pos.z);
+  // obj.rotation._x = rot.x;
+  // obj.rotation._y = rot.y;
+  // obj.rotation._z = rot.z;
   return obj;
 };
 
@@ -48,6 +49,7 @@ const AddPointLight = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   let color = 0xffffff;
   obj["objName"] = "Light";
   obj["objType"] = "Light";
@@ -70,6 +72,7 @@ const AddSpotLight = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   let color = 0xffffff;
   obj["objName"] = "Light";
   obj["objType"] = "Light";
@@ -102,6 +105,7 @@ const AddHemisphereLight = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   let color = 0xffffff;
   let groundColor = 0xffffff;
   let intensity = 2;
@@ -127,6 +131,7 @@ const AddDirectionalLight = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   let color = 0xffffff;
   let intensity = 0.5;
   obj["objName"] = "Light";
@@ -150,6 +155,7 @@ const AddAmbientLight = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   let color = 0xffffff;
   let intensity = 0.5;
   obj["objName"] = "Light";
@@ -158,11 +164,11 @@ const AddAmbientLight = (
   obj["hashColor"] = "#ffffff";
   let light = new THREE.AmbientLight(color, intensity);
   obj.add(light);
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
+  // scene.add(obj);
+  // obj.position.set(pos.x, pos.y, pos.z);
+  // obj.rotation._x = rot.x;
+  // obj.rotation._y = rot.y;
+  // obj.rotation._z = rot.z;
   return obj;
 };
 
@@ -180,12 +186,14 @@ const AddSky = (
   });
 
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   obj["objName"] = "Sky";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "sky";
   obj["hashColor"] = "#ceecf0";
+  obj["objAnimate"] = [];
   obj.add(new THREE.Mesh(geometry, material));
-  scene.add(obj);
+  // scene.add(obj);
   obj.scale.set(-1,1,1)
   return obj;
 };
@@ -197,19 +205,23 @@ const AddModel = (
   sca = { x: 0, y: 0, z: 0 }
 ) => {
   let obj = new THREE.Object3D();
+  obj.add(new THREE.Object3D())
+  obj.matrixAutoUpdate = false
+  obj["objAnimate"] = [];
   obj["objName"] = "3DModel";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "3DModel";
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
+  // scene.add(obj);
+  // obj.position.set(pos.x, pos.y, pos.z);
+  // obj.rotation._x = rot.x;
+  // obj.rotation._y = rot.y;
+  // obj.rotation._z = rot.z;
   return obj;
 };
 
 const AddCurvedImage = (scene)=>{
-    let object = new THREE.Object3D();
+    let obj = new THREE.Object3D();
+    obj.matrixAutoUpdate = false
     let material = new THREE.MeshBasicMaterial({
       color: 0xceecf0,
       side: THREE.DoubleSide,
@@ -222,17 +234,19 @@ const AddCurvedImage = (scene)=>{
       radialSegments:48,
       thetaLength:3*Math.PI/2
     });
-    object["objName"] = "CurvedImage";
-    object["objType"] = "Mesh";
-    object["objPrimitive"] = "curvedimage";
-    object["hashColor"] = "#ef2d5e";
-    object.add(new THREE.Mesh(geometryCylinder, material));
-    scene.add(object);
-    return object;
+    obj["objAnimate"] = [];
+    obj["objName"] = "CurvedImage";
+    obj["objType"] = "Mesh";
+    obj["objPrimitive"] = "curvedimage";
+    obj["hashColor"] = "#ef2d5e";
+    obj.add(new THREE.Mesh(geometryCylinder, material));
+    // scene.add(obj);
+    return obj;
 }
 
 const AddText = (scene,addInScene) => {
   let obj = new THREE.Object3D();
+  obj.matrixAutoUpdate = false
   obj["objName"] = "Text";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "text";
@@ -352,7 +366,7 @@ const AddGroupObj =  (
       transparent: obj ? obj.children[0].material.transparent : false
     });
   }
-  object.name=toCamelCase(type)
+  object.name = obj.name || ""
   object.objAnimate = obj.objAnimate?obj.objAnimate:[]
   switch (type) {
     case "box":
@@ -371,6 +385,7 @@ const AddGroupObj =  (
       object.children[0].castShadow = obj.children
         ? obj.children[0].castShadow
         : false;
+      // object.matrixAutoUpdate = false      
       return object;
     case "sphere":
       let geometrySphere =updateGeometry('SphereBufferGeometry',{},geometryParams);
@@ -384,6 +399,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
+  // object.matrixAutoUpdate = false      
       return object;
     case "plane":
       let geometryPlane = updateGeometry('PlaneBufferGeometry',{},geometryParams);
@@ -397,6 +413,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
+      // object.matrixAutoUpdate = false  
       return object;
     case "cylinder":
       let geometryCylinder = updateGeometry('CylinderBufferGeometry',{},geometryParams);
@@ -410,6 +427,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow||false;
+      // object.matrixAutoUpdate = false  
       return object;
     case "cone":
       let geometryCone = updateGeometry('ConeBufferGeometry',{},geometryParams);
@@ -423,6 +441,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
+      // object.matrixAutoUpdate = false  
       return object;
     case "ring":
       let geometryRing = updateGeometry('RingBufferGeometry',{},geometryParams);
@@ -436,6 +455,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
+      // object.matrixAutoUpdate = false  
       return object;
     case "circle":
       let geometryCircle = updateGeometry('CircleBufferGeometry',{},geometryParams);
@@ -449,6 +469,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
+      // object.matrixAutoUpdate = false  
       return object;
     case "sky":      
       if(mapData) mapData.rotation=0
@@ -471,19 +492,26 @@ const AddGroupObj =  (
       object.children[0].receiveShadow = obj.children[0].receiveShadow||false;
       object.children[0].castShadow = obj.children[0].castShadow;
       object.scale.set(-1,1,1)
+      // object.matrixAutoUpdate = false  
       return object;
     case "3DModel":
       object["objName"] =obj.objName? obj.objName:"3DModel";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "3DModel";
-      if (obj.objModel) {
-        object.objModel = obj.objModel;
-        const model =  modelLoader(object, object.objModel);
-        object.add(model)
+      console.log('addModel', obj);
+      object["objModel"] = obj.objModel;
+      
+      object.add(new THREE.Object3D())
+      if (obj.objModel.ext==='.obj') {
+        modelLoader(object, object.objModel);
+      }
+      else if(obj.objModel.ext==='poly'){
+        modelLoaderGltf(object, obj.objModel.path)
       }
       scene.add(object);
       object.visible = obj.visible;
       object.receiveShadow = obj.receiveShadow;
+      // object.matrixAutoUpdate = false  
       return object;
     case "point":
       object["objName"] =obj.objName? obj.objName:"Light";
@@ -495,6 +523,7 @@ const AddGroupObj =  (
       object.visible = obj.visible;
       object.receiveShadow = obj.receiveShadow;
       scene.add(object);
+      // object.matrixAutoUpdate = false  
       return object;
     case "spot":
       object["objName"] =obj.objName? obj.objName:"Light";
@@ -511,6 +540,7 @@ const AddGroupObj =  (
       spotlight.shadow.camera.fov = 30;
       object.add(spotlight);
       scene.add(object);
+      // object.matrixAutoUpdate = false  
       return object;
     case "hemisphere":
       let groundColor = 0xffffff;
@@ -526,6 +556,7 @@ const AddGroupObj =  (
       );
       object.add(hemispherelight);
       scene.add(object);
+      // object.matrixAutoUpdate = false  
       return object;
     case "directional":
       let directionalintensity = 0.5;
@@ -539,6 +570,7 @@ const AddGroupObj =  (
       );
       object.add(lightdirectional);
       scene.add(object);
+      // object.matrixAutoUpdate = false  
       return object;
     case "ambient":
       object["objName"] =obj.objName? obj.objName:"Light ";
@@ -548,6 +580,7 @@ const AddGroupObj =  (
       var ambientlight = new THREE.AmbientLight(obj.hashColor);
       object.add(ambientlight);
       scene.add(object);
+      // object.matrixAutoUpdate = false  
       return object;
     case "text":
       // const testFont = new THREE.Font(helvetikerBold);
@@ -573,6 +606,7 @@ const AddGroupObj =  (
       // object.rotation._x = rot.x;
       // object.rotation._y = rot.y;
       // object.rotation._z = rot.z;
+      // object.matrixAutoUpdate = false  
       return object;
     case "curvedimage":
       let geometryCurvedimage = updateGeometry('CylinderBufferGeometry',{},geometryParams);
@@ -580,9 +614,11 @@ const AddGroupObj =  (
       object["objType"] = "Mesh";
       object["objPrimitive"] = "curvedimage";
       object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object.objTexture = obj.objTexture
       material.side = THREE.DoubleSide
       object.add(new THREE.Mesh(geometryCurvedimage, material));
       scene.add(object);
+      // object.matrixAutoUpdate = false  
       return object;
     default:
       

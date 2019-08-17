@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import styled from "styled-components";
 import _ from "lodash";
@@ -19,6 +18,8 @@ import {
   curvedImage,
   model
 } from "../../assets/icon";
+import { isAlphaNumeric } from "../../helpers/helpers";
+const electron = window.require("electron");
 
 const elementFuncs = {
   sphere: sphere,
@@ -37,7 +38,6 @@ const elementFuncs = {
   curvedimage: curvedImage,
   "3DModel": model
 };
-
 const applyIcon = (entity, iconColor) => {
   let viewBox = "0 0 125 125";
   if (entity === "sky" || entity === "3DModel") {
@@ -55,6 +55,7 @@ const applyIcon = (entity, iconColor) => {
     </Svg>
   );
 };
+
 export default class SceneTree extends Component {
   state = {
     isGroup: false,
@@ -64,7 +65,8 @@ export default class SceneTree extends Component {
     mouseOver: false
   };
   componentDidMount() {
-    const { activeDrilldown, name } = this.props;
+    const { activeDrilldown, active, obj } = this.props;
+    const isActive = obj.uuid === active.uuid;
     if (_.isUndefined(activeDrilldown[this.props.obj.uuid])) {
       this.setState({
         showGroup: false
@@ -74,11 +76,15 @@ export default class SceneTree extends Component {
         showGroup: activeDrilldown[this.props.obj.uuid]
       });
     }
+    this.setNameValueFromProp();
+  }
+
+  setNameValueFromProp = () => {
+    const { name } = this.props;
     this.setState({
       nameValue: name
     });
-  }
-
+  };
   showGroup = () => {
     const { showGroup } = this.state;
     this.setState(
@@ -91,7 +97,7 @@ export default class SceneTree extends Component {
     );
   };
 
-  doDoubleClickAction = () => {    
+  doDoubleClickAction = () => {
     this.setState({
       showInputBox: true
     });
@@ -105,8 +111,13 @@ export default class SceneTree extends Component {
   };
   handleSubmit = e => {
     e.preventDefault();
+    const { name } = this.props;
     const { nameValue } = this.state;
-    this.props.changeObjectProp(nameValue, "name");
+    if (nameValue === "" || name === nameValue || !isAlphaNumeric(nameValue)) {
+      this.setNameValueFromProp();
+    } else {
+      this.props.changeObjectProp(nameValue, "name");
+    }
     this.setFocusOut();
   };
   setFocusOut = e => {
@@ -114,8 +125,9 @@ export default class SceneTree extends Component {
       showInputBox: false
     });
   };
-  handleMouseDown = (event) => {
-    event.preventDefault();    
+  handleMouseDown = event => {
+    event.preventDefault();
+    this.props.setActiveObj(this.props.obj);
     const { setDragObj, obj, active } = this.props;
     setDragObj(obj);
   };
@@ -134,16 +146,20 @@ export default class SceneTree extends Component {
     }
   };
 
-  handleMouseLeave = () => {    
+  handleMouseLeave = () => {
     this.setState({
       mouseOver: false
     });
   };
 
+  contextMenu = () => {
+    electron.ipcRenderer.send("show-context-menu");
+  };
+
   // scene graph renderig control
-  returnSceneGraph = (children)=>{
+  returnSceneGraph = children => {
     const { layer, active, obj, isDrag } = this.props;
-    const { mouseOver } = this.state
+    const { mouseOver } = this.state;
     const isActive = obj.uuid === active.uuid;
     const SceneGraphEl = styled.div`
       position: relative;
@@ -161,68 +177,72 @@ export default class SceneTree extends Component {
         background: ${isActive ? "#4f74f9" : "#2d2d2d"};
       }
     `;
-    if(isActive){
-        return (
+    if (isActive) {
+      return (
         <SceneGraphEl
-            id={"obj" + this.props.obj.uuid}
-        >
-            {children}
-        </SceneGraphEl>)
-    }
-    return (
-        <SceneGraphEl
-            id={"obj" + this.props.obj.uuid}
-            onClick={() => {
-                this.props.setActiveObj(this.props.obj);
-            }}
+          id={"obj" + this.props.obj.uuid}
+          onContextMenu={this.contextMenu}
         >
           {children}
         </SceneGraphEl>
-    )
-  
-  }
+      );
+    }
+    return (
+      <SceneGraphEl
+        id={"obj" + this.props.obj.uuid}
+        onClick={() => {
+          this.props.setActiveObj(this.props.obj);
+          electron.ipcRenderer.on('rename',function(e,params) {
+            this.doDoubleClickAction()
+          }.bind(this))
+        }}
+      >
+        {children}
+      </SceneGraphEl>
+    );
+  };
   render() {
     const { active, obj } = this.props;
     const { showInputBox, nameValue } = this.state;
     const isActive = obj.uuid === active.uuid;
     const iconColor = isActive ? "#ffffff" : "#828282";
-    const children = <>
-    {applyIcon(obj.objPrimitive, iconColor)}
-          <Form
-            id="form"
-            onSubmit={this.handleSubmit}
-          >
-            {showInputBox ? (
-              <EditInput
-                type="text"
-                value={nameValue}
-                onChange={this.handlenameChange}
-                style={{
-                  background: "#4c94ff"
-                }}
-                onBlur={this.setFocusOut}
-                autoFocus
-              />
-            ) : (
-              <Text 
-                onDoubleClick={this.doDoubleClickAction}              
-                style={{ color: isActive ? "#ffffff" : "#707070" }}>
-                {nameValue}
-              </Text>
-            )}
-          </Form>
-          {obj.children.length > 1 ? (
-            <ArrowContainer onClick={this.showGroup}>
-              <ArrowImage
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 3.653 6.39"
-                showGroup={this.state.showGroup}
-              >
-                {arrow(isActive ? "#ffffff" : "#828282")}
-              </ArrowImage>
-            </ArrowContainer>
-          ) : null}
-    </>
+    const children = (
+      <>
+        {applyIcon(obj.objPrimitive, iconColor)}
+        <Form id="form" onSubmit={this.handleSubmit}>
+          {showInputBox ? (
+            <EditInput
+              type="text"
+              value={nameValue}
+              onChange={this.handlenameChange}
+              style={{
+                background: "#385cde"
+              }}
+              onBlur={this.setFocusOut}
+              autoFocus
+            />
+          ) : (
+            <Text
+              onDoubleClick={this.doDoubleClickAction}
+              style={{ color: isActive ? "#ffffff" : "#707070" }}
+            >
+              {nameValue}
+            </Text>
+          )}
+        </Form>
+        {obj.children.length > 1 ? (
+          <ArrowContainer onClick={this.showGroup}>
+            <ArrowImage
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 3.653 6.39"
+              showGroup={this.state.showGroup}
+            >
+              {arrow(isActive ? "#ffffff" : "#828282")}
+            </ArrowImage>
+          </ArrowContainer>
+        ) : null}
+      </>
+    );
     return (
       <Container>
         {this.returnSceneGraph(children)}
@@ -240,10 +260,10 @@ const Container = styled.div`
 `;
 
 const ArrowContainer = styled.button`
-  position: relative;
-  float: right;
+  position: absolute;
   width: 13px;
   height: 15px;
+  right: 4px;
   border: none;
   background: transparent;
 `;
@@ -283,9 +303,8 @@ const Text = styled.div`
   color: #fff;
 `;
 
-
 const Form = styled.form`
-    width: 155px;
-    position: relative;
-    float: left;
-`
+  width: auto;
+  position: relative;
+  float: left;
+`;

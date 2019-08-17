@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import _ from 'lodash'
-import { updateGeometry, updateLights} from '../../../Helpers/helpers'
+import { updateGeometry, updateLights} from '../../../helpers/helpers'
 import {Container, Title} from '../styled'
 import Select from "../../../designLib/Select";
 
@@ -52,7 +52,7 @@ export default class Lights extends Component {
     })
     return (
       <Container style={{
-        borderBottom: '2px solid #dbdbdb',
+        borderBottom: '2px solid #2d2d2d',
         marginBottom: '20px'
       }}>
         <Title>Lighting</Title>

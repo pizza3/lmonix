@@ -40,6 +40,7 @@ const Label = styled.label`
     width: 42px;
     height: 22px;
     background-color: #2d2d2d;
+    border:1px solid #585858;
     border-radius: 11px;
     transform: translate3d(2px, 2px, 0) scale3d(1, 1, 1);
     transition: all 0.25s linear;
@@ -50,7 +51,7 @@ const Label = styled.label`
     left: 0;
     width: 22px;
     height: 22px;
-    background-color: #232323;
+    background-color: #ececec;
     border-radius: 11px;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
     transform: translate3d(2px, 2px, 0);

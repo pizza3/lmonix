@@ -116,39 +116,22 @@ const Prop = styled.div`
 const Input = styled.input`
   width: 36px;
   height: 25px;
-  border: 2px solid #dbdbdb;
-  background: #dbdbdb;
-  border-radius: 3px;
+  border: 2px solid #2d2d2d !important;
+  background: #2d2d2d;
+  border-radius: 3px !important;
   font-size: 9px;
   font-weight: 600;
   color: #737373;
   &:focus {
     outline: none;
-    background: #2f79ef;
-    color: #fff;
-    border: 2px solid #2f79ef;
+    background: #4f74f9 !important;
+    color: #fff !important;
+    border: 2px solid #4f74f9 !important;
   }
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-`;
-
-const Container = styled.div`
-  position: relative;
-  float: left;
-  width: 100%;
-  height: auto;
-  padding-bottom: 18px;
-`;
-const Title = styled.div`
-  position: relative;
-  float: left;
-  color: #969696;
-  font-size: 10px;
-  margin-left: 9px;
-  margin-top: 4px;
-  font-weight: 700;
 `;
 const ColorInput = styled.div`
   position: relative;

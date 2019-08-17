@@ -1,7 +1,7 @@
 import React ,{Component} from 'react'
 import styled from 'styled-components'
 import {vrLogo} from '../../assets/icon'
-import { message} from 'antd'
+import message from "antd/lib/message/index";
 const electron =  window.require('electron');
 
 export default class LocalServer extends Component{
@@ -94,7 +94,7 @@ const Url = styled.div`
     width: 130px;
     height: 25px;
     border-radius: 3px;
-    background: #d4d4d4;
+    background: #2d2d2d;
     font-size: 10px;
     text-align: center;
     padding-top: 6px;

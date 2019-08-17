@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import * as THREE from "../../../Helpers/ThreeLibManager";
+import * as THREE from "../../../helpers/ThreeLibManager";
 import { texture, addCircle } from "../../../assets/icon";
 import Tooltip from '../../../designLib/Tooltip'
-import { message } from "antd";
+import message from "antd/lib/message/index";
 const fs = window.require("fs");
 const electron = window.require("electron");
 const videoExt = [".webm", ".mp4"];

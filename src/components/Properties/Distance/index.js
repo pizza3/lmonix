@@ -18,7 +18,6 @@ export default class Distance extends Component {
   handleChange = e => {
     e.persist()
     const name = e.target.dataset.name
-    console.log(name, e.target.value);
     this.setState({
       [name]: e.target.value
     });

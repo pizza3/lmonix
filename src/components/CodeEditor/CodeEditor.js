@@ -10,17 +10,19 @@ import "../../styles/codemirror.css";
 import "../../styles/show-hint.css";
 import "../../styles/yonce.css";
 import styled from "styled-components";
+import CodeMenu from './CodeMenu'
 import _ from 'lodash';
+const excludeKeys = ["Space","ArrowDown","ArrowUp","ArrowLeft","ArrowRight","Backspace","Enter","BracketLeft","BracketRight","Digit9","Digit0"]
 export default class VrRenderer extends Component {
   componentDidMount() {
     const { codeTab } = this.props;
     this.editor = null;
     this.typingTimer = null;
-    this.doneTypingInterval = 2500;
+    this.doneTypingInterval = 500;
     if (codeTab === 1 || codeTab === 2) {
-      setTimeout(() => {
-          this.createEditor()      
-      }, 200);
+      setTimeout(()=>{
+        this.createEditor()      
+      },10)
     }
   }
   createEditor = () => {
@@ -42,7 +44,7 @@ export default class VrRenderer extends Component {
           !cm.state
             .completionActive /*Enables keyboard navigation in autocomplete list*/ &&
           event.keyCode !== 13 &&
-          event.code !== "Space"
+          !excludeKeys.includes(event.code)
         ) {
           /*Enter - do not open autocomplete list just after item has been selected in it*/
           CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
@@ -59,17 +61,26 @@ export default class VrRenderer extends Component {
       });
     });
   };
+
   componentDidUpdate(prevProps) {
-    const { codeTab } = this.props;
+    const { codeTab, code } = this.props;
     if (prevProps.codeTab !== codeTab) {
       if (codeTab === 1 || codeTab === 2) {
         this.createEditor();
       }
     }
+    else if(prevProps.code !== code){
+      if (codeTab === 1 || codeTab === 2) {
+        // console.log(this.editor.get);
+        
+        // this.createEditor();
+        // this.editor.getDoc().setValue(code);
+      }
+    }
   }
 
   showEditor = () => {
-    const { codeTab } = this.props;
+    const { codeTab, consoles } = this.props;
     if (codeTab === 1) {
       return (
         <>
@@ -81,6 +92,7 @@ export default class VrRenderer extends Component {
               isCursor={this.props.isCursor}
               isDefaultLights={this.props.isDefaultLights}
               code={this.props.code}
+              consoles={consoles}
             />
           </div>
           <EditorDiv id="monacocontainer" width="50%" height="100%" />
@@ -103,6 +115,7 @@ export default class VrRenderer extends Component {
         isCursor={this.props.isCursor}
         isDefaultLights={this.props.isDefaultLights}
         code={this.props.code}
+        consoles={consoles}
       />
     );
   };
@@ -262,6 +275,7 @@ const EditorDiv = styled.div`
   float: left;
   width: ${props => props.width};
   /* height: ${props => props.height - 35}; */
+  background: #1C1C1C;
   height: calc(100% - 35px);
   position: relative;
 `;

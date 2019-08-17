@@ -121,13 +121,10 @@ export const CustomGeometryConfig = [
     exclude: ["cylinder", "sky", "ring", "cone", "sphere", "circle"]
   }
 ];
-// src="data:image/${val.ext.slice(
-//   1
-// )};base64,${val.data}"
 
 const videoAndImagesExt = [".png",".jpg",".jpeg"]
 
-export const createAssets = (arr = [], title) => {
+export const createAssets = (arr = []) => {
   let assetString = "";
   arr.forEach(val => {
     let name = val.name.replace(/[\W_]+/g, "");
@@ -151,6 +148,11 @@ export const createAssets = (arr = [], title) => {
         data
       }"></a-asset-item> \n`;
     } 
+    else if(val.ext === ".gltf"){
+      assetString += `<a-asset-item id="${name}" src="${
+        `http://localhost:9889/Assets/${val.name}/${val.gltfPath}`
+      }"></a-asset-item> \n`;
+    } 
     else {
       const data =
       "data:video/webm;base64," +
@@ -161,109 +163,87 @@ export const createAssets = (arr = [], title) => {
   return assetString;
 };
 
-export const createScene = (threeData = [], animate = {}) => {
+export const createScene = (threeData = []) => {
   let dataString = "";
-  _.forEach(threeData, (val, i) => {
-    if (val.objPrimitive === "sky") {
-      dataString += `<a-sky id="${val.objName}" color="${val.hashColor}" src="${
-        val.objTexture ? "#" + val.objTexture.name : ""
-      }" position="${val.position.x} ${val.position.y} ${
-        val.position.z
-      }" rotation="${val.rotation._x * (180 / 3.14)} ${val.rotation._y *
-        (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"
-        visible="${val.visible}" 
+  _.forEach(threeData, (mesh) => {
+    const {objName, position, rotation, scale, visible, name, hashColor, objTexture, objPrimitive} = mesh
+    const id = name.length?name:objName
+    const color = hashColor
+    const texture = objTexture ? "#" + objTexture.name : ""
+    if (mesh.objPrimitive === "sky") {
+      dataString += `<a-sky id="${id}" 
+      ${createAnimaionAttr(mesh.objAnimate, id)}
+      color="${color}" src="${texture}" position="${mesh.position.x} ${mesh.position.y} ${
+        mesh.position.z
+      }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
+        (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
+        visible="${mesh.visible}" 
         material="
-        opacity:${val.children[0].material.opacity};
-        transparent:${val.children[0].material.transparent};
+        opacity:${mesh.children[0].material.opacity};
+        transparent:${mesh.children[0].material.transparent};
         "
         >
-        ${createScene(val.children.slice(1))}
+        ${createScene(mesh.children.slice(1))}
         </a-sky> \n`;
-    } else if (val.objPrimitive === "curvedimage") {
-      const params = val.children[0].geometry.parameters;
-      dataString += `<a-curvedimage id="${val.objName}" color="${
-        val.hashColor
-      }" src="${val.objTexture ? "#" + val.objTexture.name : ""}" position="${
-        val.position.x
-      } ${val.position.y} ${val.position.z}" rotation="${val.rotation._x *
-        (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
+    } else if (mesh.objPrimitive === "curvedimage") {
+      const params = mesh.children[0].geometry.parameters;
+      dataString += `<a-curvedimage id="${id}" 
+      ${createAnimaionAttr(mesh.objAnimate, id)}
+      color="${
+        color
+      }" src="${texture}" position="${
+        mesh.position.x
+      } ${mesh.position.y} ${mesh.position.z}" rotation="${mesh.rotation._x *
+        (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
         (180 / 3.14)}"
-        visible="${val.visible}" 
+        visible="${mesh.visible}" 
         material="
-        opacity:${val.children[0].material.opacity};
-        transparent:${val.children[0].material.transparent};
+        opacity:${mesh.children[0].material.opacity};
+        transparent:${mesh.children[0].material.transparent};
         "
         height="${params.height}" radius="${
         params.radiusTop
       }" theta-length="${(params.thetaLength * 180) / Math.PI}"
         >
-        ${createScene(val.children.slice(1))}
+        ${createScene(mesh.children.slice(1))}
         </a-curvedimage> \n`;
-    } else if (val.objPrimitive === "3DModel") {
-      if(val.objModel.type==='poly'){
-        dataString += `<a-gltf-model id="${val.objName}"
-        src="${val.objModel.path}"
-        position="${val.position.x} ${val.position.y} ${
-          val.position.z
-        }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
-          .rotation._x *
-          (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
-          (180 / 3.14)}"
-          visible="${val.visible}" 
-          >
-          ${createScene(val.children.slice(1))}
-          </a-gltf-model> \n`;
-      } 
-      else{
-        dataString += `<a-entity id="${val.objName}"
-        obj-model="obj: url(${val.objModel.path});"
-        position="${val.position.x} ${val.position.y} ${
-          val.position.z
-        }" scale="${val.scale.x} ${val.scale.y} ${val.scale.z}" rotation="${val
-          .rotation._x *
-          (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
-          (180 / 3.14)}"
-          shadow="receive:${val.receiveShadow};cast:${val.castShadow}" 
-          visible="${val.visible}" 
-          >
-          ${createScene(val.children.slice(1))}
-          </a-entity> \n`;
-      }     
+    } else if (mesh.objPrimitive === "3DModel") {
+      dataString+= assignModelAttr(mesh)  
 
-    } else if (val.objType === "Light") {
-      dataString += `<a-entity id="${val.objName}" light="type: ${
-        val.objPrimitive
-      }; color: ${val.hashColor}; ${generateLigtProps(val.children[0])}" position="${val.position.x} ${val.position.y} ${
-        val.position.z
-      }" rotation="${val.rotation._x * (180 / 3.14)} ${val.rotation._y *
-        (180 / 3.14)} ${val.rotation._z * (180 / 3.14)}"          
-        visible="${val.visible}"
+    } else if (mesh.objType === "Light") {
+      dataString += `<a-entity id="${id}" light="type: ${
+        mesh.objPrimitive
+      }; color: ${color}; ${generateLigtProps(mesh.children[0])}" position="${mesh.position.x} ${mesh.position.y} ${
+        mesh.position.z
+      }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
+        (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"          
+        visible="${mesh.visible}"
         >
-        ${createScene(val.children.slice(1))}
+        ${createScene(mesh.children.slice(1))}
         </a-entity>`;
     } else {
       const geometryParams = setGeometryAframe(
-        val.children[0].geometry.parameters
+        mesh.children[0].geometry.parameters
       );
-      dataString += `<a-entity id="${val.objName}" 
-      geometry="primitive: ${val.objPrimitive};${geometryParams}" 
-      ${createAnimaionAttr(val.objAnimate, val.objName)}
-      material="color: ${val.hashColor}; 
-      ${val.objTexture ? "src:#" + val.objTexture.name : ""};
-      transparent:${val.children[0].material.transparent};
-      opacity:${val.children[0].material.opacity};
+      dataString += `<a-entity id="${id}" 
+      geometry="primitive: ${mesh.objPrimitive};${geometryParams}" 
+      ${createAnimaionAttr(mesh.objAnimate, id)}
+      material="color: ${color}; 
+      ${mesh.objTexture ? "src:#" + mesh.objTexture.name : ""};
+      transparent:${mesh.children[0].material.transparent};
+      opacity:${mesh.children[0].material.opacity};
         " 
-      position="${val.position.x} ${val.position.y} ${val.position.z}" scale="${
-        val.scale.x
-      } ${val.scale.y} ${val.scale.z}" rotation="${val.rotation._x *
-        (180 / 3.14)} ${val.rotation._y * (180 / 3.14)} ${val.rotation._z *
+      position="${mesh.position.x} ${mesh.position.y} ${mesh.position.z}" scale="${
+        mesh.scale.x
+      } ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh.rotation._x *
+        (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
         (180 / 3.14)}" 
-        shadow="receive:${val.children[0].receiveShadow};cast:${
-        val.children[0].castShadow
+        shadow="receive:${mesh.children[0].receiveShadow};cast:${
+        mesh.children[0].castShadow
       }" 
-        visible="${val.visible}"
+        visible="${mesh.visible}"
         >
-        ${createScene(val.children.slice(1))}
+        ${createScene(mesh.children.slice(1))}
         </a-entity> \n`;
     }
   });
@@ -286,11 +266,6 @@ const generateLigtProps = (object)=>{
 
 }
 
-// obj-model="obj: 
-//       ${
-//         val.objModel ? "#" + val.objModel.name : ""
-//       };"  
-
 const setGeometryAframe = obj => {
   let str = "";
   _.forEach(obj, (val, key) => {
@@ -302,8 +277,6 @@ const setGeometryAframe = obj => {
 export const aframeTemplate = (
   assetArr,
   sceneArr,
-  animate,
-  title,
   isCursor = false,
   isDefaultLights = true,
   script = ""
@@ -311,28 +284,78 @@ export const aframeTemplate = (
   // a new template is only been made on when assets are added, a new project got created, project got saved.
   return `<html><head><meta content="text/html;charset=utf-8" http-equiv="Content-Type"><meta content="utf-8" http-equiv="encoding">
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script> 
   </head><body><a-scene vr-mode-ui="enabled: false" light="defaultLightsEnabled: false"><a-camera>${
     isCursor ? `<a-cursor></a-cursor>` : ``
-  }</a-camera><a-assets>${createAssets(
-    assetArr,
-    title
-  )}</a-assets>
+  }</a-camera>
+  <a-assets>${createAssets(assetArr)}</a-assets>
   ${isDefaultLights?
     `<a-entity light="type: ambient; color: #BBB" shadow="cast:true" ></a-entity>
     <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1" shadow="cast:true"></a-entity>`
   :""}
-  ${createScene(sceneArr, animate)}</a-scene>
-  <script type='text/javascript'>
-  ${script}
-  </script>
+  ${createScene(sceneArr)}</a-scene>
+
   </body></html>
   `;
 };
 
+const assignModelAttr = (mesh)=>{
+  console.log(mesh);
+  
+  const {objName, name, objModel} = mesh
+  const id = name.length?name:objName
+  console.log('objModel',objModel);
+  
+  if(objModel.ext===".obj"){
+    return `<a-entity id="${id}"
+    obj-model="obj: url(${mesh.objModel.path}); "
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-entity> \n`
+  }
+  else if(objModel.ext===".gltf"){
+    return `<a-gltf-model id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    src="${mesh.objModel.path+"/"+mesh.objModel.path.name}"
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-gltf-model> \n`
+  }
+  else if(objModel.ext==="poly"){
+    return `<a-gltf-model id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    src="${mesh.objModel.path}"
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-gltf-model> \n`
+  }
+}
 export const genericProperties = {
   transform: ["position", "rotation", "scale"],
-  material: ["color", "opacity", "visible"]
+  material: ["color", "opacity", "visible"],
+  light:['intensity']
 };
 
 export const directions = ["normal", "alternate", "reverse"];
@@ -473,4 +496,6 @@ export const createAnimaionAttr = (animData, name) => {
   return "";
 };
 
-
+export const isAlphaNumeric = (str) => {  
+  return str.match(/^[A-ZÀ-Ýa-zà-ý0-9_]+$/i) !== null;
+}

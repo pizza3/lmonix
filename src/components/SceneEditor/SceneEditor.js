@@ -9,24 +9,46 @@ export default class SceneEditor extends Component {
     this.props.stopanimateScene();
   }
   render() {
-    const objPresent = this.props.objPresent.length;
+    const {
+      transformControls,
+      toggleGridMesh,
+      isGrid,
+      renderSceneOnMount,
+      handleLeave,
+      handleOver,
+      handleResize,
+      active,
+      replaceGeometry,
+      objPresent,
+      changeObjectProp,
+      stopanimateScene,
+      removeObject3D
+    } = this.props;
+    const isobjPresent = objPresent.length;
     return (
       <SceneEditorContainer>
         <SceneEditorContainerScroll id="customScrollbar">
-          <SceneController transformControls={this.props.transformControls}/>
-          <SceneRenderer
-            renderSceneOnMount={this.props.renderSceneOnMount}
-            handleLeave={this.props.handleLeave}
-            handleOver={this.props.handleOver}
-            objPresent={objPresent}
+          <SceneController
+            transformControls={transformControls}
+            toggleGridMesh={toggleGridMesh}
+            isGrid={isGrid}
           />
-          {objPresent ? (
+          <SceneRenderer
+            renderSceneOnMount={renderSceneOnMount}
+            stopanimateScene={stopanimateScene}
+            handleLeave={handleLeave}
+            handleOver={handleOver}
+            handleResize={handleResize}
+            objPresent={objPresent}
+            removeObject3D={removeObject3D}
+          />
+          {isobjPresent ? (
             <PropertiesEditor
               {...this.props}
-              active={this.props.active}
-              replaceGeometry={this.props.replaceGeometry}
-              objPresent={this.props.objPresent}
-              changeObjectProp={this.props.changeObjectProp}
+              active={active}
+              replaceGeometry={replaceGeometry}
+              objPresent={objPresent}
+              changeObjectProp={changeObjectProp}
             />
           ) : (
             []
@@ -48,8 +70,8 @@ const SceneEditorContainer = styled.div`
 `;
 
 const SceneEditorContainerScroll = styled.div`
-    position: relative;
-    width: 100%;
-    height: calc(100vh - 37px);
-    overflow: auto;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 37px);
+  overflow: auto;
 `;

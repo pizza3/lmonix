@@ -41,16 +41,17 @@ export default class Transform extends Component {
     }
   };
   componentDidUpdate(prevProps) {
-    if (!_.isEqual(prevProps.active, this.props.active)) {
-      const tx = this.props.active.position.x;
-      const ty = this.props.active.position.y;
-      const tz = this.props.active.position.z;
-      const rx = this.props.active.rotation.x;
-      const ry = this.props.active.rotation.y;
-      const rz = this.props.active.rotation.z;
-      const sx = this.props.active.scale.x;
-      const sy = this.props.active.scale.y;
-      const sz = this.props.active.scale.z;
+    const { active}=this.props
+    if (!_.isEqual(prevProps.active, active)) {
+      const tx = active.position.x;
+      const ty = active.position.y;
+      const tz = active.position.z;
+      const rx = active.rotation.x;
+      const ry = active.rotation.y;
+      const rz = active.rotation.z;
+      const sx = active.scale.x;
+      const sy = active.scale.y;
+      const sz = active.scale.z;
       this.setState({
         traX: tx,
         traY: ty,
@@ -67,8 +68,6 @@ export default class Transform extends Component {
   handleChange = e => {
     const name = e.target.name;
     const prop = e.target.prop;
-    console.log(prop);
-
     switch (e.target.name) {
       case "traX":
         this.setState(

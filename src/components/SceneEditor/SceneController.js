@@ -40,6 +40,7 @@ export default class SceneController extends Component {
 
   render() {
     const { activeLogo } = this.state;
+    const {isGrid }= this.props
     return (
       <SceneControllerContainer>
         <Tooltip
@@ -58,11 +59,11 @@ export default class SceneController extends Component {
         </Tooltip>
         <Tooltip
          align='right'
-         name='Grid'
+         name={isGrid?'Hide Grid':'Show Grid'}
         >
-          <SelectController id="grid">
+          <SelectController id="gridhelper" onClick={()=>{this.props.toggleGridMesh()}}>
             <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10.151 10.151">
-              {grid()}
+              {isGrid?grid('#4f74f9'):grid()}
             </Svg>
           </SelectController>
         </Tooltip>

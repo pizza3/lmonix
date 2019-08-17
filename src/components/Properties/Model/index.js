@@ -23,7 +23,11 @@ export default class Model extends Component {
     }
   }
   componentDidUpdate(prevProps) {
-    if (!_.isEqual(prevProps.active, this.props.active)) {
+    console.log(prevProps.active.objModel,this.props.active.objModel);
+    
+    if (!_.isEqual(prevProps.active.objModel, this.props.active.objModel)) {
+      console.log('obj model');
+      
       if (
         this.props.active &&
         this.props.active.objModel &&
@@ -46,14 +50,12 @@ export default class Model extends Component {
       currentModel: this.props.active.objTexture.name
     });
   };
-  // removeModel = () => {
-  //   this.props.changeObjectProp(null, "map", "material");
-  //   this.props.changeObjectProp(true, "needsUpdate", "material");
-  //   this.props.changeObjectProp({}, "objTexture");
-  //   this.setState({
-  //     isTexture: false
-  //   });
-  // };
+  removeModel = () => {
+    this.props.removeObject3D();
+    this.setState({
+      isModel: false
+    });
+  };
   render() {
     const { currentModel, isModel } = this.state
     const content = this.props.active
@@ -81,11 +83,11 @@ export default class Model extends Component {
             offset: [-91, -30]
           }}
         >
-          <Input>{isModel ? content : "Add Texture"}</Input>
+          <Input>{isModel ? content : "Add Model"}</Input>
         </Trigger>
         {isModel ? (
           <Delete
-            onClick={this.removeTexture}
+            onClick={this.removeModel}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"
           >

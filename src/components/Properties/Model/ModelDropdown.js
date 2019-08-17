@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import * as THREE from "../../../Helpers/ThreeLibManager";
+import * as THREE from "../../../helpers/ThreeLibManager";
 import * as MaterialLoader from "three-mtl-loader";
-import * as ObjectLoader from "../../../Helpers/three-obj-loader";
+import * as ObjectLoader from "../../../helpers/three-obj-loader";
 import { texture, addCircle, polyLogo } from "../../../assets/icon";
-import modelLoader from "../../../Helpers/modelLoader";
-import { message } from "antd";
-import Tooltip from '../../../designLib/Tooltip'
-import Poly from './Poly'
-// import LegacyGLTFLoader from '../../../Helpers/LegacyGLTFLoader'
+import modelLoader from "../../../helpers/modelLoader";
+import message from "antd/lib/message/index";
+import Tooltip from '../../../designLib/Tooltip';
+import Poly from './Poly';
+import _ from 'lodash';
 const fs = window.require("fs");
 const electron = window.require("electron");
 const Loader = new THREE.OBJLoader();
 const OBJLoader = ObjectLoader.default;
 const MTLLoader = MaterialLoader.default;
+const path = window.require("path");
 OBJLoader(THREE);
-const modelExt = [".obj"];
 
 // const gltfLoader = new THREE.LegacyGLTFLoader();
 var gltfLoader = new THREE.GLTFLoader();
@@ -33,64 +33,14 @@ export default class MenuDropdown extends Component {
       showPoly: !showPoly
     })
   }
-  handleTexture = i => {
-    const { changeObjectProp, assetStack } = this.props;
-    const objData =
-      "data:video/webm;base64," +
-      fs.readFileSync(assetStack[i].path).toString("base64");
-    const mtlData =
-      "data:video/webm;base64," +
-      fs
-        .readFileSync(assetStack[i].path.replace("obj", "mtl"))
-        .toString("base64");
-    const materials = new MTLLoader();
-    let objPresent;
-    modelLoader(this.props.active, {
-      name: assetStack[i].name.replace(/[\W_]+/g, "")
-    });
-    // materials.load(mtlData, function(material) {
-    //   material.preload();
-    //   const loader = new THREE.OBJLoader();
-    //   loader.setMaterials(material);
-    //   Loader.load(
-    //     objData,
-    //     function(object) {
-    //       changeObjectProp(object, "", "addObject");
-    //       changeObjectProp(
-    //         {
-    //           path: assetStack[i].path,
-    //           type: ".obj",
-    //           name: assetStack[i].name.replace(/[\W_]+/g, "")
-    //         },
-    //         "objModel"
-    //       );
-    //     },
-    //     function(xhr) {
-    //       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-    //     },
-    //     function(error) {
-    //       console.log("An error happened");
-    //       console.log(error);
-    //     }
-    //   );
-    // });
-
-
-    changeObjectProp(
-      {
-        path: assetStack[i].path,
-        type: ".obj",
-        name: assetStack[i].name.replace(/[\W_]+/g, "")
-      },
-      "objModel"
-    );
+  handleTexture = directory => {
+    const { changeObjectProp } = this.props;
+    modelLoader(this.props.active, directory, changeObjectProp);
   };
 
   applyPolyTexture = (data) => {
-    console.log(data);
     const {changeObjectProp} = this.props
     const format = data.formats.find( format => { return format.formatType === 'GLTF2'; } );
-    console.log(format);
     if ( format !== undefined ) {
       const url = format.root.url;
       gltfLoader.load( url, function ( response ) {
@@ -98,8 +48,8 @@ export default class MenuDropdown extends Component {
       });
       changeObjectProp(
         {
-          path:  format.root.url,
-          type: "poly",
+          path: format.root.url,
+          ext: "poly",
           name: data.displayName
         },
         "objModel"
@@ -111,7 +61,8 @@ export default class MenuDropdown extends Component {
     if (this.props.location !== "untitled*") {
       electron.ipcRenderer.send("open-asset-modal", {
         location: this.props.location,
-        filter: ["obj", "mtl"]
+        filter: ["obj", "mtl"],
+        type:'openDirectory'
       });
     } else {
       message.warning("Project not saved, save it to add asset's.", 3);
@@ -121,18 +72,17 @@ export default class MenuDropdown extends Component {
   render() {
     const { assetStack } = this.props;
     const { showPoly } = this.state
-    const Textures = assetStack.map((val, i) => {
-      if (val.ext === ".obj") {
+    const Textures = assetStack.map((directory, i) => {
+      if (directory.ext === ".obj"||directory.ext === ".gltf") {
         return (
           <ObjButton
             key={i}
             style={{ width: "100%" }}
             onClick={() => {
-              this.handleTexture(i);
+              this.handleTexture(directory);
             }}
           >
-            <Img src={this.props.assetStack[i].base} />
-            <Text>{val.name}</Text>
+            <Text>{directory.name}</Text>
           </ObjButton>
         );
       }
