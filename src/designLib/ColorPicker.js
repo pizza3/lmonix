@@ -265,7 +265,6 @@ export default class ColorPickerDropdown extends Component{
 
     RgbToHsv(r, g, b) {
         // r /= 255; g /= 255; b /= 255;
-        console.log(r,g,b);
         
         let newR = r/255
         let newG = g/255 

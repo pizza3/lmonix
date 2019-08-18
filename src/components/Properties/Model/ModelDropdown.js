@@ -62,7 +62,8 @@ export default class MenuDropdown extends Component {
       electron.ipcRenderer.send("open-asset-modal", {
         location: this.props.location,
         filter: ["obj", "mtl"],
-        type:'openDirectory'
+        type:'openDirectory',
+        properties:["openDirectory"]
       });
     } else {
       message.warning("Project not saved, save it to add asset's.", 3);
@@ -155,13 +156,6 @@ const ObjButton = styled.button`
     background: #4f74f9;
     color: #ececec;
   }
-`;
-
-const Img = styled.img`
-  width: auto;
-  height: 34px;
-  float: left;
-  position: relative;
 `;
 
 const Text = styled.span`

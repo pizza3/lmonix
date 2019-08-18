@@ -17,7 +17,8 @@ export default class MenuDropdown extends Component {
     if (this.props.location !== "untitled*") {
       electron.ipcRenderer.send("open-asset-modal", {
         location: this.props.location,
-        filter: ['mp4','webm','jpg','png','webp']
+        filter: ['mp4','webm','jpg','png','webp'],
+        properties:["openFile","multiSelections"]
       });
     } else {
       message.warning("Project not saved, save it to add asset's.", 3);

@@ -298,7 +298,7 @@ function SetPopMenu(mainWindow, win) {
   menu.append(
     new MenuItem({
       label: "Copy",
-      accelerator: isWindows ? "Ctrl+C" : "Cmd+C",
+      // accelerator: isWindows ? "Ctrl+C" : "Cmd+C",
       click: function() {
         mainWindow.webContents.send("ipcRenderer", {
           option: "copyObj"
@@ -309,7 +309,7 @@ function SetPopMenu(mainWindow, win) {
   menu.append(
     new MenuItem({
       label: "Paste",
-      accelerator: isWindows ? "Ctrl+V" : "Cmd+V",
+      // accelerator: isWindows ? "Ctrl+V" : "Cmd+V",
       click: function() {
         mainWindow.webContents.send("ipcRenderer", {
           option: "pasteObj"

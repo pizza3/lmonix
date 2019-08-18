@@ -5,13 +5,15 @@ import Number from "../../designLib/Number";
 import Switch from "../../designLib/Switch";
 import _ from "lodash";
 import From from "./From";
-import { config, swap, time, switchProp, ease} from "../../assets/icon";
+import { config, swap, time, switchProp, ease, events } from "../../assets/icon";
 import { PropertyName, PropertyContainer } from "./styled";
 import {
   genericProperties,
+  genericPropertiesLights,
   directions,
   easeFuncsList,
-  basicAnimationsConfig
+  basicAnimationsConfig,
+  animEvents
 } from "../../helpers/helpers";
 export default class AnimDropdown extends Component {
   // over here we have basic/common props needed for animation
@@ -23,11 +25,14 @@ export default class AnimDropdown extends Component {
     direction: "normal",
     easing: "linear",
     loop: true,
-    loopValue: 0,
+    loopvalue: 0,
     from: null,
     to: null,
     elasticity: 0,
-    showConfig: false
+    showConfig: false,
+    startevent: "",
+    resumeevent: "",
+    pauseevent: "",
   };
 
   componentDidMount() {
@@ -36,9 +41,10 @@ export default class AnimDropdown extends Component {
 
   handleChange = e => {
     if (e.persist) e.persist();
-    const { from, to, property } = this.state;
+    const { from, to, property, loop } = this.state;
     let propname = e.name || e.target.dataset.name || e.target.name;
     let value = e.value || e.target.value;
+
     propname = propname.toLowerCase();
     if (
       property === "rotation" ||
@@ -59,12 +65,19 @@ export default class AnimDropdown extends Component {
           [prop]: value
         };
       }
-    } else if (property === "color" || property === "opacity") {
+    } else if (
+      property === "color" ||
+      property === "opacity" ||
+      property === "intensity"
+    ) {
       if (propname.includes("from")) {
         propname = "from";
       } else if (propname.includes("to")) {
         propname = "to";
       }
+    }
+    if (propname === "loop") {
+      value = !loop;
     }
     if (propname === "property") {
       this.setProprtyUpdate(value, this.state.name);
@@ -74,6 +87,7 @@ export default class AnimDropdown extends Component {
         [propname]: value
       },
       () => {
+        console.log(propname, value);
         this.props.updateAnimate(this.state, this.props.index);
       }
     );
@@ -126,22 +140,43 @@ export default class AnimDropdown extends Component {
       from,
       to,
       elasticity,
-      showConfig
+      showConfig,
+      loopvalue,
+      startevent,
+      pauseevent,
+      resumeevent
     } = this.state;
-    const { name } = this.props;
-    const propoptions = _.map(genericProperties, (prop, index) => {
-      return (
-        <optgroup key={index} label={index}>
-          {_.map(prop, (val, i) => {
-            return (
-              <option key={i} value={val}>
-                {val}
-              </option>
-            );
-          })}
-        </optgroup>
-      );
-    });
+    const { name, active } = this.props;
+    let propoptions;
+    if (active.objType === "Light") {
+      propoptions = _.map(genericPropertiesLights, (prop, index) => {
+        return (
+          <optgroup key={index} label={index}>
+            {_.map(prop, (val, i) => {
+              return (
+                <option key={i} value={val}>
+                  {val}
+                </option>
+              );
+            })}
+          </optgroup>
+        );
+      });
+    } else {
+      propoptions = _.map(genericProperties, (prop, index) => {
+        return (
+          <optgroup key={index} label={index}>
+            {_.map(prop, (val, i) => {
+              return (
+                <option key={i} value={val}>
+                  {val}
+                </option>
+              );
+            })}
+          </optgroup>
+        );
+      });
+    }
     const diroptions = _.map(directions, prop => {
       return (
         <option key={prop} value={prop}>
@@ -150,6 +185,13 @@ export default class AnimDropdown extends Component {
       );
     });
     const easeOptions = _.map(easeFuncsList, prop => {
+      return (
+        <option key={prop} value={prop}>
+          {prop}
+        </option>
+      );
+    });
+    const eventOptions = _.map(animEvents, prop => {
       return (
         <option key={prop} value={prop}>
           {prop}
@@ -169,8 +211,8 @@ export default class AnimDropdown extends Component {
         <div>
           {showConfig ? (
             <AnimConfigDropdown>
-               <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                {switchProp('#698bff')}
+              <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                {switchProp("#698bff")}
               </Icon>
               <IconTitle>Property</IconTitle>
               <AnimConfigSeperator>
@@ -197,7 +239,7 @@ export default class AnimDropdown extends Component {
                 />
               </AnimConfigSeperator>
               <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                {time('#698bff')}
+                {time("#698bff")}
               </Icon>
               <IconTitle>Timing</IconTitle>
               <AnimConfigSeperator>
@@ -208,7 +250,7 @@ export default class AnimDropdown extends Component {
                     value={duration}
                     onChange={this.handleChange}
                     name={"duration"}
-                    Width={86}
+                    Width={142}
                   />
                 </PropertyContainer>
                 <PropertyContainer>
@@ -217,13 +259,13 @@ export default class AnimDropdown extends Component {
                   <Number
                     value={delay}
                     onChange={this.handleChange}
-                    Width={86}
+                    Width={142}
                     name={"delay"}
                   />
                 </PropertyContainer>
               </AnimConfigSeperator>
               <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                {swap('#698bff')}
+                {swap("#698bff")}
               </Icon>
               <IconTitle>Order</IconTitle>
               <AnimConfigSeperator>
@@ -244,9 +286,22 @@ export default class AnimDropdown extends Component {
                     name={"loop"}
                   />
                 </PropertyContainer>
+                {!loop ? (
+                  <PropertyContainer>
+                    <PropertyName>Repeat</PropertyName>
+                    <Number
+                      value={loopvalue}
+                      onChange={this.handleChange}
+                      name={"loopvalue"}
+                      Width={142}
+                    />
+                  </PropertyContainer>
+                ) : (
+                  []
+                )}
               </AnimConfigSeperator>
               <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 120">
-                {ease('#698bff')}
+                {ease("#698bff")}
               </Icon>
               <IconTitle>Easing</IconTitle>
               <AnimConfigSeperator>
@@ -265,7 +320,40 @@ export default class AnimDropdown extends Component {
                     value={elasticity}
                     onChange={this.handleChange}
                     name={"elasticity"}
-                    Width={86}
+                    Width={142}
+                  />
+                </PropertyContainer>
+              </AnimConfigSeperator>
+              <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                {events("#698bff")}
+              </Icon>
+              <IconTitle>Trigger Events</IconTitle>
+              <AnimConfigSeperator>
+              <PropertyContainer>
+                  <PropertyName>Start</PropertyName>
+                  <Select
+                    value={startevent}
+                    onChange={this.handleChange}
+                    options={eventOptions}
+                    name={"startevent"}
+                  />
+                </PropertyContainer>
+                <PropertyContainer>
+                  <PropertyName>Pause</PropertyName>
+                  <Select
+                    value={pauseevent}
+                    onChange={this.handleChange}
+                    options={eventOptions}
+                    name={"pauseevent"}
+                  />
+                </PropertyContainer>
+                <PropertyContainer>
+                  <PropertyName>Resume</PropertyName>
+                  <Select
+                    value={resumeevent}
+                    onChange={this.handleChange}
+                    options={eventOptions}
+                    name={"resumeevent"}
                   />
                 </PropertyContainer>
               </AnimConfigSeperator>
@@ -345,16 +433,16 @@ const AnimConfigSeperator = styled.div`
 
 const Icon = styled.svg`
   position: relative;
-  width:24px;
+  width: 24px;
   float: left;
-`
+`;
 
 const IconTitle = styled.div`
   position: relative;
   float: left;
-  font-size:13px;
-  font-weight:900;
-  top:4px;
-  color:#ececec;
-  left:5px;
-`
+  font-size: 13px;
+  font-weight: 900;
+  top: 4px;
+  color: #ececec;
+  left: 5px;
+`;

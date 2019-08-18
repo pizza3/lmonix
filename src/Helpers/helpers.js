@@ -64,9 +64,7 @@ export const updateGeometry = (type, obj, value) => {
   }
 };
 
-export const updateLights = (type, obj) => {
-  console.log(obj);
-  
+export const updateLights = (type, obj) => {  
   switch (type) {
     case "AmbientLight":
       return new THREE.AmbientLight("#ffffff");
@@ -122,42 +120,28 @@ export const CustomGeometryConfig = [
   }
 ];
 
-const videoAndImagesExt = [".png",".jpg",".jpeg"]
-
+const ImagesExt = [".png",".jpg",".jpeg"]
+const VideoExt = ['.mp4','.webm']
 export const createAssets = (arr = []) => {
   let assetString = "";
   arr.forEach(val => {
     let name = val.name.replace(/[\W_]+/g, "");
-    if (videoAndImagesExt.includes(val.ext)) {
-      const data =
-      "data:video/webm;base64," +
-      fs.readFileSync(val.path).toString("base64");
+    if (ImagesExt.includes(val.ext)) {
       assetString += `<img id="${name}" 
-      src="${data}"
+      src="http://localhost:9889/Assets/${val.name}"
       > \n`;
     } else if (val.ext === ".obj" ) {
-      const data =
-      "data:video/webm;base64," +
-      fs.readFileSync(val.path).toString("base64");
-      assetString += `<a-asset-item id="${name}" src="${
-        data
-      }"></a-asset-item> \n`;
-    }else if(val.ext === ".mtl"){
-      const data = fs.readFileSync(val.path);
-      assetString += `<a-asset-item id="${name}" src="${
-        data
-      }"></a-asset-item> \n`;
-    } 
+      assetString += `<a-asset-item id="${val.name+val.objPath}" src="http://localhost:9889/Assets/${val.name}/${val.objPath}"></a-asset-item> \n
+      <a-asset-item id="${val.name+val.mtlPath}" src="http://localhost:9889/Assets/${val.name}/${val.mtlPath}"></a-asset-item> \n
+      `;
+    }
     else if(val.ext === ".gltf"){
-      assetString += `<a-asset-item id="${name}" src="${
+      assetString += `<a-asset-item id="${val.name+val.gltfPath}" src="${
         `http://localhost:9889/Assets/${val.name}/${val.gltfPath}`
       }"></a-asset-item> \n`;
     } 
-    else {
-      const data =
-      "data:video/webm;base64," +
-      fs.readFileSync(val.path).toString("base64");
-      assetString += `<video id="${name}" autoplay loop="true" src="${data}"></video> \n`;
+    else if(VideoExt.includes(val.ext)) {
+      assetString += `<video id="${name}" autoplay loop="true" src="http://localhost:9889/Assets/${val.name}"></video> \n`;
     }
   });
   return assetString;
@@ -211,7 +195,9 @@ export const createScene = (threeData = []) => {
       dataString+= assignModelAttr(mesh)  
 
     } else if (mesh.objType === "Light") {
-      dataString += `<a-entity id="${id}" light="type: ${
+      dataString += `<a-entity id="${id}" 
+      ${createAnimaionAttr(mesh.objAnimate, id)}
+      light="type: ${
         mesh.objPrimitive
       }; color: ${color}; ${generateLigtProps(mesh.children[0])}" position="${mesh.position.x} ${mesh.position.y} ${
         mesh.position.z
@@ -223,7 +209,8 @@ export const createScene = (threeData = []) => {
         </a-entity>`;
     } else {
       const geometryParams = setGeometryAframe(
-        mesh.children[0].geometry.parameters
+        mesh.children[0].geometry.parameters,
+        mesh.objPrimitive
       );
       dataString += `<a-entity id="${id}" 
       geometry="primitive: ${mesh.objPrimitive};${geometryParams}" 
@@ -266,11 +253,22 @@ const generateLigtProps = (object)=>{
 
 }
 
-const setGeometryAframe = obj => {
+const geomSelectedParams = {
+  box:['width','height','depth'],
+  sphere:['radius'],
+  plane:['width','height'],
+  cylinder:['radiusTop','radiusBottom','height','openEnded'],
+  cone:['height','radius','openEnded'],
+  circle:['radius'],
+  ring:['innerRadius','outerRadius'],
+}
+
+const setGeometryAframe = (obj, type) => {
+  console.log(obj);
   let str = "";
-  _.forEach(obj, (val, key) => {
-    str += `${key}:${val};`;
-  });
+  _.forEach(geomSelectedParams[type],(val)=>{
+    str += `${val}:${obj[val]};`;
+  })
   return str;
 };
 
@@ -299,16 +297,28 @@ export const aframeTemplate = (
   `;
 };
 
-const assignModelAttr = (mesh)=>{
-  console.log(mesh);
-  
+const assignModelAttr = (mesh)=>{  
   const {objName, name, objModel} = mesh
   const id = name.length?name:objName
-  console.log('objModel',objModel);
-  
+  if(_.isEmpty(objModel)){
+    return `<a-entity id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-entity> \n`
+  }
   if(objModel.ext===".obj"){
     return `<a-entity id="${id}"
-    obj-model="obj: url(${mesh.objModel.path}); "
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    obj-model="obj: #${mesh.objModel.name+mesh.objModel.objPath}; mtl: #${mesh.objModel.name+mesh.objModel.mtlPath}"
     position="${mesh.position.x} ${mesh.position.y} ${
       mesh.position.z
     }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
@@ -324,7 +334,7 @@ const assignModelAttr = (mesh)=>{
   else if(objModel.ext===".gltf"){
     return `<a-gltf-model id="${id}"
     ${createAnimaionAttr(mesh.objAnimate, id)}
-    src="${mesh.objModel.path+"/"+mesh.objModel.path.name}"
+    src="#${mesh.objModel.name+mesh.objModel.gltfPath}"
     position="${mesh.position.x} ${mesh.position.y} ${
       mesh.position.z
     }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
@@ -355,8 +365,12 @@ const assignModelAttr = (mesh)=>{
 export const genericProperties = {
   transform: ["position", "rotation", "scale"],
   material: ["color", "opacity", "visible"],
-  light:['intensity']
 };
+
+export const genericPropertiesLights = {
+  transform: ["position", "rotation", "scale"],
+  light:['intensity']
+}
 
 export const directions = ["normal", "alternate", "reverse"];
 export const easeFuncsList = [
@@ -401,8 +415,11 @@ export const basicAnimationsConfig = {
     direction: "normal",
     easing: "linear",
     loop: true,
-    loopValue: 0,
-    elasticity:0
+    loopvalue: 0,
+    elasticity:0,
+    startevent:"",
+    resumeevent: "",
+    pauseevent: "",
   },
   scale: {
     name: "",
@@ -414,8 +431,11 @@ export const basicAnimationsConfig = {
     direction: "reverse",
     easing: "linear",
     loop: true,
-    loopValue: 0,
-    elasticity:0
+    loopvalue: 0,
+    elasticity:0,
+    startevent:"",
+    resumeevent: "",
+    pauseevent: "",
   },
   position: {
     name: "",
@@ -427,8 +447,11 @@ export const basicAnimationsConfig = {
     direction: "reverse",
     easing: "linear",
     loop: true,
-    loopValue: 0,
-    elasticity:0
+    loopvalue: 0,
+    elasticity:0,
+    startevent:"",
+    resumeevent: "",
+    pauseevent: "",
   },
   color: {
     name: "",
@@ -440,8 +463,11 @@ export const basicAnimationsConfig = {
     direction: "reverse",
     easing: "linear",
     loop: true,
-    loopValue: 0,
-    elasticity:0
+    loopvalue: 0,
+    elasticity:0,
+    startevent:"",
+    resumeevent: "",
+    pauseevent: "",
   },
   opacity: {
     name: "",
@@ -453,8 +479,27 @@ export const basicAnimationsConfig = {
     direction: "alternate",
     easing: "linear",
     loop: true,
-    loopValue: 0,
-    elasticity:0
+    loopvalue: 0,
+    elasticity:0,
+    startevent:"",
+    resumeevent: "",
+    pauseevent: "",
+  },
+    intensity: {
+    name: "",
+    property: "intensity",
+    from: "1",
+    to: "0",
+    delay: 0,
+    duration: 1200,
+    direction: "alternate",
+    easing: "linear",
+    loop: true,
+    loopvalue: 0,
+    elasticity:0,
+    startevent:"",
+    resumeevent: "",
+    pauseevent: "",
   }
 };
 
@@ -466,6 +511,7 @@ export const createAnimaionAttr = (animData, name) => {
     rotation:"",
     opacity:"components.material.material.",
     color:"components.material.material.",
+    intensity:"light."
   }
   if (animData.length) {
     _.forEach(animData, (anim, index) => {
@@ -483,12 +529,21 @@ export const createAnimaionAttr = (animData, name) => {
       data += ` 
       animation__${anim.name}="property: ${propertPrefix[anim.property]}${
         anim.property
-      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${anim.loop};delay:${
+      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${anim.loop?anim.loop:anim.loopvalue};delay:${
         anim.delay
       }; dur: ${anim.duration}; dir:${anim.direction}; easing: ${
         anim.easing
       }; elasticity: ${
         anim.elasticity
+      }; 
+      startEvents:${
+        anim.startevent==="no event"?"":anim.startevent
+      };
+      resumeEvents:${
+        anim.resumeevent==="no event"?"":anim.resumeevent
+      };
+      pauseEvents:${
+        anim.pauseevent==="no event"?"":anim.pauseevent
       };"`;
     });
     return data;
@@ -499,3 +554,11 @@ export const createAnimaionAttr = (animData, name) => {
 export const isAlphaNumeric = (str) => {  
   return str.match(/^[A-ZÀ-Ýa-zà-ý0-9_]+$/i) !== null;
 }
+
+
+export const animEvents = [
+  "no event",
+  "mouseleave",
+  "mouseenter",
+  "click",
+]

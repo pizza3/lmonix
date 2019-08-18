@@ -35,8 +35,8 @@ const installExtensions = async () => {
 
 app.on('ready', async ()=>{
     createWindow()
-    ipcMain.on("startAssetServer", () => {
-      setAssetServer();
+    ipcMain.on("startAssetServer", (event, arg) => {
+      setAssetServer(arg);
     });
     
     ipcMain.on("stopAssetServer", () => {

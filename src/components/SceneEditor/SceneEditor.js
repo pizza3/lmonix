@@ -19,6 +19,7 @@ export default class SceneEditor extends Component {
       handleResize,
       active,
       replaceGeometry,
+      replaceLights,
       objPresent,
       changeObjectProp,
       stopanimateScene,
@@ -47,6 +48,7 @@ export default class SceneEditor extends Component {
               {...this.props}
               active={active}
               replaceGeometry={replaceGeometry}
+              replaceLights={replaceLights}
               objPresent={objPresent}
               changeObjectProp={changeObjectProp}
             />

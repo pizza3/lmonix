@@ -47,14 +47,19 @@ export default class Model extends Component {
   checkForModel = () => {
     this.setState({
       isModel: true,
-      currentModel: this.props.active.objTexture.name
+      currentModel: this.props.active.objModel.name
     });
   };
   removeModel = () => {
     this.props.removeObject3D();
     this.setState({
-      isModel: false
+      isModel: false,
+      currentModel: "Add Model"
     });
+    this.props.changeObjectProp(
+      {},
+      "objModel"
+    );
   };
   render() {
     const { currentModel, isModel } = this.state

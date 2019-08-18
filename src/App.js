@@ -45,6 +45,7 @@ class App extends Component {
   };
   objPresent = [];
   componentDidMount() {
+    const {objPresent}=this.state
     window.addEventListener("resize", this.handleResize, false);
     electron.ipcRenderer.on(
       "ipcRenderer",
@@ -54,6 +55,7 @@ class App extends Component {
             message[val["type"]](val["message"], 3);
             break;
           case "extractThreeData":            
+
             electron.ipcRenderer.send("reciveThreeData", {
               data: this.state.objPresent,
               state: this.state
@@ -94,7 +96,7 @@ class App extends Component {
             this.setState({
               title: val["title"]
             },()=>{
-              electron.ipcRenderer.send("stopAssetServer");
+              electron.ipcRenderer.send("stopAssetServer");              
               electron.ipcRenderer.send("startAssetServer",{
                 location: val["title"]
               });
@@ -175,6 +177,20 @@ document.getElementById('${name}').addEventListener('${option}',function(e){
         this.updateCode(newCode)
     }.bind(this))
 
+  }
+  generateFinalJson = (object)=>{
+    let arr = []
+
+    _.forEach(object,(obj,index)=>{
+      arr.push({
+        objName:obj.objName,
+        objType:obj.objType,
+        objPrimitive:obj.objPrimitive,
+        hashColor:obj.hashColor,
+        objAnimate:obj.objAnimate,
+        name:obj.name
+      })
+    })
   }
   changeSetMode = setMode => {
     this.setState({
@@ -258,17 +274,14 @@ document.getElementById('${name}').addEventListener('${option}',function(e){
       }
     })
   }
-  // togglePointerLock = ()=>{
-
-  // }
   setNumberOfObj = obj => {
     const { numberOfObj } = this.state;    
-    if (numberOfObj[obj.objType]) {
-      let number = numberOfObj[obj.objType] + 1;
+    if (numberOfObj[obj.objPrimitive]) {
+      let number = numberOfObj[obj.objPrimitive] + 1;
       this.setState({
         numberOfObj: {
           ...numberOfObj,
-          [obj.objType]: number
+          [obj.objPrimitive]: number
         }
       });
       return number;
@@ -276,7 +289,7 @@ document.getElementById('${name}').addEventListener('${option}',function(e){
       this.setState({
         numberOfObj: {
           ...numberOfObj,
-          [obj.objType]: 1
+          [obj.objPrimitive]: 1
         }
       });
       return 1;
@@ -436,25 +449,39 @@ document.getElementById('${name}').addEventListener('${option}',function(e){
   };
 
   initScene = () => {
-    const { isDefaultLights, objPresent } = this.state;
+    const { isDefaultLights, objPresent, isGrid } = this.state;
     this.width = objPresent.length
       ? window.innerWidth - 466
       : window.innerWidth - 232;
     this.height = window.innerHeight - 37;
     this.scene = new THREE.Scene();
-    this.gridHelper = new THREE.GridHelper(30, 30)
-    this.scene.add(this.gridHelper);
+    if(isGrid){
+      this.gridHelper = new THREE.GridHelper(30, 30)     
+      this.scene.add(this.gridHelper);
+    }
     const nearPlane = 1,
       farPlane = 70000,
       fieldOfView = 70,
       aspectRatio = this.width / this.height;
-    this.camera = new THREE.PerspectiveCamera(
-      fieldOfView,
-      aspectRatio,
-      nearPlane,
-      farPlane
-    );
-    this.camera.position.set(10, 5, 10);
+
+    if(this.camera === undefined){
+      this.camera = new THREE.PerspectiveCamera(
+        fieldOfView,
+        aspectRatio,
+        nearPlane,
+        farPlane
+      );
+      this.camera.position.set(10, 5, 10);
+    }else{
+      this.camPos = this.camera.position
+      this.camera = new THREE.PerspectiveCamera(
+        fieldOfView,
+        aspectRatio,
+        nearPlane,
+        farPlane
+      );
+      this.camera.position.set(this.camPos.x, this.camPos.y, this.camPos.z);
+    }
     //load the renderer on the scene
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,

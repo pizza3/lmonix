@@ -68,9 +68,9 @@ function showOpenDialog(browserWindow) {
       filters: [{ name: "Appvr files", extensions: ["appvr"] }]
     },
     filepaths => {
-      closeAssetServer();
-      setAssetServer({ location: filepaths[0] });
       if (filepaths) {
+        closeAssetServer();
+        setAssetServer({ location: filepaths[0] });
         fs.readFile(
           filepaths[0] + "/data.json",
           "utf8",
@@ -137,7 +137,6 @@ function readAssetFiles(filePath, browserWindow) {
   fs.readdir(filePath + "/Assets/", (err, files) => {
     files.forEach(file => {
       var stats = fs.statSync(filePath + "/Assets/" + file);
-      console.log("is file ? " + stats.isFile());
       if (stats.isFile()) {
         const data = base64_encode(filePath + "/Assets/" + file);
         fileArr.push({
@@ -189,8 +188,7 @@ function showAddDialog(browserWindow, arg) {
     {
       defaultPath: app.getPath("documents"),
       filters: [{ name: "Images", extensions: arg.filter }],
-      // properties:["openFile","multiSelections"]
-      properties: ["openDirectory"]
+      properties: arg.properties
     },
     filepaths => {
       if (filepaths && filepaths.length) {
@@ -204,6 +202,7 @@ function showAddDialog(browserWindow, arg) {
             arg.location + "/Assets/" + fileName
           );
         }
+        readAssetFiles(arg.location,browserWindow)
       }
     }
   );
@@ -372,7 +371,21 @@ const createScene = (threeData = []) => {
         ${createScene(mesh.children.slice(1))}
         </a-curvedimage> \n`;
     } else if (mesh.objPrimitive === "3DModel") {
-      if (mesh.objModel.type === "poly") {
+      if(_.isEmpty(mesh.objModel)){
+        dataString += `<a-entity id="${id}"
+        position="${mesh.position.x} ${mesh.position.y} ${
+          mesh.position.z
+        }" scale="${mesh.scale.x} ${mesh.scale.y} ${
+          mesh.scale.z
+        }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
+          (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
+          shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
+          visible="${mesh.visible}" 
+          >
+          ${createScene(mesh.children.slice(1))}
+          </a-entity> \n`;
+      }
+      if (mesh.objModel.ext === "poly") {
         dataString += `<a-gltf-model id="${id}"
         src="${mesh.objModel.path}"
         position="${mesh.position.x} ${mesh.position.y} ${

@@ -42,111 +42,111 @@ const AddCube = (
 
 
 
-const AddPointLight = (
-  scene,
-  pos = { x: 0, y: 0, z: 0 },
-  rot = { x: 0, y: 0, z: 0 },
-  sca = { x: 0, y: 0, z: 0 }
-) => {
-  let obj = new THREE.Object3D();
-  obj.matrixAutoUpdate = false
-  let color = 0xffffff;
-  obj["objName"] = "Light";
-  obj["objType"] = "Light";
-  obj["objPrimitive"] = "point";
-  obj["hashColor"] = "#ffffff";
-  let light = new THREE.PointLight(color, 1, 0.0, 1);
-  obj.add(light);
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
-  return obj;
-};
+// const AddPointLight = (
+//   scene,
+//   pos = { x: 0, y: 0, z: 0 },
+//   rot = { x: 0, y: 0, z: 0 },
+//   sca = { x: 0, y: 0, z: 0 }
+// ) => {
+//   let obj = new THREE.Object3D();
+//   obj.matrixAutoUpdate = false
+//   let color = 0xffffff;
+//   obj["objName"] = "Light";
+//   obj["objType"] = "Light";
+//   obj["objPrimitive"] = "point";
+//   obj["hashColor"] = "#ffffff";
+//   let light = new THREE.PointLight(color, 1, 0.0, 1);
+//   obj.add(light);
+//   scene.add(obj);
+//   obj.position.set(pos.x, pos.y, pos.z);
+//   obj.rotation._x = rot.x;
+//   obj.rotation._y = rot.y;
+//   obj.rotation._z = rot.z;
+//   return obj;
+// };
 
-const AddSpotLight = (
-  scene,
-  pos = { x: 0, y: 0, z: 0 },
-  rot = { x: 0, y: 0, z: 0 },
-  sca = { x: 0, y: 0, z: 0 }
-) => {
-  let obj = new THREE.Object3D();
-  obj.matrixAutoUpdate = false
-  let color = 0xffffff;
-  obj["objName"] = "Light";
-  obj["objType"] = "Light";
-  obj["objPrimitive"] = "spot";
-  obj["hashColor"] = "#ffffff";
-  let light = new THREE.SpotLight(color);
-  light.position.set(100, 1000, 100);
+// const AddSpotLight = (
+//   scene,
+//   pos = { x: 0, y: 0, z: 0 },
+//   rot = { x: 0, y: 0, z: 0 },
+//   sca = { x: 0, y: 0, z: 0 }
+// ) => {
+//   let obj = new THREE.Object3D();
+//   obj.matrixAutoUpdate = false
+//   let color = 0xffffff;
+//   obj["objName"] = "Light";
+//   obj["objType"] = "Light";
+//   obj["objPrimitive"] = "spot";
+//   obj["hashColor"] = "#ffffff";
+//   let light = new THREE.SpotLight(color);
+//   light.position.set(100, 1000, 100);
 
-  light.castShadow = true;
+//   light.castShadow = true;
 
-  light.shadow.mapSize.width = 1024;
-  light.shadow.mapSize.height = 1024;
+//   light.shadow.mapSize.width = 1024;
+//   light.shadow.mapSize.height = 1024;
 
-  light.shadow.camera.near = 500;
-  light.shadow.camera.far = 4000;
-  light.shadow.camera.fov = 30;
-  obj.add(light);
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
-  return obj;
-};
+//   light.shadow.camera.near = 500;
+//   light.shadow.camera.far = 4000;
+//   light.shadow.camera.fov = 30;
+//   obj.add(light);
+//   scene.add(obj);
+//   obj.position.set(pos.x, pos.y, pos.z);
+//   obj.rotation._x = rot.x;
+//   obj.rotation._y = rot.y;
+//   obj.rotation._z = rot.z;
+//   return obj;
+// };
 
-const AddHemisphereLight = (
-  scene,
-  pos = { x: 0, y: 0, z: 0 },
-  rot = { x: 0, y: 0, z: 0 },
-  sca = { x: 0, y: 0, z: 0 }
-) => {
-  let obj = new THREE.Object3D();
-  obj.matrixAutoUpdate = false
-  let color = 0xffffff;
-  let groundColor = 0xffffff;
-  let intensity = 2;
-  obj["objName"] = "Light";
-  obj["objType"] = "Light";
-  obj["objPrimitive"] = "hemisphere";
-  obj["hashColor"] = "#ffffff";
-  obj["hashGroundColor"] = "#ffffff";
-  let light = new THREE.HemisphereLight(color, groundColor, intensity);
-  obj.add(light);
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
-  return obj;
-};
+// const AddHemisphereLight = (
+//   scene,
+//   pos = { x: 0, y: 0, z: 0 },
+//   rot = { x: 0, y: 0, z: 0 },
+//   sca = { x: 0, y: 0, z: 0 }
+// ) => {
+//   let obj = new THREE.Object3D();
+//   obj.matrixAutoUpdate = false
+//   let color = 0xffffff;
+//   let groundColor = 0xffffff;
+//   let intensity = 2;
+//   obj["objName"] = "Light";
+//   obj["objType"] = "Light";
+//   obj["objPrimitive"] = "hemisphere";
+//   obj["hashColor"] = "#ffffff";
+//   obj["hashGroundColor"] = "#ffffff";
+//   let light = new THREE.HemisphereLight(color, groundColor, intensity);
+//   obj.add(light);
+//   scene.add(obj);
+//   obj.position.set(pos.x, pos.y, pos.z);
+//   obj.rotation._x = rot.x;
+//   obj.rotation._y = rot.y;
+//   obj.rotation._z = rot.z;
+//   return obj;
+// };
 
-const AddDirectionalLight = (
-  scene,
-  pos = { x: 0, y: 0, z: 0 },
-  rot = { x: 0, y: 0, z: 0 },
-  sca = { x: 0, y: 0, z: 0 }
-) => {
-  let obj = new THREE.Object3D();
-  obj.matrixAutoUpdate = false
-  let color = 0xffffff;
-  let intensity = 0.5;
-  obj["objName"] = "Light";
-  obj["objType"] = "Light";
-  obj["objPrimitive"] = "directional";
-  obj["hashColor"] = "#ffffff";
-  let light = new THREE.DirectionalLight(color, intensity);
-  obj.add(light);
-  scene.add(obj);
-  obj.position.set(pos.x, pos.y, pos.z);
-  obj.rotation._x = rot.x;
-  obj.rotation._y = rot.y;
-  obj.rotation._z = rot.z;
-  return obj;
-};
+// const AddDirectionalLight = (
+//   scene,
+//   pos = { x: 0, y: 0, z: 0 },
+//   rot = { x: 0, y: 0, z: 0 },
+//   sca = { x: 0, y: 0, z: 0 }
+// ) => {
+//   let obj = new THREE.Object3D();
+//   obj.matrixAutoUpdate = false
+//   let color = 0xffffff;
+//   let intensity = 0.5;
+//   obj["objName"] = "Light";
+//   obj["objType"] = "Light";
+//   obj["objPrimitive"] = "directional";
+//   obj["hashColor"] = "#ffffff";
+//   let light = new THREE.DirectionalLight(color, intensity);
+//   obj.add(light);
+//   scene.add(obj);
+//   obj.position.set(pos.x, pos.y, pos.z);
+//   obj.rotation._x = rot.x;
+//   obj.rotation._y = rot.y;
+//   obj.rotation._z = rot.z;
+//   return obj;
+// };
 
 const AddAmbientLight = (
   scene,
@@ -162,6 +162,7 @@ const AddAmbientLight = (
   obj["objType"] = "Light";
   obj["objPrimitive"] = "ambient";
   obj["hashColor"] = "#ffffff";
+  obj["objAnimate"] = [];
   let light = new THREE.AmbientLight(color, intensity);
   obj.add(light);
   // scene.add(obj);
@@ -498,9 +499,7 @@ const AddGroupObj =  (
       object["objName"] =obj.objName? obj.objName:"3DModel";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "3DModel";
-      console.log('addModel', obj);
       object["objModel"] = obj.objModel;
-      
       object.add(new THREE.Object3D())
       if (obj.objModel.ext==='.obj') {
         modelLoader(object, object.objModel);
@@ -627,10 +626,10 @@ const AddGroupObj =  (
 
 export {
   AddCube,
-  AddPointLight,
-  AddSpotLight,
-  AddHemisphereLight,
-  AddDirectionalLight,
+  // AddPointLight,
+  // AddSpotLight,
+  // AddHemisphereLight,
+  // AddDirectionalLight,
   AddAmbientLight,
   AddSky,
   AddModel,

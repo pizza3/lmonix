@@ -10,7 +10,8 @@ export default class From extends Component {
     y: 0,
     z: 0,
     color: "",
-    opacity: 1
+    opacity: 1,
+    intensity:1
   };
 
   transformComp = (name, data, onChange) => {
@@ -94,6 +95,20 @@ export default class From extends Component {
       />
     );
   };
+
+  intensityComp = (name, data, onChange) => {
+    return (
+      <Range
+        min={0.0}
+        max={1.0}
+        step={0.1}
+        value={data}
+        name={`${name}intensity`}
+        onChange={onChange}
+      />
+    );
+  };
+
 
   render() {
     const { name, data, onChange, property } = this.props;

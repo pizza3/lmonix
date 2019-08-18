@@ -142,7 +142,7 @@ export default class PropertiesEditor extends Component {
     return [];
   };
   render() {
-    const { active, assetStack, objPresent, addInScene, changeObjectProp, replaceGeometry, removeObject3D, location } = this.props;
+    const { active, assetStack, objPresent, addInScene, changeObjectProp, replaceGeometry, removeObject3D, location, replaceLights } = this.props;
     const isColor = this.checkColor();
     const isModel = this.checkModel();
     const isLight = this.checkLight();
@@ -167,7 +167,7 @@ export default class PropertiesEditor extends Component {
             ) : (
               []
             )}
-            {isLight && objectsPresent ? <Lights active={active} /> : []}
+            {isLight && objectsPresent ? <Lights active={active} replaceLights={replaceLights} /> : []}
             <Section>
               {objectsPresent?<Transform {...this.props} />:[]}
             </Section>
