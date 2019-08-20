@@ -5,7 +5,14 @@ import Number from "../../designLib/Number";
 import Switch from "../../designLib/Switch";
 import _ from "lodash";
 import From from "./From";
-import { config, swap, time, switchProp, ease, events } from "../../assets/icon";
+import {
+  cross,
+  swap,
+  time,
+  switchProp,
+  ease,
+  events
+} from "../../assets/icon";
 import { PropertyName, PropertyContainer } from "./styled";
 import {
   genericProperties,
@@ -18,6 +25,7 @@ import {
 export default class AnimDropdown extends Component {
   // over here we have basic/common props needed for animation
   state = {
+    index: 0,
     name: "",
     property: "rotation",
     delay: 0,
@@ -29,16 +37,27 @@ export default class AnimDropdown extends Component {
     from: null,
     to: null,
     elasticity: 0,
-    showConfig: false,
+    showConfig: true,
     startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   };
-
   componentDidMount() {
     this.setComponentProp();
   }
-
+  componentDidUpdate(prevProps) {
+    const { active } = this.props;
+    if (active.uuid !== prevProps.active.uuid) {
+      this.setState(
+        {
+          index: 0
+        },
+        () => {
+          this.setComponentProp();
+        }
+      );
+    }
+  }
   handleChange = e => {
     if (e.persist) e.persist();
     const { from, to, property, loop } = this.state;
@@ -87,12 +106,10 @@ export default class AnimDropdown extends Component {
         [propname]: value
       },
       () => {
-        console.log(propname, value);
-        this.props.updateAnimate(this.state, this.props.index);
+        this.props.updateAnimate(this.state, this.state.index);
       }
     );
   };
-
   setProprtyUpdate = (property, name) => {
     const { active } = this.props;
     let from = basicAnimationsConfig[property].from,
@@ -116,29 +133,40 @@ export default class AnimDropdown extends Component {
     });
   };
   setComponentProp = () => {
-    const { data } = this.props;
+    const { index } = this.state;
+    const { objAnimate } = this.props;
     this.setState({
-      ...data
+      ...objAnimate[index]
     });
   };
-
   toggleConfig = () => {
     const { showConfig } = this.state;
     this.setState({
       showConfig: !showConfig
     });
   };
-
+  handleChangeAnimIndex = e => {
+    this.setState(
+      {
+        index: e.target.value
+      },
+      () => {
+        this.setComponentProp();
+      }
+    );
+  };
+  handleDelete=()=>{
+    
+  }
   render() {
     const {
+      index,
       property,
       delay,
       direction,
       easing,
       duration,
       loop,
-      from,
-      to,
       elasticity,
       showConfig,
       loopvalue,
@@ -146,8 +174,8 @@ export default class AnimDropdown extends Component {
       pauseevent,
       resumeevent
     } = this.state;
-    const { name, active } = this.props;
-    let propoptions;
+    const { name, active, objAnimate } = this.props;
+    let fromData, toData, propoptions;
     if (active.objType === "Light") {
       propoptions = _.map(genericPropertiesLights, (prop, index) => {
         return (
@@ -198,15 +226,37 @@ export default class AnimDropdown extends Component {
         </option>
       );
     });
+    const animOptions = _.map(objAnimate, (prop, index) => {
+      return (
+        <option key={index} value={index}>
+          {objAnimate[index].name}
+        </option>
+      );
+    });
+
+    if (index !== 0 && _.isUndefined(objAnimate[index])) {
+      fromData = objAnimate[0].from;
+      toData = objAnimate[0].to;
+    } else {
+      fromData = objAnimate[index].from;
+      toData = objAnimate[index].to;
+    }
     return (
       <AnimContainer showConfig={showConfig}>
-        <AnimText>{name}</AnimText>
+        <AnimText>
+          <Select
+            value={name}
+            onChange={this.handleChangeAnimIndex}
+            options={animOptions}
+            name={"name"}
+          />
+        </AnimText>
         <AnimConfigIcon
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
-          onClick={this.toggleConfig}
+          onClick={this.handleDelete}
         >
-          {config}
+          {cross()}
         </AnimConfigIcon>
         <div>
           {showConfig ? (
@@ -228,13 +278,13 @@ export default class AnimDropdown extends Component {
                 <From
                   name={"From"}
                   property={property}
-                  data={from}
+                  data={fromData}
                   onChange={this.handleChange}
                 />
                 <From
                   name={"To"}
                   property={property}
-                  data={to}
+                  data={toData}
                   onChange={this.handleChange}
                 />
               </AnimConfigSeperator>
@@ -329,7 +379,7 @@ export default class AnimDropdown extends Component {
               </Icon>
               <IconTitle>Trigger Events</IconTitle>
               <AnimConfigSeperator>
-              <PropertyContainer>
+                <PropertyContainer>
                   <PropertyName>Start</PropertyName>
                   <Select
                     value={startevent}
@@ -371,7 +421,7 @@ const AnimContainer = styled.div`
   position: relative;
   float: left;
   width: 100%;
-  height: ${props => (props.showConfig ? "245px" : "32px")};
+  height: 100%;
   color: #707070;
   font-weight: 600;
   padding: 3px 7px 5px 1px;
@@ -395,17 +445,21 @@ const EntitySymbol = styled.div`
 `;
 
 const AnimConfigIcon = styled.svg`
-  width: 24px;
-  float: right;
-  padding: 2px;
-  position: relative;
-  border-radius: 2px;
+  position: absolute;
+  width: 21px;
+  right: 8px;
+  top: 9px;
+  border-radius: 3px;
+  background: #212121;
+  &:hover {
+    background: #fd6e6e;
+  }
 `;
 
 const AnimConfigDropdown = styled.div`
   width: 103%;
   position: relative;
-  height: 211px;
+  height: 100%;
   top: 5px;
   background: #151515;
   z-index: 100;

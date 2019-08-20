@@ -1,14 +1,21 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import _ from "lodash";
-import AnimDropdown from './AnimDropdown'
+// import _ from "lodash";
+import AnimDropdown from "./AnimDropdown";
 export default class AnimInfo extends Component {
   // over here we have basic/common props needed for animation
   render() {
-    const { name , data, index, updateAnimate, active} = this.props;
+    const { name, data, index, updateAnimate, active, objAnimate } = this.props;
     return (
       <Container>
-          <AnimDropdown name={name} data={data} index={index} updateAnimate={updateAnimate} active={active}/>
+        <AnimDropdown
+          name={name}
+          data={data}
+          index={index}
+          updateAnimate={updateAnimate}
+          active={active}
+          objAnimate={objAnimate}
+        />
       </Container>
     );
   }
@@ -20,4 +27,3 @@ const Container = styled.div`
   height: auto;
   float: left;
 `;
-

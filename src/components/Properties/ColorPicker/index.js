@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Trigger from "rc-trigger";
 import ColorPickerDropdown from "../../../designLib/ColorPicker";
 import _ from "lodash";
-const element = document.getElementById("properties-scroll");
 export default class ColorPicker extends Component {
   state = {
     currentColor: "#fff"
@@ -34,12 +33,12 @@ export default class ColorPicker extends Component {
         <Trigger
           action={["click"]}
           popup={
-              <ColorPickerDropdown
-                onChange={this.onChange}
-                {...this.props}
-                addInScene={this.props.addInScene}
-                currentColor={this.state.currentColor}
-              />
+            <ColorPickerDropdown
+              onChange={this.onChange}
+              {...this.props}
+              addInScene={this.props.addInScene}
+              currentColor={this.state.currentColor}
+            />
           }
           prefixCls="dropdown"
           popupAlign={{
@@ -49,7 +48,9 @@ export default class ColorPicker extends Component {
           destroyPopupOnHide={true}
           getPopupContainer={() => document.getElementById("fill")}
         >
-          <Input style={{ background: this.state.currentColor }} />
+          <Input style={{ background: this.state.currentColor }}>
+            <Text>{this.state.currentColor}</Text>
+          </Input>
         </Trigger>
       </Container>
     );
@@ -84,3 +85,12 @@ const Input = styled.div`
   color: #969696;
   cursor: pointer;
 `;
+
+
+const Text = styled.div`
+  -webkit-text-stroke-color: #000;
+  -webkit-text-stroke-width: 0.02pc;
+  font-size: 12px;
+  font-weight: 900;
+  color: #fff;
+`

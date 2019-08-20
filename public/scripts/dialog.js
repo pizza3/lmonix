@@ -8,6 +8,7 @@ const { setAssetServer, closeAssetServer } = require("./assetServer");
 module.exports = { showSaveDialog, showOpenDialog, showAddDialog, saveState };
 
 function showSaveDialog(browserWindow, threeData) {
+  console.log(threeData)
   dialog.showSaveDialog(
     browserWindow,
     {
@@ -20,7 +21,7 @@ function showSaveDialog(browserWindow, threeData) {
         }
         fs.writeFile(
           filename + "/index.html",
-          aframeTemplate(threeData.state.assetStack, threeData.data),
+          aframeTemplate([], threeData.data),
           "utf8",
           err => {
             if (err) {
@@ -40,12 +41,14 @@ function showSaveDialog(browserWindow, threeData) {
           }
         );
         fs.mkdirSync(filename + "/Assets");
-        let data = JSON.stringify(threeData);
-        fs.writeFile(filename + "/data.json", data, "utf8", err => {
+        // let data = JSON.stringify(threeData);
+        fs.writeFile(filename + "/data.json", threeData.store, "utf8", err => {
           if (err) {
             dialog.showErrorBox("Save Failed", err.message);
           }
         });
+
+        // render updates
         browserWindow.webContents.send("ipcRenderer", {
           option: "changeTitle",
           title: filename
@@ -138,12 +141,12 @@ function readAssetFiles(filePath, browserWindow) {
     files.forEach(file => {
       var stats = fs.statSync(filePath + "/Assets/" + file);
       if (stats.isFile()) {
-        const data = base64_encode(filePath + "/Assets/" + file);
+        // const data = base64_encode(filePath + "/Assets/" + file);
         fileArr.push({
           name: file,
           path: filePath + "/Assets/" + file,
           ext: path.extname(filePath + "/Assets/" + file),
-          data: data
+          // data: data
         });
       } else {
         const dirData = fs
@@ -281,8 +284,7 @@ function saveState(threeData, browserWindow) {
           }
         }
       );
-      let data = JSON.stringify(threeData);
-      fs.writeFile(threeData.state.title + "/data.json", data, "utf8", err => {
+      fs.writeFile(threeData.state.title + "/data.json", threeData.store, "utf8", err => {
         if (err) {
           browserWindow.webContents.send("ipcRenderer", {
             option: "message",
@@ -488,16 +490,16 @@ const setGeometryAframe = obj => {
 const createAnimaionAttr = animData => {
   let data = "";
   const propertPrefix = {
-    position: "",
-    scale: "",
-    rotation: "",
-    opacity: "components.material.material.",
-    color: "components.material.material."
-  };
+    position:"",
+    scale:"",
+    rotation:"",
+    opacity:"components.material.material.",
+    color:"components.material.material.",
+    intensity:"light."
+  }
   if (animData.length) {
     _.forEach(animData, (anim, index) => {
-      let from = anim.from,
-        to = anim.to;
+      let from = anim.from, to=anim.to;
       if (anim.property === "rotation") {
         from = `${anim.from.x * (180 / 3.14)} ${anim.from.y *
           (180 / 3.14)} ${anim.from.z * (180 / 3.14)}`;
@@ -511,11 +513,22 @@ const createAnimaionAttr = animData => {
       data += ` 
       animation__${anim.name}="property: ${propertPrefix[anim.property]}${
         anim.property
-      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${
-        anim.loop
-      };delay:${anim.delay}; dur: ${anim.duration}; dir:${
-        anim.direction
-      }; easing: ${anim.easing}; elasticity: ${anim.elasticity};"`;
+      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${anim.loop?anim.loop:anim.loopvalue};delay:${
+        anim.delay
+      }; dur: ${anim.duration}; dir:${anim.direction}; easing: ${
+        anim.easing
+      }; elasticity: ${
+        anim.elasticity
+      }; 
+      startEvents:${
+        anim.startevent==="no event"?"":anim.startevent
+      };
+      resumeEvents:${
+        anim.resumeevent==="no event"?"":anim.resumeevent
+      };
+      pauseEvents:${
+        anim.pauseevent==="no event"?"":anim.pauseevent
+      };"`;
     });
     return data;
   }

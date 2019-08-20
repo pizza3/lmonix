@@ -555,10 +555,26 @@ export const isAlphaNumeric = (str) => {
   return str.match(/^[A-ZÀ-Ýa-zà-ý0-9_]+$/i) !== null;
 }
 
-
 export const animEvents = [
   "no event",
   "mouseleave",
   "mouseenter",
   "click",
 ]
+
+export const entityDataAttr = {
+  Object3D:['objName','objType','objPrimitive','hashColor','objAnimate','name','objTexture','objModel','position','rotation','scale'],
+  box:['parameters','material'],
+  sphere:['parameters','material'],
+  plane:['parameters','material'],
+  cylinder:['parameters','material'],
+  cone:['parameters','material'],
+  ring:['parameters','material'],
+  circle:['parameters','material'],
+  point:['color','intensity','distance','decay'],
+  spot:['color','intensity','distance','angle','exponent','decay'],
+  hemisphere:['skyColor','intensity','groundColor'],
+  directional:['color','intensity'],
+  ambient:['color','intensity'],
+  Light:['color','skyColor','groundColor','intensity','distance','angle','exponent','decay','castShadow']
+}

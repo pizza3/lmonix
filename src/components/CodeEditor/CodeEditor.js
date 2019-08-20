@@ -10,8 +10,9 @@ import "../../styles/codemirror.css";
 import "../../styles/show-hint.css";
 import "../../styles/yonce.css";
 import styled from "styled-components";
-import CodeMenu from './CodeMenu'
+// import CodeMenu from './CodeMenu'
 import _ from 'lodash';
+const electron = window.require("electron");
 const excludeKeys = ["Space","ArrowDown","ArrowUp","ArrowLeft","ArrowRight","Backspace","Enter","BracketLeft","BracketRight","Digit9","Digit0"]
 export default class VrRenderer extends Component {
   componentDidMount() {
@@ -24,6 +25,20 @@ export default class VrRenderer extends Component {
         this.createEditor()      
       },10)
     }
+
+//     electron.ipcRenderer.on('addSnippet',function(e,params) {
+//       const {option}=params
+//       const {code}=this.props
+//       console.log(this.props.active)
+//       const name = this.props.active.name.length?this.props.active.name:this.props.active.objName
+//         let eventcode = `
+// document.getElementById('${name}')
+// .addEventListener('${option}',function(e){
+
+// })`
+//         let newCode = code + eventcode
+//         this.props.updateCode(newCode)
+//     }.bind(this))
   }
   createEditor = () => {
     import("codemirror").then(CodeMirror => {      
@@ -74,7 +89,7 @@ export default class VrRenderer extends Component {
         // console.log(this.editor.get);
         
         // this.createEditor();
-        // this.editor.getDoc().setValue(code);
+        this.editor.getDoc().setValue(code);
       }
     }
   }

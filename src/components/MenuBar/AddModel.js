@@ -10,7 +10,6 @@ import {modelLoaderGltf} from '../../helpers/modelLoaderGltf'
 // const loader = new THREE.FontLoader();
 const createGeometry = require("three-bmfont-text");
 const loadFont = require("load-bmfont");
-var gltfLoader = new THREE.GLTFLoader();
 var MSDFShader = require('three-bmfont-text/shaders/msdf')
 const AddCube = (
   scene,
@@ -18,11 +17,10 @@ const AddCube = (
   rot = { x: 0, y: 0, z: 0 },
   sca = { x: 0, y: 0, z: 0 }
 ) => {
-  let geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
-  let material = new THREE.MeshPhongMaterial({
+  const geometry = new THREE.BoxBufferGeometry(1, 1, 1, 20, 20, 20);
+  const material = new THREE.MeshPhongMaterial({
     color: 0xef2d5e
   });
-
   let obj = new THREE.Object3D();
   obj.matrixAutoUpdate = false
   obj.name=""
@@ -32,121 +30,8 @@ const AddCube = (
   obj["hashColor"] = "#ef2d5e";
   obj["objAnimate"] = [];
   obj.add(new THREE.Mesh(geometry, material));
-  // scene.add(obj);
-  // obj.position.set(pos.x, pos.y, pos.z);
-  // obj.rotation._x = rot.x;
-  // obj.rotation._y = rot.y;
-  // obj.rotation._z = rot.z;
   return obj;
 };
-
-
-
-// const AddPointLight = (
-//   scene,
-//   pos = { x: 0, y: 0, z: 0 },
-//   rot = { x: 0, y: 0, z: 0 },
-//   sca = { x: 0, y: 0, z: 0 }
-// ) => {
-//   let obj = new THREE.Object3D();
-//   obj.matrixAutoUpdate = false
-//   let color = 0xffffff;
-//   obj["objName"] = "Light";
-//   obj["objType"] = "Light";
-//   obj["objPrimitive"] = "point";
-//   obj["hashColor"] = "#ffffff";
-//   let light = new THREE.PointLight(color, 1, 0.0, 1);
-//   obj.add(light);
-//   scene.add(obj);
-//   obj.position.set(pos.x, pos.y, pos.z);
-//   obj.rotation._x = rot.x;
-//   obj.rotation._y = rot.y;
-//   obj.rotation._z = rot.z;
-//   return obj;
-// };
-
-// const AddSpotLight = (
-//   scene,
-//   pos = { x: 0, y: 0, z: 0 },
-//   rot = { x: 0, y: 0, z: 0 },
-//   sca = { x: 0, y: 0, z: 0 }
-// ) => {
-//   let obj = new THREE.Object3D();
-//   obj.matrixAutoUpdate = false
-//   let color = 0xffffff;
-//   obj["objName"] = "Light";
-//   obj["objType"] = "Light";
-//   obj["objPrimitive"] = "spot";
-//   obj["hashColor"] = "#ffffff";
-//   let light = new THREE.SpotLight(color);
-//   light.position.set(100, 1000, 100);
-
-//   light.castShadow = true;
-
-//   light.shadow.mapSize.width = 1024;
-//   light.shadow.mapSize.height = 1024;
-
-//   light.shadow.camera.near = 500;
-//   light.shadow.camera.far = 4000;
-//   light.shadow.camera.fov = 30;
-//   obj.add(light);
-//   scene.add(obj);
-//   obj.position.set(pos.x, pos.y, pos.z);
-//   obj.rotation._x = rot.x;
-//   obj.rotation._y = rot.y;
-//   obj.rotation._z = rot.z;
-//   return obj;
-// };
-
-// const AddHemisphereLight = (
-//   scene,
-//   pos = { x: 0, y: 0, z: 0 },
-//   rot = { x: 0, y: 0, z: 0 },
-//   sca = { x: 0, y: 0, z: 0 }
-// ) => {
-//   let obj = new THREE.Object3D();
-//   obj.matrixAutoUpdate = false
-//   let color = 0xffffff;
-//   let groundColor = 0xffffff;
-//   let intensity = 2;
-//   obj["objName"] = "Light";
-//   obj["objType"] = "Light";
-//   obj["objPrimitive"] = "hemisphere";
-//   obj["hashColor"] = "#ffffff";
-//   obj["hashGroundColor"] = "#ffffff";
-//   let light = new THREE.HemisphereLight(color, groundColor, intensity);
-//   obj.add(light);
-//   scene.add(obj);
-//   obj.position.set(pos.x, pos.y, pos.z);
-//   obj.rotation._x = rot.x;
-//   obj.rotation._y = rot.y;
-//   obj.rotation._z = rot.z;
-//   return obj;
-// };
-
-// const AddDirectionalLight = (
-//   scene,
-//   pos = { x: 0, y: 0, z: 0 },
-//   rot = { x: 0, y: 0, z: 0 },
-//   sca = { x: 0, y: 0, z: 0 }
-// ) => {
-//   let obj = new THREE.Object3D();
-//   obj.matrixAutoUpdate = false
-//   let color = 0xffffff;
-//   let intensity = 0.5;
-//   obj["objName"] = "Light";
-//   obj["objType"] = "Light";
-//   obj["objPrimitive"] = "directional";
-//   obj["hashColor"] = "#ffffff";
-//   let light = new THREE.DirectionalLight(color, intensity);
-//   obj.add(light);
-//   scene.add(obj);
-//   obj.position.set(pos.x, pos.y, pos.z);
-//   obj.rotation._x = rot.x;
-//   obj.rotation._y = rot.y;
-//   obj.rotation._z = rot.z;
-//   return obj;
-// };
 
 const AddAmbientLight = (
   scene,
@@ -156,8 +41,8 @@ const AddAmbientLight = (
 ) => {
   let obj = new THREE.Object3D();
   obj.matrixAutoUpdate = false
-  let color = 0xffffff;
-  let intensity = 0.5;
+  const color = 0xffffff;
+  const intensity = 0.5;
   obj["objName"] = "Light";
   obj["objType"] = "Light";
   obj["objPrimitive"] = "ambient";
@@ -165,11 +50,6 @@ const AddAmbientLight = (
   obj["objAnimate"] = [];
   let light = new THREE.AmbientLight(color, intensity);
   obj.add(light);
-  // scene.add(obj);
-  // obj.position.set(pos.x, pos.y, pos.z);
-  // obj.rotation._x = rot.x;
-  // obj.rotation._y = rot.y;
-  // obj.rotation._z = rot.z;
   return obj;
 };
 
@@ -194,7 +74,6 @@ const AddSky = (
   obj["hashColor"] = "#ceecf0";
   obj["objAnimate"] = [];
   obj.add(new THREE.Mesh(geometry, material));
-  // scene.add(obj);
   obj.scale.set(-1,1,1)
   return obj;
 };
@@ -212,11 +91,6 @@ const AddModel = (
   obj["objName"] = "3DModel";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "3DModel";
-  // scene.add(obj);
-  // obj.position.set(pos.x, pos.y, pos.z);
-  // obj.rotation._x = rot.x;
-  // obj.rotation._y = rot.y;
-  // obj.rotation._z = rot.z;
   return obj;
 };
 
@@ -241,7 +115,6 @@ const AddCurvedImage = (scene)=>{
     obj["objPrimitive"] = "curvedimage";
     obj["hashColor"] = "#ef2d5e";
     obj.add(new THREE.Mesh(geometryCylinder, material));
-    // scene.add(obj);
     return obj;
 }
 
@@ -343,7 +216,6 @@ const AddGroupObj =  (
   pos = { x: 0, y: 0, z: 0 },
   rot = { _x: 0, _y: 0, _z: 0 },
   sca = { x: 0, y: 0, z: 0 },
-  // numberOfObj/
 ) => {
   let mapData = ApplyTexture(obj);
   let object = new THREE.Object3D();
@@ -378,7 +250,7 @@ const AddGroupObj =  (
       object["hashColor"] = obj.hashColor || "#ef2d5e";      
       object.add(new THREE.Mesh(geometry, material));
       scene.add(object);
-      object.objTexture = obj.objTexture ? obj.objTexture : {};
+      object['objTexture'] = obj.objTexture ? obj.objTexture : {};
       object.visible = obj.visible ? obj.visible : true;
       object.children[0].receiveShadow = obj.children
         ? obj.children[0].receiveShadow
@@ -516,7 +388,7 @@ const AddGroupObj =  (
       object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "point";
-      object["hashColor"] = "#ffffff";
+      object["hashColor"] = obj.hashColor||"#ffffff";
       let pointLight = new THREE.PointLight(obj.hashColor, 1, 0.0, 1);
       object.add(pointLight);
       object.visible = obj.visible;
@@ -528,7 +400,7 @@ const AddGroupObj =  (
       object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "spot";
-      object["hashColor"] = "#ffffff";
+      object["hashColor"] = obj.hashColor||"#ffffff";
       let spotlight = new THREE.SpotLight(obj.hashColor,1,100,1.05);
       spotlight.position.set(100, 1000, 100);
       spotlight.castShadow = true;
@@ -547,7 +419,7 @@ const AddGroupObj =  (
       object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "hemisphere";
-      object["hashColor"] = "#ffffff";
+      object["hashColor"] = obj.hashColor||"#ffffff";
       let hemispherelight = new THREE.HemisphereLight(
         obj.hashColor,
         groundColor,
@@ -562,7 +434,7 @@ const AddGroupObj =  (
       object["objName"] =obj.objName? obj.objName:"Light";
       object["objType"] = "Light";
       object["objPrimitive"] = "directional";
-      object["hashColor"] = "#ffffff";
+      object["hashColor"] = obj.hashColor||"#ffffff";
       let lightdirectional = new THREE.DirectionalLight(
         obj.hashColor,
         directionalintensity
@@ -575,8 +447,8 @@ const AddGroupObj =  (
       object["objName"] =obj.objName? obj.objName:"Light ";
       object["objType"] = "Light";
       object["objPrimitive"] = "ambient";
-      object["hashColor"] = "#ffffff";
-      var ambientlight = new THREE.AmbientLight(obj.hashColor);
+      object["hashColor"] = obj.hashColor||"#ffffff";
+      var ambientlight = new THREE.AmbientLight(obj.hashColor,1);
       object.add(ambientlight);
       scene.add(object);
       // object.matrixAutoUpdate = false  

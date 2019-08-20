@@ -8,20 +8,6 @@ export default class Animate extends Component {
 
   render() {
     const { active, updateAnimate } = this.props;
-    const animInfos = active
-      ? _.map(active.objAnimate, (val, index) => {
-          return (
-            <AnimInfo
-              key={index}
-              name={val.name}
-              data={val}
-              index={index}
-              updateAnimate={updateAnimate}
-              active={active}
-            />
-          );
-        })
-      : [];
     const message = (
       <>
         <Svg
@@ -64,12 +50,22 @@ export default class Animate extends Component {
         </Text>
       </>
     );
+    const animInfos =
+      active?active.objAnimate.length ? (
+        <AnimInfo
+          // key={index}
+          // name={val.name}
+          // data={val}
+          // index={index}
+          updateAnimate={updateAnimate}
+          active={active}
+          objAnimate={active.objAnimate}
+        />
+      ): (message) : (message);
     return (
       <AnimGraphContainer>
         <AnimGraphTitle>Animation</AnimGraphTitle>
-        <Container id="customScrollbar">
-          {animInfos.length ? animInfos : message}
-        </Container>
+        <Container id="customScrollbar">{animInfos}</Container>
       </AnimGraphContainer>
     );
   }
