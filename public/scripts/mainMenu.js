@@ -68,7 +68,13 @@ function setMainMenu(mainWindow) {
     {
       label: "Edit",
       submenu: [
-        { role: "undo" },
+        { label: "undo",
+          accelerator: isWindows ? "Ctrl+Z" : "Cmd+Z",
+          click(){
+            mainWindow.webContents.send("ipcRenderer", {
+              option: "undoState"
+            });
+          } },
         { role: "redo" },
         { type: "separator" },
         { label: "Copy", 
@@ -80,7 +86,7 @@ function setMainMenu(mainWindow) {
         { type: "separator" },
         {
           label: "Delete",
-          accelerator: isWindows ? "Ctrl+D" : "Cmd+D",
+          accelerator: isWindows ? "Ctrl+D" : "Cmd+delete",
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
               option: "deleteObj"
@@ -206,18 +212,6 @@ function SetPopMenu(mainWindow, win) {
           type: "separator"
         },
         {
-          label: "Sky",
-          click: function() {
-            mainWindow.webContents.send("ipcRenderer", {
-              option: "addGroupObj",
-              obj: "sky"
-            });
-          }
-        },
-        {
-          type: "separator"
-        },
-        {
           label: "Ambient Light",
           click: function() {
             mainWindow.webContents.send("ipcRenderer", {
@@ -259,6 +253,30 @@ function SetPopMenu(mainWindow, win) {
             mainWindow.webContents.send("ipcRenderer", {
               option: "addGroupObj",
               obj: "point"
+            });
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Sky",
+          click: function() {
+            mainWindow.webContents.send("ipcRenderer", {
+              option: "addGroupObj",
+              obj: "sky"
+            });
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Curved Image",
+          click: function() {
+            mainWindow.webContents.send("ipcRenderer", {
+              option: "addGroupObj",
+              obj: "curvedimage"
             });
           }
         },
@@ -325,7 +343,7 @@ function SetPopMenu(mainWindow, win) {
   menu.append(
     new MenuItem({
       label: "Delete",
-      accelerator: isWindows ? "Ctrl+D" : "Cmd+D",
+      accelerator: isWindows ? "Ctrl+D" : "Cmd+delete",
       click: function() {
         mainWindow.webContents.send("ipcRenderer", {
           option: "deleteObj"

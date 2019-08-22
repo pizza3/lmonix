@@ -74,7 +74,7 @@ export default class Animate extends Component {
 const AnimGraphContainer = styled.div`
   position: relative;
   float: left;
-  width: 231px;
+  width: 234px;
   height: calc(100vh - 37px);
   z-index: 90;
   background: #1b1b1b;

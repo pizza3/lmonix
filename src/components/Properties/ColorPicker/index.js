@@ -11,19 +11,26 @@ export default class ColorPicker extends Component {
     this.onChange(this.props.active.hashColor);
   }
   componentDidUpdate(prevProps) {
-    if (!_.isEqual(prevProps.active, this.props.active)) {
+    if (!_.isEqual(prevProps.active.uuid, this.props.active.uuid)) {
       this.onChange(this.props.active.hashColor);
     }
+    if(!_.isEqual(prevProps.active.hashColor, this.props.active.hashColor)){ 
+      console.log('color changed');
+           
+      this.onChange(this.props.active.hashColor, false);
+    }
   }
-  onChange = currentColor => {
+  onChange = (currentColor, bool=true) => {
     this.setState({
       currentColor
     });
     let hex = parseInt(currentColor.replace(/^#/, ""), 16);
-    if (this.props.active.objType === "Mesh") {
-      this.props.changeObjectProp(currentColor, "color", "colorMaterial");
-    } else if (this.props.active.objType === "Light") {
-      this.props.changeObjectProp(currentColor, "color", "colorLight");
+    if(bool){
+      if (this.props.active.objType === "Mesh") {
+        this.props.changeObjectProp(currentColor, "color", "colorMaterial");
+      } else if (this.props.active.objType === "Light") {
+        this.props.changeObjectProp(currentColor, "color", "colorLight");
+      }
     }
   };
   render() {

@@ -65,8 +65,7 @@ export default class SceneTree extends Component {
     mouseOver: false
   };
   componentDidMount() {
-    const { activeDrilldown, active, obj } = this.props;
-    const isActive = obj.uuid === active.uuid;
+    const { activeDrilldown } = this.props;
     if (_.isUndefined(activeDrilldown[this.props.obj.uuid])) {
       this.setState({
         showGroup: false
@@ -128,7 +127,7 @@ export default class SceneTree extends Component {
   handleMouseDown = event => {
     event.preventDefault();
     this.props.setActiveObj(this.props.obj);
-    const { setDragObj, obj, active } = this.props;
+    const { setDragObj, obj } = this.props;
     setDragObj(obj);
   };
 
@@ -152,7 +151,8 @@ export default class SceneTree extends Component {
     });
   };
 
-  contextMenu = () => {
+  contextMenu = event => {
+    this.props.resetState();
     electron.ipcRenderer.send("show-context-menu");
   };
 
@@ -161,28 +161,19 @@ export default class SceneTree extends Component {
     const { layer, active, obj, isDrag } = this.props;
     const { mouseOver } = this.state;
     const isActive = obj.uuid === active.uuid;
-    const SceneGraphEl = styled.div`
-      position: relative;
-      width: 100%;
-      height: 22px;
-      background: ${isActive ? "#4f74f9" : "transparent"};
-      border-radius: 0px;
-      left: 0%;
-      color: ${isActive ? "#FFFFFF" : "#828282"};
-      font-size: 10px;
-      padding: 4px 2px 0px ${5 + 3 * layer}px;
-      border-bottom: 2px solid
-        ${mouseOver && isDrag && !isActive ? "#9bc2ff" : "transparent"};
-      &:hover {
-        background: ${isActive ? "#4f74f9" : "#2d2d2d"};
-      }
-    `;
     if (isActive) {
       return (
         <SceneGraphEl
           id={"obj" + this.props.obj.uuid}
           onContextMenu={this.contextMenu}
+          layer={layer}
+          isActive={isActive}
         >
+          <BackOverlay
+            ismouseOver={mouseOver && isDrag}
+            isActive={isActive}
+            onMouseDown={this.handleMouseDown}
+          />
           {children}
         </SceneGraphEl>
       );
@@ -192,17 +183,28 @@ export default class SceneTree extends Component {
         id={"obj" + this.props.obj.uuid}
         onClick={() => {
           this.props.setActiveObj(this.props.obj);
-          electron.ipcRenderer.on('rename',function(e,params) {
-            this.doDoubleClickAction()
-          }.bind(this))
+          electron.ipcRenderer.on(
+            "rename",
+            function(e, params) {
+              this.doDoubleClickAction();
+            }.bind(this)
+          );
         }}
+        layer={layer}
+        isActive={isActive}
       >
+        <BackOverlay
+          isActive={isActive}
+          mouseOver={mouseOver && isDrag}
+          onMouseOver={(this.handleMouseEnter)}
+          onMouseLeave={this.handleMouseLeave}
+        />
         {children}
       </SceneGraphEl>
     );
   };
   render() {
-    const { active, obj } = this.props;
+    const { active, obj, isDrag } = this.props;
     const { showInputBox, nameValue } = this.state;
     const isActive = obj.uuid === active.uuid;
     const iconColor = isActive ? "#ffffff" : "#828282";
@@ -246,7 +248,16 @@ export default class SceneTree extends Component {
     return (
       <Container>
         {this.returnSceneGraph(children)}
-        {this.state.showGroup ? this.props.children : []}
+        {this.state.showGroup ? 
+          <>
+            <DisableChildren
+            isDrag={isDrag}
+            isActive={isActive}
+            height={(this.props.children.length-1)*22}
+            />
+            {this.props.children}
+          </>: 
+          []}
       </Container>
     );
   }
@@ -307,4 +318,40 @@ const Form = styled.form`
   width: auto;
   position: relative;
   float: left;
+`;
+
+const DisableChildren = styled.div`
+  position:absolute;
+  width:100%;
+  height: calc(100% - 22px);
+  background:#000;
+  opacity:0.7;
+  visibility:${props=>props.isDrag && props.isActive?'visible':'hidden'};
+  z-index:10;
+`
+
+const BackOverlay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 22px;
+  background: ${props => (props.isActive ? "#4f74f9" : "transparent")};
+  border-bottom: 2px solid
+    ${props => (props.mouseOver && !props.isActive ? "#7381b5" : "transparent")};
+  &:hover {
+    background: ${props => (props.isActive ? "#4f74f9" : "#2d2d2d")};
+  }
+  /* transition:0.2s; */
+  left: 0;
+  top: 0;
+`;
+
+const SceneGraphEl = styled.div`
+  position: relative;
+  width: 100%;
+  height: 22px;
+  border-radius: 0px;
+  left: 0%;
+  color: ${props => (props.isActive ? "#FFFFFF" : "#828282")};
+  font-size: 10px;
+  padding: ${props => `4px 2px 0px ${5 + 3 * props.layer}px`};
 `;

@@ -12,11 +12,14 @@ import TrackballControls from "./helpers/TrackballControls";
 import MenuBar from "./components/MenuBar/index";
 import SceneLayer from "./components/SceneGraph/SceneLayer";
 import SceneGeneral from "./components/GeneralSettings/SceneGeneral";
-import  message from "antd/lib/message/index";
+import message from "antd/lib/message/index";
 import ThreeProvider from "./context/ThreeProvider";
 const electron = window.require("electron");
+
 class App extends Component {
   state = {
+    appSateIndex:0,
+    appState:[],
     numberOfObj: {},
     location: null,
     scene: null,
@@ -45,7 +48,8 @@ class App extends Component {
   };
   objPresent = [];
   componentDidMount() {
-    const {objPresent}=this.state
+    const {history}=this.props
+    history.push('/')
     window.addEventListener("resize", this.handleResize, false);
     electron.ipcRenderer.on(
       "ipcRenderer",
@@ -102,8 +106,8 @@ class App extends Component {
             });
             break;
           case "updateProject":
+            // when opening a project
             let parsedObj = JSON.parse(val["obj"]);
-            // this.clearScene();
             const data = this.reloadProject(parsedObj["data"], 0);
             const {isDefaultLights, code, isCursor} = parsedObj['state']
             this.objPresent = data;
@@ -123,6 +127,8 @@ class App extends Component {
                 );
                 this.active = data[0];
                 this.scene.add(this.transformControls);
+                this.handleResize()
+                this.setDefaultLights()
                 message.success("Project Loaded", 3);
               }
             );
@@ -189,13 +195,16 @@ class App extends Component {
             this.setAnimate();
             break;
           case "routeDesign":
-            this.props.history.push('/')
+            history.push('/')
             break;
           case "routePrototype":
-            this.props.history.push('/code')
+            history.push('/code')
+            break;
+          case "undoState":
+            this.undoAppState()
             break;
           default:
-            // console.log("default");
+            console.log("default");
             break;
         }
       }.bind(this)
@@ -212,7 +221,6 @@ document.getElementById('${name}')
         let newCode = code + eventcode
         this.updateCode(newCode)
     }.bind(this))
-
   }
   generateFinalJson = (object) => {
     let finalArr = []
@@ -248,7 +256,7 @@ document.getElementById('${name}')
               objHash[prop] = obj.children[0][prop]
             }          
           })
-          entityHash.push(objHash)
+          entityHash['children']=[objHash]
         }
         if(obj.children.length>1){
           const len = obj.children.length
@@ -309,14 +317,12 @@ document.getElementById('${name}')
     const height = window.innerHeight - 37;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
+    if(this.renderer)
     this.renderer.setSize(width, height);
   };
   addInScene = obj => {    
     const { objPresent, activeStack } = this.state;
     const activeObj = objPresent.length;
-    if(objPresent.length){
-      this.handleResize()
-    }
     this.objPresent.push(obj);
     this.active = obj;
     const entityNumber = this.setNumberOfObj(obj);
@@ -335,6 +341,7 @@ document.getElementById('${name}')
         }
         this.generateFinalJson(objPresent)
         this.scene.add(this.transformControls);
+        this.handleResize()
       }
     );
   };
@@ -383,8 +390,8 @@ document.getElementById('${name}')
         val.rotation,
         val.scale
       );
-      const entityNumber = this.setNumberOfObj(object);
-      object.objName = `${object.objName}_${entityNumber}`;
+      // const entityNumber = this.setNumberOfObj(object);
+      // object.objName = `${object.objName}_${entityNumber}`;
       this.reloadProject(val.children.slice(1), num + 1, object);
       if (!num > 0) {
         objData.push(object);
@@ -392,7 +399,7 @@ document.getElementById('${name}')
     });
     return objData;
   };
-  paste3DObject = (data, parent, removeData) => {
+  paste3DObject = (data, parent, removeData, setEntityName=true, setParent = true) => {
     let newParent = AddGroupObj(
       data,
       data.objPrimitive,
@@ -401,17 +408,19 @@ document.getElementById('${name}')
       data.rotation,
       data.scale
     );
-    const entityNumber = this.setNumberOfObj(newParent);
-    newParent.objName = `${newParent.objType}_${entityNumber}`;
+    // if(setEntityName){
+    //   const entityNumber = this.setNumberOfObj(newParent);
+    //   newParent.objName = `${newParent.objName}_${entityNumber}`;  
+    // }
     if (data.children.length >= 2) {
-      _.forEach(data.children, (val, i) => {
+      _.forEach(data.children, (child, i) => {
         if (i !== 0) {
-          this.paste3DObject(val, newParent);
+          this.paste3DObject(child, newParent, false, setEntityName, false);
         }
       });
     }
     if (removeData) {
-      this.deleteObject();
+      this.deleteObject(setParent);
     }
   };
   replaceGeometry = (geometry, type) => {
@@ -426,7 +435,6 @@ document.getElementById('${name}')
     }
   };
   replaceLights = (light, type) => {
-    this.active["objName"] = `${type}Light`;
     this.active["objType"] = "Light";
     this.active["objPrimitive"] = type.toLowerCase();
     this.active["hashColor"] = "#ffffff";
@@ -500,8 +508,10 @@ document.getElementById('${name}')
         active: obj
       },
       () => {
-        this.transformControls.attach(obj);
-        this.scene.add(this.transformControls);
+        if(this.transformControls){
+          this.transformControls.attach(obj);
+          this.scene.add(this.transformControls);
+        }
       }
     );
   };
@@ -619,13 +629,13 @@ document.getElementById('${name}')
     this._frameId = window.requestAnimationFrame(this.animateScene.bind(this));
   };
 
-  stopanimateScene=()=> {
+  stopanimateScene = () => {
     this.renderer.forceContextLoss();
     this.renderer.context = null;
     this.renderer.domElement = null;
     this.renderer = null;
 
-    window.cancelAnimationFrame(this._frameId);
+    window.cancelAnimationFrame(this._fram3eId);
     // Note: no need to worry if the loop has already been cancelled
     // cancelAnimationFrame() won't throw an error
   }
@@ -699,8 +709,37 @@ document.getElementById('${name}')
     });
     this.active.children[0].material = newMaterial;
   };
-
-  changeObjectProp = (value, prop, option) => {
+  setAppState=(newState)=>{
+    const {appState, appSateIndex} = this.state
+    this.setState({
+      appState:[
+        ...appState,
+        newState
+      ],
+      appSateIndex:appSateIndex+1
+    })
+  }
+  undoAppState = ()=>{
+    const {appState, appSateIndex} = this.state
+    if(appSateIndex!==0){
+      this.setState({
+        appSateIndex:appSateIndex-1
+      },()=>{
+        const {value, prop, option} = appState[appSateIndex-1]
+        this.changeObjectProp(value, prop, option, false)
+      })
+    }
+  }
+  changeObjectProp = (value, prop, option, isAppState=true) => {
+    const active = this.active
+    if(isAppState){
+      this.setAppState({
+        object:active,
+        prop:prop,
+        option:option,
+        value:value
+      })
+    }
     switch (option) {
       case "transform":
         this.active[prop[0]][prop[1]] = value;
@@ -717,13 +756,20 @@ document.getElementById('${name}')
           if(this.active.children[0].material){
             this.active.children[0].material[prop].setHex(hex);
             this.active.hashColor = value;
+            this.setState({
+              active:this.active
+            })
           }
         }
         break;
       case "colorLight":
-        let lighthex = parseInt(value.replace(/^#/, ""), 16);
-        this.active.children[0][prop].setHex(lighthex);
-        this.active.hashColor = value;
+        if (this.active) {
+          let lighthex = parseInt(value.replace(/^#/, ""), 16);
+          // console.log(this.active);
+          
+          this.active.children[0][prop].setHex(lighthex);
+          this.active.hashColor = value;
+        }
         break;
       case "addObject":
         if(this.active.children[0].children.length){
@@ -809,6 +855,7 @@ document.getElementById('${name}')
           <SceneLayer
             objPresent={objPresent}
             paste3DObject={this.paste3DObject}
+            setActiveObj={this.setActiveObj}
           />
         ) : (
           <SceneGeneral/>

@@ -64,23 +64,39 @@ export const updateGeometry = (type, obj, value) => {
   }
 };
 
-export const updateLights = (type, obj) => {  
+export const updateLights = (type, obj = {}) => {
   switch (type) {
     case "AmbientLight":
-      return new THREE.AmbientLight("#ffffff");
+      return new THREE.AmbientLight(obj.color || "#ffffff", obj.intensity || 1);
     case "DirectionalLight":
       return new THREE.DirectionalLight(
         obj.color || "#ffffff",
         obj.intensity || 0.5
       );
     case "HemisphereLight":
-      return new THREE.HemisphereLight("#ffffff", "#ffffff", 2);
+      return new THREE.HemisphereLight(
+        obj.skyColor || "#ffffff",
+        obj.groundColor || "#ffffff",
+        obj.intensity || 1
+      );
     case "SpotLight":
-      return new THREE.SpotLight("#ffffff");
+      return new THREE.SpotLight(
+        obj.color || "#ffffff",
+        obj.intensity || 1,
+        obj.distance || 0,
+        obj.angle || Math.PI / 3,
+        obj.penumbra || 0,
+        obj.decay || 1
+      );
     case "PointLight":
-      return new THREE.PointLight("#ffffff", 1, 0.0, 1);
+      return new THREE.PointLight(
+        obj.color || "#ffffff",
+        obj.intensity || 1,
+        obj.distance || 0,
+        obj.decay || 1
+      );
     default:
-      return new THREE.AmbientLight("#ffffff");
+      return new THREE.AmbientLight("#ffffff", 1);
   }
 };
 export const geometryExist = (obj, prop) => {
@@ -120,8 +136,8 @@ export const CustomGeometryConfig = [
   }
 ];
 
-const ImagesExt = [".png",".jpg",".jpeg"]
-const VideoExt = ['.mp4','.webm']
+const ImagesExt = [".png", ".jpg", ".jpeg"];
+const VideoExt = [".mp4", ".webm"];
 export const createAssets = (arr = []) => {
   let assetString = "";
   arr.forEach(val => {
@@ -130,18 +146,25 @@ export const createAssets = (arr = []) => {
       assetString += `<img id="${name}" 
       src="http://localhost:9889/Assets/${val.name}"
       > \n`;
-    } else if (val.ext === ".obj" ) {
-      assetString += `<a-asset-item id="${val.name+val.objPath}" src="http://localhost:9889/Assets/${val.name}/${val.objPath}"></a-asset-item> \n
-      <a-asset-item id="${val.name+val.mtlPath}" src="http://localhost:9889/Assets/${val.name}/${val.mtlPath}"></a-asset-item> \n
+    } else if (val.ext === ".obj") {
+      assetString += `<a-asset-item id="${val.name +
+        val.objPath}" src="http://localhost:9889/Assets/${val.name}/${
+        val.objPath
+      }"></a-asset-item> \n
+      <a-asset-item id="${val.name +
+        val.mtlPath}" src="http://localhost:9889/Assets/${val.name}/${
+        val.mtlPath
+      }"></a-asset-item> \n
       `;
-    }
-    else if(val.ext === ".gltf"){
-      assetString += `<a-asset-item id="${val.name+val.gltfPath}" src="${
-        `http://localhost:9889/Assets/${val.name}/${val.gltfPath}`
-      }"></a-asset-item> \n`;
-    } 
-    else if(VideoExt.includes(val.ext)) {
-      assetString += `<video id="${name}" autoplay loop="true" src="http://localhost:9889/Assets/${val.name}"></video> \n`;
+    } else if (val.ext === ".gltf") {
+      assetString += `<a-asset-item id="${val.name +
+        val.gltfPath}" src="${`http://localhost:9889/Assets/${val.name}/${
+        val.gltfPath
+      }`}"></a-asset-item> \n`;
+    } else if (VideoExt.includes(val.ext)) {
+      assetString += `<video id="${name}" autoplay loop="true" src="http://localhost:9889/Assets/${
+        val.name
+      }"></video> \n`;
     }
   });
   return assetString;
@@ -149,17 +172,28 @@ export const createAssets = (arr = []) => {
 
 export const createScene = (threeData = []) => {
   let dataString = "";
-  _.forEach(threeData, (mesh) => {
-    const {objName, position, rotation, scale, visible, name, hashColor, objTexture, objPrimitive} = mesh
-    const id = name.length?name:objName
-    const color = hashColor
-    const texture = objTexture ? "#" + objTexture.name : ""
+  _.forEach(threeData, mesh => {
+    const {
+      objName,
+      position,
+      rotation,
+      scale,
+      visible,
+      name,
+      hashColor,
+      objTexture,
+      objPrimitive
+    } = mesh;
+    const id = name.length ? name : objName;
+    const color = hashColor;
+    const texture = objTexture ? "#" + objTexture.name : "";
     if (mesh.objPrimitive === "sky") {
       dataString += `<a-sky id="${id}" 
       ${createAnimaionAttr(mesh.objAnimate, id)}
-      color="${color}" src="${texture}" position="${mesh.position.x} ${mesh.position.y} ${
-        mesh.position.z
-      }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
+      color="${color}" src="${texture}" position="${mesh.position.x} ${
+        mesh.position.y
+      } ${mesh.position.z}" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh
+        .rotation._y *
         (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
         visible="${mesh.visible}" 
         material="
@@ -173,13 +207,11 @@ export const createScene = (threeData = []) => {
       const params = mesh.children[0].geometry.parameters;
       dataString += `<a-curvedimage id="${id}" 
       ${createAnimaionAttr(mesh.objAnimate, id)}
-      color="${
-        color
-      }" src="${texture}" position="${
-        mesh.position.x
-      } ${mesh.position.y} ${mesh.position.z}" rotation="${mesh.rotation._x *
-        (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
-        (180 / 3.14)}"
+      color="${color}" src="${texture}" position="${mesh.position.x} ${
+        mesh.position.y
+      } ${mesh.position.z}" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh
+        .rotation._y *
+        (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
         visible="${mesh.visible}" 
         material="
         opacity:${mesh.children[0].material.opacity};
@@ -192,14 +224,13 @@ export const createScene = (threeData = []) => {
         ${createScene(mesh.children.slice(1))}
         </a-curvedimage> \n`;
     } else if (mesh.objPrimitive === "3DModel") {
-      dataString+= assignModelAttr(mesh)  
-
+      dataString += assignModelAttr(mesh);
     } else if (mesh.objType === "Light") {
       dataString += `<a-entity id="${id}" 
       ${createAnimaionAttr(mesh.objAnimate, id)}
-      light="type: ${
-        mesh.objPrimitive
-      }; color: ${color}; ${generateLigtProps(mesh.children[0])}" position="${mesh.position.x} ${mesh.position.y} ${
+      light="type: ${mesh.objPrimitive}; color: ${color}; ${generateLigtProps(
+        mesh.children[0]
+      )}" position="${mesh.position.x} ${mesh.position.y} ${
         mesh.position.z
       }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
         (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"          
@@ -220,11 +251,12 @@ export const createScene = (threeData = []) => {
       transparent:${mesh.children[0].material.transparent};
       opacity:${mesh.children[0].material.opacity};
         " 
-      position="${mesh.position.x} ${mesh.position.y} ${mesh.position.z}" scale="${
-        mesh.scale.x
-      } ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh.rotation._x *
-        (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
-        (180 / 3.14)}" 
+      position="${mesh.position.x} ${mesh.position.y} ${
+        mesh.position.z
+      }" scale="${mesh.scale.x} ${mesh.scale.y} ${
+        mesh.scale.z
+      }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
+        (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}" 
         shadow="receive:${mesh.children[0].receiveShadow};cast:${
         mesh.children[0].castShadow
       }" 
@@ -237,38 +269,44 @@ export const createScene = (threeData = []) => {
   return dataString;
 };
 
-const generateLigtProps = (object)=>{
-  let data = ""
-  const props = ['intensity','angle','distance','decay', 'penumbra', 'castShadow']
-  _.forEach(props, (val)=>{
-    if(object[val]){
-      let objValue = object[val]
-      if(val==='angle'){
-        objValue = object[val] * (180 / 3.14)
+const generateLigtProps = object => {
+  let data = "";
+  const props = [
+    "intensity",
+    "angle",
+    "distance",
+    "decay",
+    "penumbra",
+    "castShadow"
+  ];
+  _.forEach(props, val => {
+    if (object[val]) {
+      let objValue = object[val];
+      if (val === "angle") {
+        objValue = object[val] * (180 / 3.14);
       }
-      data += `${val}: ${objValue};`
+      data += `${val}: ${objValue};`;
     }
-  })
-  return data
-
-}
+  });
+  return data;
+};
 
 const geomSelectedParams = {
-  box:['width','height','depth'],
-  sphere:['radius'],
-  plane:['width','height'],
-  cylinder:['radiusTop','radiusBottom','height','openEnded'],
-  cone:['height','radius','openEnded'],
-  circle:['radius'],
-  ring:['innerRadius','outerRadius'],
-}
+  box: ["width", "height", "depth"],
+  sphere: ["radius"],
+  plane: ["width", "height"],
+  cylinder: ["radiusTop", "radiusBottom", "height", "openEnded"],
+  cone: ["height", "radius", "openEnded"],
+  circle: ["radius"],
+  ring: ["innerRadius", "outerRadius"]
+};
 
 const setGeometryAframe = (obj, type) => {
   console.log(obj);
   let str = "";
-  _.forEach(geomSelectedParams[type],(val)=>{
+  _.forEach(geomSelectedParams[type], val => {
     str += `${val}:${obj[val]};`;
-  })
+  });
   return str;
 };
 
@@ -287,20 +325,24 @@ export const aframeTemplate = (
     isCursor ? `<a-cursor></a-cursor>` : ``
   }</a-camera>
   <a-assets>${createAssets(assetArr)}</a-assets>
-  ${isDefaultLights?
-    `<a-entity light="type: ambient; color: #BBB" shadow="cast:true" ></a-entity>
+  ${
+    isDefaultLights
+      ? `<a-entity light="type: ambient; color: #BBB" shadow="cast:true" ></a-entity>
     <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1" shadow="cast:true"></a-entity>`
-  :""}
+      : ""
+  }
   ${createScene(sceneArr)}</a-scene>
-
+  <script type='text/javascript'>
+  ${script}
+  </script>
   </body></html>
   `;
 };
 
-const assignModelAttr = (mesh)=>{  
-  const {objName, name, objModel} = mesh
-  const id = name.length?name:objName
-  if(_.isEmpty(objModel)){
+const assignModelAttr = mesh => {
+  const { objName, name, objModel } = mesh;
+  const id = name.length ? name : objName;
+  if (_.isEmpty(objModel)) {
     return `<a-entity id="${id}"
     ${createAnimaionAttr(mesh.objAnimate, id)}
     position="${mesh.position.x} ${mesh.position.y} ${
@@ -313,12 +355,13 @@ const assignModelAttr = (mesh)=>{
       visible="${mesh.visible}" 
       >
       ${createScene(mesh.children.slice(1))}
-      </a-entity> \n`
+      </a-entity> \n`;
   }
-  if(objModel.ext===".obj"){
+  if (objModel.ext === ".obj") {
     return `<a-entity id="${id}"
     ${createAnimaionAttr(mesh.objAnimate, id)}
-    obj-model="obj: #${mesh.objModel.name+mesh.objModel.objPath}; mtl: #${mesh.objModel.name+mesh.objModel.mtlPath}"
+    obj-model="obj: #${mesh.objModel.name + mesh.objModel.objPath}; mtl: #${mesh
+      .objModel.name + mesh.objModel.mtlPath}"
     position="${mesh.position.x} ${mesh.position.y} ${
       mesh.position.z
     }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
@@ -329,12 +372,11 @@ const assignModelAttr = (mesh)=>{
       visible="${mesh.visible}" 
       >
       ${createScene(mesh.children.slice(1))}
-      </a-entity> \n`
-  }
-  else if(objModel.ext===".gltf"){
+      </a-entity> \n`;
+  } else if (objModel.ext === ".gltf") {
     return `<a-gltf-model id="${id}"
     ${createAnimaionAttr(mesh.objAnimate, id)}
-    src="#${mesh.objModel.name+mesh.objModel.gltfPath}"
+    src="#${mesh.objModel.name + mesh.objModel.gltfPath}"
     position="${mesh.position.x} ${mesh.position.y} ${
       mesh.position.z
     }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
@@ -344,9 +386,8 @@ const assignModelAttr = (mesh)=>{
       visible="${mesh.visible}" 
       >
       ${createScene(mesh.children.slice(1))}
-      </a-gltf-model> \n`
-  }
-  else if(objModel.ext==="poly"){
+      </a-gltf-model> \n`;
+  } else if (objModel.ext === "poly") {
     return `<a-gltf-model id="${id}"
     ${createAnimaionAttr(mesh.objAnimate, id)}
     src="${mesh.objModel.path}"
@@ -359,18 +400,18 @@ const assignModelAttr = (mesh)=>{
       visible="${mesh.visible}" 
       >
       ${createScene(mesh.children.slice(1))}
-      </a-gltf-model> \n`
+      </a-gltf-model> \n`;
   }
-}
+};
 export const genericProperties = {
   transform: ["position", "rotation", "scale"],
-  material: ["color", "opacity", "visible"],
+  material: ["color", "opacity", "visible"]
 };
 
 export const genericPropertiesLights = {
   transform: ["position", "rotation", "scale"],
-  light:['intensity']
-}
+  light: ["intensity"]
+};
 
 export const directions = ["normal", "alternate", "reverse"];
 export const easeFuncsList = [
@@ -416,10 +457,10 @@ export const basicAnimationsConfig = {
     easing: "linear",
     loop: true,
     loopvalue: 0,
-    elasticity:0,
-    startevent:"",
+    elasticity: 0,
+    startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   },
   scale: {
     name: "",
@@ -432,10 +473,10 @@ export const basicAnimationsConfig = {
     easing: "linear",
     loop: true,
     loopvalue: 0,
-    elasticity:0,
-    startevent:"",
+    elasticity: 0,
+    startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   },
   position: {
     name: "",
@@ -448,10 +489,10 @@ export const basicAnimationsConfig = {
     easing: "linear",
     loop: true,
     loopvalue: 0,
-    elasticity:0,
-    startevent:"",
+    elasticity: 0,
+    startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   },
   color: {
     name: "",
@@ -464,10 +505,10 @@ export const basicAnimationsConfig = {
     easing: "linear",
     loop: true,
     loopvalue: 0,
-    elasticity:0,
-    startevent:"",
+    elasticity: 0,
+    startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   },
   opacity: {
     name: "",
@@ -480,12 +521,12 @@ export const basicAnimationsConfig = {
     easing: "linear",
     loop: true,
     loopvalue: 0,
-    elasticity:0,
-    startevent:"",
+    elasticity: 0,
+    startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   },
-    intensity: {
+  intensity: {
     name: "",
     property: "intensity",
     from: "1",
@@ -496,26 +537,27 @@ export const basicAnimationsConfig = {
     easing: "linear",
     loop: true,
     loopvalue: 0,
-    elasticity:0,
-    startevent:"",
+    elasticity: 0,
+    startevent: "",
     resumeevent: "",
-    pauseevent: "",
+    pauseevent: ""
   }
 };
 
 export const createAnimaionAttr = (animData, name) => {
   let data = "";
   const propertPrefix = {
-    position:"",
-    scale:"",
-    rotation:"",
-    opacity:"components.material.material.",
-    color:"components.material.material.",
-    intensity:"light."
-  }
+    position: "",
+    scale: "",
+    rotation: "",
+    opacity: "components.material.material.",
+    color: "components.material.material.",
+    intensity: "light."
+  };
   if (animData.length) {
     _.forEach(animData, (anim, index) => {
-      let from = anim.from, to=anim.to;
+      let from = anim.from,
+        to = anim.to;
       if (anim.property === "rotation") {
         from = `${anim.from.x * (180 / 3.14)} ${anim.from.y *
           (180 / 3.14)} ${anim.from.z * (180 / 3.14)}`;
@@ -529,52 +571,61 @@ export const createAnimaionAttr = (animData, name) => {
       data += ` 
       animation__${anim.name}="property: ${propertPrefix[anim.property]}${
         anim.property
-      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${anim.loop?anim.loop:anim.loopvalue};delay:${
-        anim.delay
-      }; dur: ${anim.duration}; dir:${anim.direction}; easing: ${
-        anim.easing
-      }; elasticity: ${
-        anim.elasticity
-      }; 
-      startEvents:${
-        anim.startevent==="no event"?"":anim.startevent
-      };
-      resumeEvents:${
-        anim.resumeevent==="no event"?"":anim.resumeevent
-      };
-      pauseEvents:${
-        anim.pauseevent==="no event"?"":anim.pauseevent
-      };"`;
+      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${
+        anim.loop ? anim.loop : anim.loopvalue
+      };delay:${anim.delay}; dur: ${anim.duration}; dir:${
+        anim.direction
+      }; easing: ${anim.easing}; elasticity: ${anim.elasticity}; 
+      startEvents:${anim.startevent === "no event" ? "" : anim.startevent};
+      resumeEvents:${anim.resumeevent === "no event" ? "" : anim.resumeevent};
+      pauseEvents:${anim.pauseevent === "no event" ? "" : anim.pauseevent};"`;
     });
     return data;
   }
   return "";
 };
 
-export const isAlphaNumeric = (str) => {  
+export const isAlphaNumeric = str => {
   return str.match(/^[A-ZÀ-Ýa-zà-ý0-9_]+$/i) !== null;
-}
+};
 
-export const animEvents = [
-  "no event",
-  "mouseleave",
-  "mouseenter",
-  "click",
-]
+export const animEvents = ["no event", "mouseleave", "mouseenter", "click"];
 
 export const entityDataAttr = {
-  Object3D:['objName','objType','objPrimitive','hashColor','objAnimate','name','objTexture','objModel','position','rotation','scale'],
-  box:['parameters','material'],
-  sphere:['parameters','material'],
-  plane:['parameters','material'],
-  cylinder:['parameters','material'],
-  cone:['parameters','material'],
-  ring:['parameters','material'],
-  circle:['parameters','material'],
-  point:['color','intensity','distance','decay'],
-  spot:['color','intensity','distance','angle','exponent','decay'],
-  hemisphere:['skyColor','intensity','groundColor'],
-  directional:['color','intensity'],
-  ambient:['color','intensity'],
-  Light:['color','skyColor','groundColor','intensity','distance','angle','exponent','decay','castShadow']
-}
+  Object3D: [
+    "objName",
+    "objType",
+    "objPrimitive",
+    "hashColor",
+    "objAnimate",
+    "name",
+    "objTexture",
+    "objModel",
+    "position",
+    "rotation",
+    "scale"
+  ],
+  box: ["parameters", "material"],
+  sphere: ["parameters", "material"],
+  plane: ["parameters", "material"],
+  cylinder: ["parameters", "material"],
+  cone: ["parameters", "material"],
+  ring: ["parameters", "material"],
+  circle: ["parameters", "material"],
+  point: ["color", "intensity", "distance", "decay"],
+  spot: ["color", "intensity", "distance", "angle", "exponent", "decay"],
+  hemisphere: ["skyColor", "intensity", "groundColor"],
+  directional: ["color", "intensity"],
+  ambient: ["color", "intensity"],
+  Light: [
+    "color",
+    "skyColor",
+    "groundColor",
+    "intensity",
+    "distance",
+    "angle",
+    "exponent",
+    "decay",
+    "castShadow"
+  ]
+};

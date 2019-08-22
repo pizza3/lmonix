@@ -7,6 +7,9 @@ The design editor is used for building the static scene, you can add entities su
 ## Scene 
 The scene represent the entities you added inside your render, over here you can interact with each individual object or a group of objects. Over here you can copy/paste, delete, rename them, group with other entites etc. `note: These options appear when you right click on the active entity inside the scene`. The naming for each individual object needs to be unique because the name for each object can be used during prototyping individually.
 
+<img src="demoImages/drag.gif" alt="drawing" width="33.3%"/>
+
+
 ## Entity Properties
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 

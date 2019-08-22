@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { refresh, camera } from "../../assets/icon";
 import Tooltip from "../../designLib/Tooltip";
 
 export default class CodeMenu extends Component {
@@ -13,7 +14,7 @@ export default class CodeMenu extends Component {
       showTerm: !showTerm
     });
 
-    this.props.toggleDevTool(!showTerm)
+    this.props.toggleDevTool(!showTerm);
   };
 
   render() {
@@ -23,6 +24,20 @@ export default class CodeMenu extends Component {
         <Tooltip align="top" name="Devtool">
           <Terminal showTerm={showTerm} onClick={this.toggleShowTerm}>
             >_
+          </Terminal>
+        </Tooltip>
+        <Tooltip align="top" name="Refresh">
+          <Terminal>
+            <TabIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              {refresh()}
+            </TabIcon>
+          </Terminal>
+        </Tooltip>
+        <Tooltip align="top" name="Screenshot">
+          <Terminal>
+            <TabIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              {camera()}
+            </TabIcon>
           </Terminal>
         </Tooltip>
       </Container>
@@ -43,14 +58,20 @@ const Container = styled.div`
 
 const Terminal = styled.div`
   position: relative;
-  width: 17px;
-  height: 17px;
+  width: 41px;
+  height: 26px;
   float: left;
-  background: #707070;
+  text-align: center;
+  background: #2d2d2d;
   border-radius: 2px;
-  color: #252525;
-  font-size: 10px;
+  color: #707070;
+  font-size: 12px;
   font-weight: 900;
-  padding: 2px;
-  margin-top: 3px;
+  padding: 4px 0px 0px 0px;
+  margin-top: -2px;
+  margin-right: 15px;
+`;
+
+const TabIcon = styled.svg`
+  width: 20px;
 `;

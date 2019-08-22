@@ -5,7 +5,7 @@ const ipcMain = electron.ipcMain
 const BrowserWindow = electron.BrowserWindow;
 const isDev = require('electron-is-dev');
 // const { systemPreferences } = require('electron')
-const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
+// const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 const path = require('path');
 const { setMainMenu, SetPopMenu } = require('./scripts/mainMenu.js');
 const { setLocalServer } = require('./scripts/localServer.js');
@@ -21,16 +21,16 @@ function createWindow(event, win) {
 });
   mainWindow.loadURL(isDev ? 'http://localhost:3006/' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
-  installExtensions()
+  // installExtensions()
   setMainMenu(mainWindow);
   SetPopMenu(mainWindow,win)
   setLocalServer(mainWindow)
 }
-const installExtensions = async () => {
-  return installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
-};
+// const installExtensions = async () => {
+//   return installExtension(REACT_DEVELOPER_TOOLS)
+//     .then((name) => console.log(`Added Extension:  ${name}`))
+//     .catch((err) => console.log('An error occurred: ', err));
+// };
 
 
 app.on('ready', async ()=>{

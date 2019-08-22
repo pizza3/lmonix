@@ -28,14 +28,24 @@ export default class SceneLayer extends Component {
     newParent:null
   }
 
+  resetState=()=>{
+    this.setState({
+      isDrag:false,
+      dragObj:null,
+      newParent:null
+    }) 
+  }
+
   setDragObj = (obj)=>{
       this.setState({
         dragObj:obj,
         isDrag:true
       }) 
+      console.log('setDragObj');
+      
   }
 
-  handleUp = ()=>{
+  handleUp = ()=>{    
     const {isDrag, dragObj,newParent} =  this.state
     const { paste3DObject } = this.props
     if(isDrag){
@@ -45,7 +55,7 @@ export default class SceneLayer extends Component {
         newParent:null
       },()=>{
         if(newParent!==null&&dragObj.uuid!==newParent.uuid){
-          paste3DObject(dragObj,newParent, true)
+          paste3DObject(dragObj,newParent, true, false)
         }
       })
     }
@@ -79,6 +89,7 @@ export default class SceneLayer extends Component {
                     setDragObj={this.setDragObj}
                     isDrag={this.state.isDrag}
                     setParent={this.setParent}
+                    resetState={this.resetState}
                   >
                   {this.renderSceneLayer(obj.children, num + 1)}
                 </SceneTree>

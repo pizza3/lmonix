@@ -373,48 +373,7 @@ const createScene = (threeData = []) => {
         ${createScene(mesh.children.slice(1))}
         </a-curvedimage> \n`;
     } else if (mesh.objPrimitive === "3DModel") {
-      if(_.isEmpty(mesh.objModel)){
-        dataString += `<a-entity id="${id}"
-        position="${mesh.position.x} ${mesh.position.y} ${
-          mesh.position.z
-        }" scale="${mesh.scale.x} ${mesh.scale.y} ${
-          mesh.scale.z
-        }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
-          (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
-          shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
-          visible="${mesh.visible}" 
-          >
-          ${createScene(mesh.children.slice(1))}
-          </a-entity> \n`;
-      }
-      if (mesh.objModel.ext === "poly") {
-        dataString += `<a-gltf-model id="${id}"
-        src="${mesh.objModel.path}"
-        position="${mesh.position.x} ${mesh.position.y} ${
-          mesh.position.z
-        }" scale="${mesh.scale.x} ${mesh.scale.y} ${
-          mesh.scale.z
-        }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
-          (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
-          visible="${mesh.visible}" 
-          >
-          ${createScene(mesh.children.slice(1))}
-          </a-gltf-model> \n`;
-      } else {
-        dataString += `<a-entity id="${id}"
-        obj-model="obj: url(${mesh.objModel.path});"
-        position="${mesh.position.x} ${mesh.position.y} ${
-          mesh.position.z
-        }" scale="${mesh.scale.x} ${mesh.scale.y} ${
-          mesh.scale.z
-        }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
-          (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
-          shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
-          visible="${mesh.visible}" 
-          >
-          ${createScene(mesh.children.slice(1))}
-          </a-entity> \n`;
-      }
+      dataString += assignModelAttr(mesh);
     } else if (mesh.objType === "Light") {
       dataString += `<a-entity id="${id}" light="type: ${
         mesh.objPrimitive
@@ -563,3 +522,69 @@ function aframeTemplate(assetArr, sceneArr, isCursor, isDefaultLights = true) {
         </html>
     `;
 }
+
+
+const assignModelAttr = mesh => {
+  const { objName, name, objModel } = mesh;
+  const id = name.length ? name : objName;
+  if (_.isEmpty(objModel)) {
+    return `<a-entity id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-entity> \n`;
+  }
+  if (objModel.ext === ".obj") {
+    return `<a-entity id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    obj-model="obj: #${mesh.objModel.name + mesh.objModel.objPath}; mtl: #${mesh
+      .objModel.name + mesh.objModel.mtlPath}"
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      shadow="receive:${mesh.receiveShadow};cast:${mesh.castShadow}" 
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-entity> \n`;
+  } else if (objModel.ext === ".gltf") {
+    return `<a-gltf-model id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    src="#${mesh.objModel.name + mesh.objModel.gltfPath}"
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-gltf-model> \n`;
+  } else if (objModel.ext === "poly") {
+    return `<a-gltf-model id="${id}"
+    ${createAnimaionAttr(mesh.objAnimate, id)}
+    src="${mesh.objModel.path}"
+    position="${mesh.position.x} ${mesh.position.y} ${
+      mesh.position.z
+    }" scale="${mesh.scale.x} ${mesh.scale.y} ${mesh.scale.z}" rotation="${mesh
+      .rotation._x *
+      (180 / 3.14)} ${mesh.rotation._y * (180 / 3.14)} ${mesh.rotation._z *
+      (180 / 3.14)}"
+      visible="${mesh.visible}" 
+      >
+      ${createScene(mesh.children.slice(1))}
+      </a-gltf-model> \n`;
+  }
+};

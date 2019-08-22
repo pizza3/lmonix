@@ -79,6 +79,7 @@ export default class MenuDropdown extends Component {
     const { assetStack } = this.props;
     const Textures = assetStack.map((val, i) => {
       if ([...imageExt, ...videoExt].includes(val.ext)) {
+        const data = fs.readFileSync(val.path).toString("base64");
         return (
           <ObjButton
             key={i}
@@ -90,12 +91,12 @@ export default class MenuDropdown extends Component {
             {val.ext === ".mp4" ? (
               <Video autoplay muted>
                 <source
-                  src={"data:video/mp4;base64," + val.data}
+                  src={"data:video/mp4;base64," + data}
                   type="video/mp4"
                 />
               </Video>
             ) : (
-              <Img src={"data:video/webm;base64," + val.data} />
+              <Img src={"data:video/webm;base64," + data} />
             )}
             <Text>
               <Span>Name: </Span>

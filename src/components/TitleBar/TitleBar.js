@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { run } from "../../assets/icon";
+import { run, info } from "../../assets/icon";
 import LocalServer from "./LocalServer";
 import { Link } from "react-router-dom";
 import Trigger from "rc-trigger";
@@ -25,29 +25,37 @@ export default class TitleBar extends Component {
           </TitleLinkCode>
         </Link>
         <Title>{this.props.title}</Title>
-          <Tooltip name="Preview" align="bottom">
-        <Trigger
-          action={["click"]}
-          popup={
-            <LocalServer
-              location={this.props.title}
-              ip={this.props.localIP}
-            />
-          }
-          prefixCls="dropdown"
-          popupAlign={{
-            points: ["bc", "tl"],
-            offset: [-230, 30]
-          }}
-        >
+        <Tooltip name="Docs" align="bottom">
+          <SvgContainer
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+          >
+            {info()}
+          </SvgContainer>
+        </Tooltip>
+        <Tooltip name="Preview" align="bottom">
+          <Trigger
+            action={["click"]}
+            popup={
+              <LocalServer
+                location={this.props.title}
+                ip={this.props.localIP}
+              />
+            }
+            prefixCls="dropdown"
+            popupAlign={{
+              points: ["bc", "tl"],
+              offset: [-230, 30]
+            }}
+          >
             <SvgContainer
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 12.109 11.177"
+              viewBox="0 0 512 512"
             >
               {run}
             </SvgContainer>
-        </Trigger>
-          </Tooltip>
+          </Trigger>
+        </Tooltip>
       </TitleContainer>
     );
   }
@@ -73,9 +81,9 @@ const TitleOverlay = styled.div`
 const SvgContainer = styled.svg`
   position: relative;
   float: right;
-  height: 15px;
-  margin-top: 10px;
-  margin-right: 27px;
+  height: 20px;
+  margin-top: 8px;
+  margin-right: 23px;
 `;
 
 const Title = styled.div`
