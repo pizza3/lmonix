@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "public/electron.js",
+  "mac": {
+    "icon": "./public/Group.png"   
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pizza3/lmonix.git"

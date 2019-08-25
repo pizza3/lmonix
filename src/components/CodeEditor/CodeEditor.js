@@ -11,9 +11,21 @@ import "../../styles/show-hint.css";
 import "../../styles/yonce.css";
 import styled from "styled-components";
 // import CodeMenu from './CodeMenu'
-import _ from 'lodash';
+import _ from "lodash";
 // const electron = window.require("electron");
-const excludeKeys = ["Space","ArrowDown","ArrowUp","ArrowLeft","ArrowRight","Backspace","Enter","BracketLeft","BracketRight","Digit9","Digit0"]
+const excludeKeys = [
+  "Space",
+  "ArrowDown",
+  "ArrowUp",
+  "ArrowLeft",
+  "ArrowRight",
+  "Backspace",
+  "Enter",
+  "BracketLeft",
+  "BracketRight",
+  "Digit9",
+  "Digit0"
+];
 export default class VrRenderer extends Component {
   componentDidMount() {
     const { codeTab } = this.props;
@@ -21,13 +33,13 @@ export default class VrRenderer extends Component {
     this.typingTimer = null;
     this.doneTypingInterval = 500;
     if (codeTab === 1 || codeTab === 2) {
-      setTimeout(()=>{
-        this.createEditor()      
-      },10)
+      setTimeout(() => {
+        this.createEditor();
+      }, 10);
     }
   }
   createEditor = () => {
-    import("codemirror").then(CodeMirror => {      
+    import("codemirror").then(CodeMirror => {
       const editorDom = document.getElementById("monacocontainer");
       const height = editorDom.offsetHeight;
       const width = editorDom.offsetWidth;
@@ -50,15 +62,14 @@ export default class VrRenderer extends Component {
           /*Enter - do not open autocomplete list just after item has been selected in it*/
           CodeMirror.commands.autocomplete(cm, null, { completeSingle: false });
         }
-        if(!_.isNull(this.typingTimer))
-        clearTimeout(this.typingTimer);
+        if (!_.isNull(this.typingTimer)) clearTimeout(this.typingTimer);
 
-        this.typingTimer = setTimeout(()=>{this.props.updateCode(this.editor.getValue())}, this.doneTypingInterval);
-
+        this.typingTimer = setTimeout(() => {
+          this.props.updateCode(this.editor.getValue());
+        }, this.doneTypingInterval);
       });
       this.editor.on("keydown", (cm, event) => {
-        if(!_.isNull(this.typingTimer))
-        clearTimeout(this.typingTimer);
+        if (!_.isNull(this.typingTimer)) clearTimeout(this.typingTimer);
       });
     });
   };
@@ -70,7 +81,7 @@ export default class VrRenderer extends Component {
         this.createEditor();
       }
     }
-    if(prevProps.code !== code && !this.editor.hasFocus() ){
+    if (prevProps.code !== code && !this.editor.hasFocus()) {
       if (codeTab === 1 || codeTab === 2) {
         this.editor.getDoc().setValue(code);
       }
@@ -82,7 +93,14 @@ export default class VrRenderer extends Component {
     if (codeTab === 1) {
       return (
         <>
-          <div style={{ float: "left", width: "50%", height: "100%" }}>
+          <div
+            style={{
+              float: "left",
+              width: "50%",
+              height: "100%",
+              borderRight: "2px solid #2d2d2d"
+            }}
+          >
             <VrPreview
               title={this.props.title}
               objPresent={this.props.objPresent}
@@ -97,13 +115,7 @@ export default class VrRenderer extends Component {
         </>
       );
     } else if (codeTab === 2) {
-      return (
-        <EditorDiv
-          id="monacocontainer"
-          width="100%"
-          height="100%"
-        />
-      );
+      return <EditorDiv id="monacocontainer" width="100%" height="100%" />;
     }
     return (
       <VrPreview
@@ -187,6 +199,7 @@ export default class VrRenderer extends Component {
           updateAnimate={this.props.updateAnimate}
           animate={this.props.animate}
           active={this.props.active}
+          deleteAnimate={this.props.deleteAnimate}
         />
       </div>
     );
@@ -272,7 +285,7 @@ const EditorDiv = styled.div`
   font-family: unset;
   float: left;
   width: ${props => props.width};
-  background: #1C1C1C;
+  background: #1c1c1c;
   height: calc(100% - 35px);
   position: relative;
 `;

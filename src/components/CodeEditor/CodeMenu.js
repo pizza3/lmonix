@@ -19,6 +19,7 @@ export default class CodeMenu extends Component {
 
   render() {
     const { showTerm } = this.state;
+    const { reloadWebview, captureWebview } = this.props
     return (
       <Container>
         <Tooltip align="top" name="Devtool">
@@ -28,14 +29,14 @@ export default class CodeMenu extends Component {
         </Tooltip>
         <Tooltip align="top" name="Refresh">
           <Terminal>
-            <TabIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <TabIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={reloadWebview}>
               {refresh()}
             </TabIcon>
           </Terminal>
         </Tooltip>
         <Tooltip align="top" name="Screenshot">
           <Terminal>
-            <TabIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <TabIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" onClick={captureWebview}>
               {camera()}
             </TabIcon>
           </Terminal>
@@ -53,7 +54,7 @@ const Container = styled.div`
   background: #1b1b1b;
   border-top: 2px solid #2d2d2d;
   padding: 6px;
-  border-right: 2px solid #2d2d2d;
+  /* border-right: 2px solid #2d2d2d; */
 `;
 
 const Terminal = styled.div`

@@ -17,7 +17,10 @@ function createWindow(event, win) {
   width: 1300, 
   height: 700,
   titleBarStyle: "hiddenInset",
-  nodeIntegration: true,
+  show: true,
+  darkTheme: true,
+  webviewTag:true,
+  nodeIntegration: false,
 });
   mainWindow.loadURL(isDev ? 'http://localhost:3006/' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);

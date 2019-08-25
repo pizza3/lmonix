@@ -156,7 +156,16 @@ export default class AnimDropdown extends Component {
     );
   };
   handleDelete=()=>{
-    
+    const { index } = this.state;
+    this.props.deleteAnimate(index)
+    this.setState(
+      {
+        index: 0
+      },
+      () => {
+        this.setComponentProp();
+      }
+    );
   }
   render() {
     const {

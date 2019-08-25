@@ -11,7 +11,6 @@ import Intensity from "./Intensity";
 import Opacity from "./Opacity";
 import Transparent from "./Transparent";
 import Distance from "./Distance"
-// import Material from "./Properties/Material";
 import CustomGeometry from "./CustomGeometry";
 import Geometry from "./Geometry";
 import Lights from "./Lights";

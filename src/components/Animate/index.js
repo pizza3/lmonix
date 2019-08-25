@@ -4,10 +4,8 @@ import AnimInfo from "./AnimInfo";
 import _ from "lodash";
 
 export default class Animate extends Component {
-  state = {};
-
   render() {
-    const { active, updateAnimate } = this.props;
+    const { active, updateAnimate, deleteAnimate } = this.props;
     const message = (
       <>
         <Svg
@@ -53,10 +51,7 @@ export default class Animate extends Component {
     const animInfos =
       active?active.objAnimate.length ? (
         <AnimInfo
-          // key={index}
-          // name={val.name}
-          // data={val}
-          // index={index}
+          deleteAnimate={deleteAnimate}
           updateAnimate={updateAnimate}
           active={active}
           objAnimate={active.objAnimate}

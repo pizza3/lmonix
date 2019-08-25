@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Cursor from "./Cursor";
 import DefaultLights from "./DefaultLights";
+import Camera from "./Camera";
+
 
 export default class Index extends Component {
   render() {
@@ -10,6 +12,7 @@ export default class Index extends Component {
         <Title>Settings</Title>
         <Cursor/>
         <DefaultLights/>
+        <Camera/>
       </div>
     );
   }

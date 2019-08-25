@@ -5,7 +5,7 @@ import AnimDropdown from "./AnimDropdown";
 export default class AnimInfo extends Component {
   // over here we have basic/common props needed for animation
   render() {
-    const { name, data, index, updateAnimate, active, objAnimate } = this.props;
+    const { name, data, index, updateAnimate, active, objAnimate, deleteAnimate } = this.props;
     return (
       <Container>
         <AnimDropdown
@@ -13,6 +13,7 @@ export default class AnimInfo extends Component {
           data={data}
           index={index}
           updateAnimate={updateAnimate}
+          deleteAnimate={deleteAnimate}
           active={active}
           objAnimate={objAnimate}
         />

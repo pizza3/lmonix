@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Trigger from "rc-trigger";
-import ColorPickerDropdown from "../../../designLib/ColorPicker";
+import ColorPickerDropdown,{HexToRgb} from "../../../designLib/ColorPicker";
 import _ from "lodash";
 export default class ColorPicker extends Component {
   state = {
@@ -33,7 +33,15 @@ export default class ColorPicker extends Component {
       }
     }
   };
+  getTextColor = (r, g, b) => {
+    // check calculates Luminance
+    var check = 1 - (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return check < 0.5 ? 'black' : 'white';
+  }
   render() {
+    const { currentColor } = this.state
+    const color = HexToRgb(currentColor)    
+    const colorText = this.getTextColor(color[0],color[1],color[2])
     return (
       <Container>
         <Title id="fill">Fill</Title>
@@ -56,7 +64,7 @@ export default class ColorPicker extends Component {
           getPopupContainer={() => document.getElementById("fill")}
         >
           <Input style={{ background: this.state.currentColor }}>
-            <Text>{this.state.currentColor}</Text>
+            <Text color={colorText}>{this.state.currentColor}</Text>
           </Input>
         </Trigger>
       </Container>
@@ -95,9 +103,9 @@ const Input = styled.div`
 
 
 const Text = styled.div`
-  -webkit-text-stroke-color: #000;
-  -webkit-text-stroke-width: 0.02pc;
+  /* -webkit-text-stroke-color: #000;
+  -webkit-text-stroke-width: 0.02pc; */
   font-size: 12px;
   font-weight: 900;
-  color: #fff;
+  color: ${props=>props.color};
 `

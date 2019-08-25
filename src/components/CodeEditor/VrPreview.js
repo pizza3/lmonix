@@ -1,26 +1,40 @@
 import React, { Component } from "react";
 import { aframeTemplate } from "../../helpers/helpers";
-import _ from 'lodash'
-import CodeMenu from './CodeMenu'
+import _ from "lodash";
+import CodeMenu from "./CodeMenu";
 const electron = window.require("electron");
 const webview = electron.webviewTag;
 export default class VrPreview extends Component {
   state = {
     src: "",
-    isLoaded:false,
+    isLoaded: false
   };
-  componentDidMount() {
-  }
-
-  toggleDevTool = (bool)=>{
-    if(bool){
-      document.getElementById("webview").openDevTools()
+  toggleDevTool = bool => {
+    if (bool) {
+      document.getElementById("webview").openDevTools();
+    } else {
+      document.getElementById("webview").closeDevTools();
     }
-    else{
-      document.getElementById("webview").closeDevTools()
-    }
-  }
+  };
 
+  reloadWebview = () => {
+    document.getElementById("webview").reload();
+  };
+
+  captureWebview = () => {
+    const width = document.getElementById("webview").offsetWidth;
+    const height = document.getElementById("webview").offsetHeight;
+    document
+      .getElementById("webview")
+      .getWebContents().capturePage(function(image){
+        console.log(image);
+
+      })
+    // document.getElementById("webview").getWebContents().printToPDF({}, (error, data) => {
+    //   console.log(data, error)
+    //   if (error) throw error
+    // })
+  };
   render() {
     const doc = aframeTemplate(
       this.props.assetStack,
@@ -41,7 +55,11 @@ export default class VrPreview extends Component {
           }}
           src={"data:text/html," + doc}
         />
-        <CodeMenu toggleDevTool={this.toggleDevTool}/>
+        <CodeMenu
+          toggleDevTool={this.toggleDevTool}
+          reloadWebview={this.reloadWebview}
+          captureWebview={this.captureWebview}
+        />
       </>
     );
   }

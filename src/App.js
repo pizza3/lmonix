@@ -18,8 +18,8 @@ const electron = window.require("electron");
 
 class App extends Component {
   state = {
-    appSateIndex:0,
-    appState:[],
+    appSateIndex: 0,
+    appState: [],
     numberOfObj: {},
     location: null,
     scene: null,
@@ -33,7 +33,7 @@ class App extends Component {
     isDefaultLights: true,
     isCursor: false,
     localIP: null,
-    isGrid:true,
+    isGrid: true,
     loaded: false,
     active: null,
     activeKey: null,
@@ -43,13 +43,16 @@ class App extends Component {
     copyObj: null,
     editState: [],
     setMode: true,
-    codeTab:2,
-    consoles:[]
+    codeTab: 2,
+    config: {
+      camera: { far: 10000, fov: 80, near: 0.005, zoom: 1 },
+      fog: { color: "#000" }
+    }
   };
   objPresent = [];
   componentDidMount() {
-    const {history}=this.props
-    history.push('/')
+    const { history } = this.props;
+    history.push("/");
     window.addEventListener("resize", this.handleResize, false);
     electron.ipcRenderer.on(
       "ipcRenderer",
@@ -58,15 +61,15 @@ class App extends Component {
           case "message":
             message[val["type"]](val["message"], 3);
             break;
-          case "extractThreeData":            
-          // when saving a new project
-            let finaldata = this.generateFinalJson(this.state.objPresent)
+          case "extractThreeData":
+            // when saving a new project
+            let finaldata = this.generateFinalJson(this.state.objPresent);
             electron.ipcRenderer.send("reciveThreeData", {
               data: finaldata,
               state: {
                 code: this.state.code,
                 isDefaultLights: this.state.isDefaultLights,
-                isCursor: this.state.isCursor,
+                isCursor: this.state.isCursor
               },
               store: JSON.stringify({
                 data: finaldata,
@@ -74,23 +77,23 @@ class App extends Component {
                   code: this.state.code,
                   isDefaultLights: this.state.isDefaultLights,
                   isCursor: this.state.isCursor,
-                  assetStack:this.state.assetStack
+                  assetStack: this.state.assetStack
                 }
               })
             });
             break;
 
           case "extractThreeDataSave":
-          // when saving a existing project
-          let finaldata2 = this.generateFinalJson(this.state.objPresent)
+            // when saving a existing project
+            let finaldata2 = this.generateFinalJson(this.state.objPresent);
             electron.ipcRenderer.send("extractThreeDataSave", {
               data: finaldata2,
               state: {
                 code: this.state.code,
                 isDefaultLights: this.state.isDefaultLights,
                 isCursor: this.state.isCursor,
-                assetStack:this.state.assetStack,
-                title:this.state.title
+                assetStack: this.state.assetStack,
+                title: this.state.title
               },
               location: this.props.location.pathname,
               store: JSON.stringify({
@@ -99,8 +102,8 @@ class App extends Component {
                   code: this.state.code,
                   isDefaultLights: this.state.isDefaultLights,
                   isCursor: this.state.isCursor,
-                  assetStack:this.state.assetStack,
-                  title:this.state.title
+                  assetStack: this.state.assetStack,
+                  title: this.state.title
                 }
               })
             });
@@ -109,7 +112,7 @@ class App extends Component {
             // when opening a project
             let parsedObj = JSON.parse(val["obj"]);
             const data = this.reloadProject(parsedObj["data"], 0);
-            const {isDefaultLights, code, isCursor} = parsedObj['state']
+            const { isDefaultLights, code, isCursor } = parsedObj["state"];
             this.objPresent = data;
             this.setState(
               {
@@ -119,7 +122,7 @@ class App extends Component {
                 active: data[0],
                 objPresent: data,
                 activeObj: "00",
-                title: val["title"][0],
+                title: val["title"][0]
               },
               () => {
                 this.transformControls.attach(
@@ -127,24 +130,29 @@ class App extends Component {
                 );
                 this.active = data[0];
                 this.scene.add(this.transformControls);
-                this.handleResize()
-                this.setDefaultLights()
+                this.handleResize();
+                this.setDefaultLights();
                 message.success("Project Loaded", 3);
               }
             );
             break;
           case "changeTitle":
-            this.setState({
-              title: val["title"]
-            },()=>{
-              electron.ipcRenderer.send("stopAssetServer");              
-              electron.ipcRenderer.send("startAssetServer",{
-                location: val["title"]
-              });
-            });
+            this.setState(
+              {
+                title: val["title"]
+              },
+              () => {
+                electron.ipcRenderer.send("stopAssetServer");
+                electron.ipcRenderer.send("startAssetServer", {
+                  location: val["title"]
+                });
+              }
+            );
             break;
           case "addGroupObj":
             let a = AddGroupObj({}, val["obj"], this.active);
+            const entityNumber = this.setNumberOfObj(a);
+            a.objName = `${a.objName}_${entityNumber}`;
             this.updateActiveDrilldown(this.active.uuid, true);
             this.active = a;
             this.setState({
@@ -190,18 +198,21 @@ class App extends Component {
             break;
           case "pasteObj":
             this.paste3DObject(this.state.copyObj, this.active);
+            this.setState({
+              active:this.active
+            })
             break;
           case "animate":
             this.setAnimate();
             break;
           case "routeDesign":
-            history.push('/')
+            history.push("/");
             break;
           case "routePrototype":
-            history.push('/code')
+            history.push("/code");
             break;
           case "undoState":
-            this.undoAppState()
+            this.undoAppState();
             break;
           default:
             console.log("default");
@@ -209,68 +220,75 @@ class App extends Component {
         }
       }.bind(this)
     );
-    electron.ipcRenderer.on('addSnippet',function(e,params) {
-      const {option}=params
-      const {code}=this.state
-      const name = this.active.name.length?this.active.name:this.active.objName
+    electron.ipcRenderer.on(
+      "addSnippet",
+      function(e, params) {
+        const { option } = params;
+        const { code } = this.state;
+        const name = this.active.name.length
+          ? this.active.name
+          : this.active.objName;
         let eventcode = `
 document.getElementById('${name}')
 .addEventListener('${option}',function(e){
 
-})`
-        let newCode = code + eventcode
-        this.updateCode(newCode)
-    }.bind(this))
+})`;
+        let newCode = code + eventcode;
+        this.updateCode(newCode);
+      }.bind(this)
+    );
   }
-  generateFinalJson = (object) => {
-    let finalArr = []
-    _.forEach(object,(obj,index) => {
-      if(obj.objType){
-        let entityHash = {}
-        _.forEach(entityDataAttr['Object3D'],(prop) => {   
-          if(!_.isUndefined(obj[prop])){
-            entityHash[prop] = obj[prop]
-          }  
-        })
-        if(obj.objType === 'Mesh'){
-          if(obj.objPrimitive!=='3DModel'){
-            entityHash['children'] = [
-              {
-                geometry:{parameters:obj.children[0].geometry.parameters},
-                material:{
-                  opacity:obj.children[0].material.opacity,
-                  transparent:obj.children[0].material.transparent
-                },
-                receiveShadow:obj.children[0].receiveShadow,
-                castShadow:obj.children[0].castShadow,              
-              }
-            ]
-          }else{
-            entityHash['children'] = [{}]
+  generateFinalJson = object => {
+    let finalArr = [];
+    _.forEach(object, (obj, index) => {
+      if (obj.objType) {
+        let entityHash = {};
+        _.forEach(entityDataAttr["Object3D"], prop => {
+          if (!_.isUndefined(obj[prop])) {
+            entityHash[prop] = obj[prop];
           }
-        }else if(obj.objType === 'Light'){
-          entityHash['children'] = []
-          let objHash = {}
-          _.forEach(entityDataAttr['Light'],(prop) => {  
-            if(!_.isUndefined(obj.children[0][prop])){
-              objHash[prop] = obj.children[0][prop]
-            }          
-          })
-          entityHash['children']=[objHash]
+        });
+        if (obj.objType === "Mesh") {
+          if (obj.objPrimitive !== "3DModel") {
+            entityHash["children"] = [
+              {
+                geometry: { parameters: obj.children[0].geometry.parameters },
+                material: {
+                  opacity: obj.children[0].material.opacity,
+                  transparent: obj.children[0].material.transparent
+                },
+                receiveShadow: obj.children[0].receiveShadow,
+                castShadow: obj.children[0].castShadow
+              }
+            ];
+          } else {
+            entityHash["children"] = [{}];
+          }
+        } else if (obj.objType === "Light") {
+          entityHash["children"] = [];
+          let objHash = {};
+          _.forEach(entityDataAttr["Light"], prop => {
+            if (!_.isUndefined(obj.children[0][prop])) {
+              objHash[prop] = obj.children[0][prop];
+            }
+          });
+          entityHash["children"] = [objHash];
         }
-        if(obj.children.length>1){
-          const len = obj.children.length
-          const resOfChildren = this.generateFinalJson(obj.children.slice(1,len))
-          entityHash['children'] = [
-            ...entityHash['children'],
+        if (obj.children.length > 1) {
+          const len = obj.children.length;
+          const resOfChildren = this.generateFinalJson(
+            obj.children.slice(1, len)
+          );
+          entityHash["children"] = [
+            ...entityHash["children"],
             ...resOfChildren
-          ]
+          ];
         }
-        finalArr.push(entityHash)        
+        finalArr.push(entityHash);
       }
-    })
-    return finalArr
-  }
+    });
+    return finalArr;
+  };
   changeSetMode = setMode => {
     this.setState({
       setMode
@@ -298,9 +316,19 @@ document.getElementById('${name}')
       active: this.active
     });
   };
-  deleteAnimate = (index) =>{
+  deleteAnimate = index => {
+    console.log(index);
 
-  }
+    const newAnimate = _.filter(this.active.objAnimate, (anim, i) => {
+      return i !== Number(index);
+    });
+    console.log(newAnimate);
+
+    this.active.objAnimate = newAnimate;
+    this.setState({
+      active: this.active
+    });
+  };
   setSceneObject = (scene, transformControls) => {
     this.setState({ scene, transformControls });
   };
@@ -310,24 +338,23 @@ document.getElementById('${name}')
     });
   };
   handleResize = () => {
-    const { objPresent } = this.state;    
-    const width = objPresent.length?
-      window.innerWidth - 466:
-      window.innerWidth - 232;
+    const { objPresent } = this.state;
+    const width = objPresent.length
+      ? window.innerWidth - 466
+      : window.innerWidth - 232;
     const height = window.innerHeight - 37;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    if(this.renderer)
-    this.renderer.setSize(width, height);
+    if (this.renderer) this.renderer.setSize(width, height);
   };
-  addInScene = obj => {    
+  addInScene = obj => {
     const { objPresent, activeStack } = this.state;
     const activeObj = objPresent.length;
     this.objPresent.push(obj);
     this.active = obj;
     const entityNumber = this.setNumberOfObj(obj);
     obj.objName = `${obj.objName}_${entityNumber}`;
-    this.scene.add(obj)
+    this.scene.add(obj);
     this.setState(
       {
         activeObj,
@@ -336,29 +363,32 @@ document.getElementById('${name}')
         activeStack: [...activeStack, obj]
       },
       () => {
-        if(this.transformControls){
+        if (this.transformControls) {
           this.transformControls.attach(this.objPresent[this.state.activeObj]);
         }
-        this.generateFinalJson(objPresent)
+        this.generateFinalJson(objPresent);
         this.scene.add(this.transformControls);
-        this.handleResize()
+        this.handleResize();
       }
     );
   };
-  toggleGridMesh = ()=>{
-    const {isGrid} = this.state
-    this.setState({
-      isGrid:!isGrid
-    },()=>{
-      if(!isGrid){
-        this.scene.add(this.gridHelper)
-      }else{
-        this.scene.remove(this.gridHelper)
+  toggleGridMesh = () => {
+    const { isGrid } = this.state;
+    this.setState(
+      {
+        isGrid: !isGrid
+      },
+      () => {
+        if (!isGrid) {
+          this.scene.add(this.gridHelper);
+        } else {
+          this.scene.remove(this.gridHelper);
+        }
       }
-    })
-  }
+    );
+  };
   setNumberOfObj = obj => {
-    const { numberOfObj } = this.state;    
+    const { numberOfObj } = this.state;
     if (numberOfObj[obj.objPrimitive]) {
       let number = numberOfObj[obj.objPrimitive] + 1;
       this.setState({
@@ -399,7 +429,13 @@ document.getElementById('${name}')
     });
     return objData;
   };
-  paste3DObject = (data, parent, removeData, setEntityName=true, setParent = true) => {
+  paste3DObject = (
+    data,
+    parent,
+    removeData,
+    setEntityName = true,
+    setParent = true
+  ) => {
     let newParent = AddGroupObj(
       data,
       data.objPrimitive,
@@ -410,7 +446,7 @@ document.getElementById('${name}')
     );
     // if(setEntityName){
     //   const entityNumber = this.setNumberOfObj(newParent);
-    //   newParent.objName = `${newParent.objName}_${entityNumber}`;  
+    //   newParent.objName = `${newParent.objName}_${entityNumber}`;
     // }
     if (data.children.length >= 2) {
       _.forEach(data.children, (child, i) => {
@@ -451,7 +487,7 @@ document.getElementById('${name}')
     });
   };
   clearScene = () => {
-    if(this.active && this.objPresent.length){
+    if (this.active && this.objPresent.length) {
       this.transformControls.detach(this.active);
     }
     _.forEach(this.objPresent, val => {
@@ -490,9 +526,8 @@ document.getElementById('${name}')
             } else {
               this.setActiveObj(this.state.objPresent[index]);
             }
-          }
-          else{
-            this.handleResize()        
+          } else {
+            this.handleResize();
           }
         }
       );
@@ -508,7 +543,7 @@ document.getElementById('${name}')
         active: obj
       },
       () => {
-        if(this.transformControls){
+        if (this.transformControls) {
           this.transformControls.attach(obj);
           this.scene.add(this.transformControls);
         }
@@ -541,8 +576,8 @@ document.getElementById('${name}')
       : window.innerWidth - 232;
     this.height = window.innerHeight - 37;
     this.scene = new THREE.Scene();
-    if(isGrid){
-      this.gridHelper = new THREE.GridHelper(30, 30)     
+    if (isGrid) {
+      this.gridHelper = new THREE.GridHelper(30, 30);
       this.scene.add(this.gridHelper);
     }
     const nearPlane = 1,
@@ -550,7 +585,7 @@ document.getElementById('${name}')
       fieldOfView = 70,
       aspectRatio = this.width / this.height;
 
-    if(this.camera === undefined){
+    if (this.camera === undefined) {
       this.camera = new THREE.PerspectiveCamera(
         fieldOfView,
         aspectRatio,
@@ -558,8 +593,8 @@ document.getElementById('${name}')
         farPlane
       );
       this.camera.position.set(10, 5, 10);
-    }else{
-      this.camPos = this.camera.position
+    } else {
+      this.camPos = this.camera.position;
       this.camera = new THREE.PerspectiveCamera(
         fieldOfView,
         aspectRatio,
@@ -622,9 +657,9 @@ document.getElementById('${name}')
 
   animateScene = () => {
     this.trackballControls.update();
-    if(this.active){
-      this.active.updateMatrix()
-    }    
+    if (this.active) {
+      this.active.updateMatrix();
+    }
     this.renderer.render(this.scene, this.camera);
     this._frameId = window.requestAnimationFrame(this.animateScene.bind(this));
   };
@@ -638,12 +673,11 @@ document.getElementById('${name}')
     window.cancelAnimationFrame(this._fram3eId);
     // Note: no need to worry if the loop has already been cancelled
     // cancelAnimationFrame() won't throw an error
-  }
+  };
 
-  renderScene=()=> {
-    if(this.renderer)
-    this.renderer.render(this.scene, this.camera);
-  }
+  renderScene = () => {
+    if (this.renderer) this.renderer.render(this.scene, this.camera);
+  };
 
   setController = posChange => {
     //trackball and transform controls initialise
@@ -686,7 +720,7 @@ document.getElementById('${name}')
 
   renderSceneOnMount = () => {
     this.initScene();
-    this.startanimateScene();  
+    this.startanimateScene();
   };
 
   updateActiveDrilldown = (obj, bool) => {
@@ -709,36 +743,36 @@ document.getElementById('${name}')
     });
     this.active.children[0].material = newMaterial;
   };
-  setAppState=(newState)=>{
-    const {appState, appSateIndex} = this.state
+  setAppState = newState => {
+    const { appState, appSateIndex } = this.state;
     this.setState({
-      appState:[
-        ...appState,
-        newState
-      ],
-      appSateIndex:appSateIndex+1
-    })
-  }
-  undoAppState = ()=>{
-    const {appState, appSateIndex} = this.state
-    if(appSateIndex!==0){
-      this.setState({
-        appSateIndex:appSateIndex-1
-      },()=>{
-        const {value, prop, option} = appState[appSateIndex-1]
-        this.changeObjectProp(value, prop, option, false)
-      })
+      appState: [...appState, newState],
+      appSateIndex: appSateIndex + 1
+    });
+  };
+  undoAppState = () => {
+    const { appState, appSateIndex } = this.state;
+    if (appSateIndex !== 0) {
+      this.setState(
+        {
+          appSateIndex: appSateIndex - 1
+        },
+        () => {
+          const { value, prop, option } = appState[appSateIndex - 1];
+          this.changeObjectProp(value, prop, option, false);
+        }
+      );
     }
-  }
-  changeObjectProp = (value, prop, option, isAppState=true) => {
-    const active = this.active
-    if(isAppState){
+  };
+  changeObjectProp = (value, prop, option, isAppState = true) => {
+    const active = this.active;
+    if (isAppState) {
       this.setAppState({
-        object:active,
-        prop:prop,
-        option:option,
-        value:value
-      })
+        object: active,
+        prop: prop,
+        option: option,
+        value: value
+      });
     }
     switch (option) {
       case "transform":
@@ -753,12 +787,12 @@ document.getElementById('${name}')
       case "colorMaterial":
         if (this.active) {
           let hex = parseInt(value.replace(/^#/, ""), 16);
-          if(this.active.children[0].material){
+          if (this.active.children[0].material) {
             this.active.children[0].material[prop].setHex(hex);
             this.active.hashColor = value;
             this.setState({
-              active:this.active
-            })
+              active: this.active
+            });
           }
         }
         break;
@@ -766,19 +800,19 @@ document.getElementById('${name}')
         if (this.active) {
           let lighthex = parseInt(value.replace(/^#/, ""), 16);
           // console.log(this.active);
-          
+
           this.active.children[0][prop].setHex(lighthex);
           this.active.hashColor = value;
         }
         break;
       case "addObject":
-        if(this.active.children[0].children.length){
-          this.updateObject3D(value)
-        }else{
+        if (this.active.children[0].children.length) {
+          this.updateObject3D(value);
+        } else {
           this.active.children[0].add(value);
           this.setState({
-            active:this.active
-          })
+            active: this.active
+          });
         }
         break;
       default:
@@ -787,25 +821,25 @@ document.getElementById('${name}')
     }
   };
 
-  removeObject3D = ()=>{
-    this.active.objModel={}
-    _.forEach(this.active.children[0].children,(child, key)=>{
-      this.active.children[0].remove(child)
-    })
+  removeObject3D = () => {
+    this.active.objModel = {};
+    _.forEach(this.active.children[0].children, (child, key) => {
+      this.active.children[0].remove(child);
+    });
     this.setState({
-      active:this.active
-    })
-  }
-  updateObject3D = (object) => {
+      active: this.active
+    });
+  };
+  updateObject3D = object => {
     // this is a trade off for replacing 3D geometry, still needs to find a better way.
-    _.forEach(this.active.children[0].children,(child, key)=>{
-      this.active.children[0].remove(child)
-    })
-    this.active.children[0].add(object) 
+    _.forEach(this.active.children[0].children, (child, key) => {
+      this.active.children[0].remove(child);
+    });
+    this.active.children[0].add(object);
     this.setState({
-      active:this.active
-    })
-  }
+      active: this.active
+    });
+  };
   render() {
     const {
       objPresent,
@@ -816,8 +850,7 @@ document.getElementById('${name}')
       isCursor,
       scene,
       codeTab,
-      isGrid,
-      consoles
+      isGrid
     } = this.state;
     return (
       <ThreeProvider
@@ -827,91 +860,91 @@ document.getElementById('${name}')
           active: active,
           activeDrilldown: activeDrilldown,
           assetStack: assetStack,
-          codeTab:codeTab,
-          isCursor:isCursor,
-          isDefaultLights:isDefaultLights,
+          codeTab: codeTab,
+          isCursor: isCursor,
+          isDefaultLights: isDefaultLights,
           // methods
           setActiveObj: this.setActiveObj,
           updateActiveDrilldown: this.updateActiveDrilldown,
           changeObjectProp: this.changeObjectProp,
-          setCursor:this.setCursor,
-          handleActiveTab:this.handleActiveTab,
-          setDefaultLights:this.setDefaultLights
+          setCursor: this.setCursor,
+          handleActiveTab: this.handleActiveTab,
+          setDefaultLights: this.setDefaultLights
         }}
       >
-      <>
-        <TitleBar
-          title={this.state.title}
-          localIP={this.state.localIP}
-          activeRoute={this.props.location.pathname}
-        />
-        <MenuBar
-          changeSetMode={this.changeSetMode}
-          setMode={this.state.setMode}
-          scene={scene}
-          addInScene={this.addInScene}
-        />
-        {this.state.setMode ? (
-          <SceneLayer
-            objPresent={objPresent}
-            paste3DObject={this.paste3DObject}
-            setActiveObj={this.setActiveObj}
+        <>
+          <TitleBar
+            title={this.state.title}
+            localIP={this.state.localIP}
+            activeRoute={this.props.location.pathname}
           />
-        ) : (
-          <SceneGeneral/>
-        )}
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <SceneEditor
-              {...this.state}
-              scene={this.scene}
-              objPresent={this.state.objPresent || []}
-              setSceneObject={this.setSceneObject}
-              addInScene={this.addInScene}
+          <MenuBar
+            changeSetMode={this.changeSetMode}
+            setMode={this.state.setMode}
+            scene={scene}
+            addInScene={this.addInScene}
+          />
+          {this.state.setMode ? (
+            <SceneLayer
+              objPresent={objPresent}
+              paste3DObject={this.paste3DObject}
               setActiveObj={this.setActiveObj}
-              setCursor={this.setCursor}
-              setDefaultLights={this.setDefaultLights}
-              renderSceneOnMount={this.renderSceneOnMount}
-              handleLeave={this.handleLeave}
-              handleOver={this.handleOver}
-              stopanimateScene={this.stopanimateScene}
-              changeObjectProp={this.changeObjectProp}
-              setController={this.setController}
-              transformControls={this.transformControls}
-              updateActiveDrilldown={this.updateActiveDrilldown}
-              setMaterial={this.setMaterial}
-              replaceGeometry={this.replaceGeometry}
-              replaceLights={this.replaceLights}
-              handleResize={this.handleResize}
-              toggleGridMesh={this.toggleGridMesh}
-              isGrid={isGrid}
-              removeObject3D={this.removeObject3D}
             />
+          ) : (
+            <SceneGeneral />
           )}
-        />
-        <Route
-          path="/code"
-          render={() => (
-            <CodeEditor
-              title={this.state.title}
-              active={this.state.active}
-              objPresent={this.state.objPresent}
-              assetStack={this.state.assetStack}
-              isCursor={this.state.isCursor}
-              isDefaultLights={this.state.isDefaultLights}
-              stopanimateScene={this.stopanimateScene}
-              code={this.state.code}
-              codeTab={this.state.codeTab}
-              updateCode={this.updateCode}
-              updateAnimate={this.updateAnimate}
-              handleActiveTab={this.handleActiveTab}
-              consoles={consoles}
-            />
-          )}
-        />
-      </>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <SceneEditor
+                {...this.state}
+                scene={this.scene}
+                objPresent={this.state.objPresent || []}
+                setSceneObject={this.setSceneObject}
+                addInScene={this.addInScene}
+                setActiveObj={this.setActiveObj}
+                setCursor={this.setCursor}
+                setDefaultLights={this.setDefaultLights}
+                renderSceneOnMount={this.renderSceneOnMount}
+                handleLeave={this.handleLeave}
+                handleOver={this.handleOver}
+                stopanimateScene={this.stopanimateScene}
+                changeObjectProp={this.changeObjectProp}
+                setController={this.setController}
+                transformControls={this.transformControls}
+                updateActiveDrilldown={this.updateActiveDrilldown}
+                setMaterial={this.setMaterial}
+                replaceGeometry={this.replaceGeometry}
+                replaceLights={this.replaceLights}
+                handleResize={this.handleResize}
+                toggleGridMesh={this.toggleGridMesh}
+                isGrid={isGrid}
+                removeObject3D={this.removeObject3D}
+              />
+            )}
+          />
+          <Route
+            path="/code"
+            render={() => (
+              <CodeEditor
+                title={this.state.title}
+                active={this.state.active}
+                objPresent={this.state.objPresent}
+                assetStack={this.state.assetStack}
+                isCursor={this.state.isCursor}
+                isDefaultLights={this.state.isDefaultLights}
+                stopanimateScene={this.stopanimateScene}
+                code={this.state.code}
+                codeTab={this.state.codeTab}
+                updateCode={this.updateCode}
+                updateAnimate={this.updateAnimate}
+                handleActiveTab={this.handleActiveTab}
+                deleteAnimate={this.deleteAnimate}
+              />
+            )}
+          />
+        </>
       </ThreeProvider>
     );
   }
