@@ -310,10 +310,21 @@ function createAssets(arr = []) {
     let name = val.name.replace(/[\W_]+/g, "");
     if (val.ext === ".png" || val.ext === ".jpg" || val.ext === ".jpeg") {
       assetString += `<img id="${name}" src="./Assets/${val.name}"> \n`;
-    } else if (val.ext === ".obj" || val.ext === ".mtl") {
-      assetString += `<a-asset-item id="${name}" src="./Assets/${
-        val.name
-      }"></a-asset-item> \n`;
+    } else if (val.ext === ".obj") {
+      assetString += `<a-asset-item id="${val.name +
+        val.objPath}" src="./Assets/${val.name}/${
+        val.objPath
+      }"></a-asset-item> \n
+      <a-asset-item id="${val.name +
+        val.mtlPath}" src="./Assets/${val.name}/${
+        val.mtlPath
+      }"></a-asset-item> \n
+      `;
+    } else if (val.ext === ".gltf") {
+      assetString += `<a-asset-item id="${val.name +
+        val.gltfPath}" src="${`./Assets/${val.name}/${
+        val.gltfPath
+      }`}"></a-asset-item> \n`;
     } else {
       assetString += `<video id="${name}" autoplay loop="true" src="./Assets/${
         val.name

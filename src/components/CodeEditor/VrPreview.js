@@ -41,7 +41,8 @@ export default class VrPreview extends Component {
       this.props.objPresent,
       this.props.isCursor,
       this.props.isDefaultLights,
-      this.props.code
+      this.props.code,
+      this.props.config
     );
     return (
       <>
@@ -51,7 +52,8 @@ export default class VrPreview extends Component {
             height: "calc(100% - 72px)",
             width: "100%",
             float: "left",
-            border: "none"
+            border: "none",
+            background:"#1c1c1c"
           }}
           src={"data:text/html," + doc}
         />

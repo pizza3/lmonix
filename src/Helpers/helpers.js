@@ -315,15 +315,24 @@ export const aframeTemplate = (
   sceneArr,
   isCursor = false,
   isDefaultLights = true,
-  script = ""
+  script = "",
+  config
 ) => {
+  const { camera, fog } = config
+  const { far, fov, near } = camera
+  const { type, color, fognear, fogfar, density, enabled } = fog
+  const fogString = enabled?
+  type==='linear'?`fog="type: linear; color: ${color}; near:${fognear}; far:${fogfar};"`:`fog="type: exponential; color: ${color}; density:${density};"`:""
   // a new template is only been made on when assets are added, a new project got created, project got saved.
   return `<html><head><meta content="text/html;charset=utf-8" http-equiv="Content-Type"><meta content="utf-8" http-equiv="encoding">
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script> 
-  </head><body><a-scene background="color: #1c1c1c" vr-mode-ui="enabled: false" light="defaultLightsEnabled: false"><a-camera>${
+  </head><body><a-scene background="color: #1c1c1c" vr-mode-ui="enabled: false" light="defaultLightsEnabled: false" ${fogString}>
+  <a-camera far="${far}" fov="${fov}" near="${near}" look-controls-enabled="${camera["look-controls-enabled"]}" wasd-controls-enabled="${camera["wasd-controls-enabled"]}">
+  ${
     isCursor ? `<a-cursor></a-cursor>` : ``
-  }</a-camera>
+  }
+  </a-camera>
   <a-assets>${createAssets(assetArr)}</a-assets>
   ${
     isDefaultLights

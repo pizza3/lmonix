@@ -89,7 +89,7 @@ export default class VrRenderer extends Component {
   }
 
   showEditor = () => {
-    const { codeTab, consoles } = this.props;
+    const { codeTab, config } = this.props;
     if (codeTab === 1) {
       return (
         <>
@@ -108,7 +108,7 @@ export default class VrRenderer extends Component {
               isCursor={this.props.isCursor}
               isDefaultLights={this.props.isDefaultLights}
               code={this.props.code}
-              consoles={consoles}
+              config={config}
             />
           </div>
           <EditorDiv id="monacocontainer" width="50%" height="100%" />
@@ -125,7 +125,7 @@ export default class VrRenderer extends Component {
         isCursor={this.props.isCursor}
         isDefaultLights={this.props.isDefaultLights}
         code={this.props.code}
-        consoles={consoles}
+        config={config}
       />
     );
   };

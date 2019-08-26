@@ -43,7 +43,7 @@ export default class SceneController extends Component {
     const {isGrid }= this.props
     return (
       <SceneControllerContainer>
-        <Tooltip
+        {/* <Tooltip
           align='right'
           name='Free Roam'
         >
@@ -56,7 +56,7 @@ export default class SceneController extends Component {
               {walk()}
             </Svg>
           </SelectController>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip
          align='right'
          name={isGrid?'Hide Grid':'Show Grid'}
@@ -162,7 +162,7 @@ const SceneControllerContainer = styled.div`
   position: fixed;
   z-index: 102;
   width: 37px;
-  height: 166px;
+  height: 134px;
   overflow: auto;
   left: 235px;
   border: 2px solid #2d2d2d;

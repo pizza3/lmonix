@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Cursor from "./Cursor";
 import DefaultLights from "./DefaultLights";
 import Camera from "./Camera";
+import Fog from "./Fog";
 
 
 export default class Index extends Component {
@@ -13,6 +14,7 @@ export default class Index extends Component {
         <Cursor/>
         <DefaultLights/>
         <Camera/>
+        <Fog/>
       </div>
     );
   }

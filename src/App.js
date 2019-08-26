@@ -42,11 +42,25 @@ class App extends Component {
     activeStack: [],
     copyObj: null,
     editState: [],
-    setMode: true,
+    setMode: false,
     codeTab: 2,
     config: {
-      camera: { far: 10000, fov: 80, near: 0.005, zoom: 1 },
-      fog: { color: "#000" }
+      camera: {
+        far: 10000,
+        fov: 80,
+        near: 0.005,
+        zoom: 1,
+        "wasd-controls-enabled": true,
+        "look-controls-enabled": true
+      },
+      fog: {
+        type: "linear",
+        color: "#000",
+        fognear: 1,
+        fogfar: 1000,
+        density: 0.00025,
+        enabled:false
+      }
     }
   };
   objPresent = [];
@@ -199,8 +213,8 @@ class App extends Component {
           case "pasteObj":
             this.paste3DObject(this.state.copyObj, this.active);
             this.setState({
-              active:this.active
-            })
+              active: this.active
+            });
             break;
           case "animate":
             this.setAnimate();
@@ -732,7 +746,6 @@ document.getElementById('${name}')
       }
     });
   };
-
   setMaterial = material => {
     const mapData = ApplyTexture(this.active);
     const newMaterial = new THREE[material]({
@@ -763,6 +776,42 @@ document.getElementById('${name}')
         }
       );
     }
+  };
+  setCameraConfig = event => {
+    event.persist();
+    const name = event.target.dataset.name || event.target.name;
+    const value = !(name==="wasd-controls-enabled"||name==="look-controls-enabled")
+      ? event.target.value
+      : event.target.checked;      
+    const { config } = this.state;
+    this.setState({
+      config: {
+        ...config,
+        camera: {
+          ...config.camera,
+          [name]: value
+        }
+      }
+    });
+  };
+  setFogConfig = event => {  
+    if(event.persist)  
+    event.persist();
+        
+    const name = event.target.dataset.name || event.target.name;
+    const value = !(name === "enabled")
+      ? event.target.value
+      : event.target.checked;
+    const { config } = this.state;
+    this.setState({
+      config: {
+        ...config,
+        fog: {
+          ...config.fog,
+          [name]: value
+        }
+      }
+    });
   };
   changeObjectProp = (value, prop, option, isAppState = true) => {
     const active = this.active;
@@ -850,7 +899,8 @@ document.getElementById('${name}')
       isCursor,
       scene,
       codeTab,
-      isGrid
+      isGrid,
+      config
     } = this.state;
     return (
       <ThreeProvider
@@ -863,13 +913,16 @@ document.getElementById('${name}')
           codeTab: codeTab,
           isCursor: isCursor,
           isDefaultLights: isDefaultLights,
+          config: config,
           // methods
           setActiveObj: this.setActiveObj,
           updateActiveDrilldown: this.updateActiveDrilldown,
           changeObjectProp: this.changeObjectProp,
           setCursor: this.setCursor,
           handleActiveTab: this.handleActiveTab,
-          setDefaultLights: this.setDefaultLights
+          setDefaultLights: this.setDefaultLights,
+          setCameraConfig: this.setCameraConfig,
+          setFogConfig: this.setFogConfig
         }}
       >
         <>
@@ -936,6 +989,7 @@ document.getElementById('${name}')
                 isDefaultLights={this.state.isDefaultLights}
                 stopanimateScene={this.stopanimateScene}
                 code={this.state.code}
+                config={config}
                 codeTab={this.state.codeTab}
                 updateCode={this.updateCode}
                 updateAnimate={this.updateAnimate}
