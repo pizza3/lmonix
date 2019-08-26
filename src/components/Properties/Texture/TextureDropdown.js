@@ -124,7 +124,7 @@ export default class MenuDropdown extends Component {
           <>
             <TextureIcon>{texture}</TextureIcon>
             <Message>
-              No texture's available. Add them from General > Assets > Images.
+              No texture's available. Add them by clicking "+" button.
             </Message>
           </>
         )}
