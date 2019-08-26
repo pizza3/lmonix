@@ -42,7 +42,7 @@ class App extends Component {
     activeStack: [],
     copyObj: null,
     editState: [],
-    setMode: false,
+    setMode: true,
     codeTab: 2,
     config: {
       camera: {
@@ -797,7 +797,7 @@ document.getElementById('${name}')
   setFogConfig = event => {  
     if(event.persist)  
     event.persist();
-        
+
     const name = event.target.dataset.name || event.target.name;
     const value = !(name === "enabled")
       ? event.target.value

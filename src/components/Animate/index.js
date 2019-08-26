@@ -43,8 +43,8 @@ export default class Animate extends Component {
           />
         </Svg>
         <Text>
-          Add animation to the selected entity, by right clicking on them > Add
-          to animate.
+          Add animation to the selected entity, by right clicking > Add
+          Animation.
         </Text>
       </>
     );

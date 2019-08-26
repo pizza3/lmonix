@@ -440,7 +440,8 @@ const AddGroupObj = (
       object["objType"] = "Light";
       object["objPrimitive"] = "point";
       object["hashColor"] = obj.hashColor || "#ffffff";
-      let pointLight = updateLights("PointLight", obj.children[0]);
+      let pointChild = obj.children?obj.children[0]:{}
+      let pointLight = updateLights("PointLight", pointChild);
       pointLight.castShadow = false;
       object.add(pointLight);
       object.visible = obj.visible;
@@ -452,7 +453,8 @@ const AddGroupObj = (
       object["objType"] = "Light";
       object["objPrimitive"] = "spot";
       object["hashColor"] = obj.hashColor || "#ffffff";
-      let spotlight = updateLights("SpotLight", obj.children[0]);
+      let spotChild = obj.children?obj.children[0]:{}
+      let spotlight = updateLights("SpotLight", spotChild);
       spotlight.position.set(100, 1000, 100);
       spotlight.castShadow = false;
       spotlight.shadow.mapSize.width = 1024;
@@ -469,7 +471,8 @@ const AddGroupObj = (
       object["objType"] = "Light";
       object["objPrimitive"] = "hemisphere";
       object["hashColor"] = obj.hashColor || "#ffffff";
-      let hemispherelight = updateLights("HemisphereLight", obj.children[0]);
+      let hemisphereChild = obj.children?obj.children[0]:{}
+      let hemispherelight = updateLights("HemisphereLight", hemisphereChild);
       hemispherelight.castShadow = false;
       object.add(hemispherelight);
       scene.add(object);
@@ -480,7 +483,8 @@ const AddGroupObj = (
       object["objType"] = "Light";
       object["objPrimitive"] = "directional";
       object["hashColor"] = obj.hashColor || "#ffffff";
-      let lightdirectional = updateLights("DirectionalLight", obj.children[0]);
+      let directionalChild = obj.children?obj.children[0]:{}
+      let lightdirectional = updateLights("DirectionalLight", directionalChild);
       lightdirectional.castShadow = false;
       object.add(lightdirectional);
       scene.add(object);
@@ -492,7 +496,8 @@ const AddGroupObj = (
       object["objPrimitive"] = "ambient";
       object["hashColor"] = obj.hashColor || "#ffffff";
       // var ambientlight = new THREE.AmbientLight(obj.hashColor,1);
-      const ambientlight = updateLights("AmbientLight", obj.children[0]);
+      let ambientChild = obj.children?obj.children[0]:{}
+      const ambientlight = updateLights("AmbientLight", ambientChild);
       ambientlight.castShadow = false;
       object.add(ambientlight);
       scene.add(object);
