@@ -20,16 +20,21 @@ Drag/Drop | Copy/Paste | Group In
 ## Entity Properties
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
+## Adding Assets
+Currently the type of assets which are being supported are images(jpg, png, jpeg, webp), video(mp4, webm), sound(mp3), 3D models(gtlf & obj) only. Assets are available on mesh based entities as `Texture` or `3D Model`. To add a new asset you would get the option on the properties section as `Add Texture` or `Add Models`. Google Poly Models can be accessed by clicking on the poly logo, which provides you whole bunch of low poly models.
+
+We can add textures to basic models by selecting them from the local directory, the supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, `.webm`, & `.mp4`.
+Textures can be added by selecting the texture option inside the properties panel.
+
 Add Texture | 
 --- | 
 <img src="demoImages/texture.gif" alt="draging entities" width="100%" style="float:left; border-radius:4px;"/> |
 
+To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
+
 Add Models | 
 --- | 
 <img src="demoImages/models.gif" alt="draging entities" width="100%" style="float:left; border-radius:4px;"/> |
-
-## Adding Assets
-Currently the type of assets which are being supported are images(jpg, mpg, jpeg, wepb), video(mp4, webm), sound(mp3), 3D models(gtlf & obj) only. Assets are available on mesh based entities as `Texture` or `3D Model`. To add a new asset you would get the option on the properties section as `Add Texture` or `Add Models`. Google Poly Models can be accessed by clicking on the poly logo, which provides you whole bunch of low poly models.
 
 # Prototype
 The prototype editor is used for adding animations and interactions to our static scene, over here each individual element can be added multiple animation properties at the very same time. We can build also build a timeline across the animations we have added, inside prototype we also have a code editor where we can add our logic and interactions for each individual entity.
