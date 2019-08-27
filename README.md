@@ -18,20 +18,20 @@ Drag/Drop | Copy/Paste | Group In
 
 
 ## Entity Properties
+<p align="center"><img src="demoImages/properties.gif" alt="draging entities" width="70%" /></p>
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
 ## Adding Assets
 Currently the type of assets which are being supported are images(jpg, png, jpeg, webp), video(mp4, webm), sound(mp3), 3D models(gtlf & obj) only. Assets are available on mesh based entities as `Texture` or `3D Model`. To add a new asset you would get the option on the properties section as `Add Texture` or `Add Models`. Google Poly Models can be accessed by clicking on the poly logo, which provides you whole bunch of low poly models.
 
-We can add textures to basic models by selecting them from the local directory, the supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, `.webm`, & `.mp4`.
-Textures can be added by selecting the texture option inside the properties panel.
 
 ### `Add Texture`
+We can add textures to basic models by selecting them from the local directory, the supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, `.webm`, & `.mp4`.
+Textures can be added by selecting the texture option inside the properties panel.
 <p align="center"><img src="demoImages/texture.gif" alt="draging entities" width="70%" /></p>
 
-To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
-
 ### `Add Models`
+To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
 <p align="center"><img src="demoImages/models.gif" alt="draging entities" width="70%" /></p>
 
 # Prototype
