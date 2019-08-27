@@ -83,7 +83,8 @@ class App extends Component {
               state: {
                 code: this.state.code,
                 isDefaultLights: this.state.isDefaultLights,
-                isCursor: this.state.isCursor
+                isCursor: this.state.isCursor,
+                config: this.state.config
               },
               store: JSON.stringify({
                 data: finaldata,
@@ -91,7 +92,8 @@ class App extends Component {
                   code: this.state.code,
                   isDefaultLights: this.state.isDefaultLights,
                   isCursor: this.state.isCursor,
-                  assetStack: this.state.assetStack
+                  assetStack: this.state.assetStack,
+                  config: this.state.config
                 }
               })
             });
@@ -107,7 +109,8 @@ class App extends Component {
                 isDefaultLights: this.state.isDefaultLights,
                 isCursor: this.state.isCursor,
                 assetStack: this.state.assetStack,
-                title: this.state.title
+                title: this.state.title,
+                config: this.state.config
               },
               location: this.props.location.pathname,
               store: JSON.stringify({
@@ -117,7 +120,8 @@ class App extends Component {
                   isDefaultLights: this.state.isDefaultLights,
                   isCursor: this.state.isCursor,
                   assetStack: this.state.assetStack,
-                  title: this.state.title
+                  title: this.state.title,
+                  config: this.state.config
                 }
               })
             });
@@ -127,7 +131,6 @@ class App extends Component {
             let parsedObj = JSON.parse(val["obj"]);
             const data = this.reloadProject(parsedObj["data"], 0);
             const { isDefaultLights, code, isCursor } = parsedObj["state"];
-            console.log(parsedObj["state"]);
             this.objPresent = data;
             this.setState(
               {
@@ -139,7 +142,7 @@ class App extends Component {
                 activeObj: "00",
                 title: val["title"][0]
               },
-              () => {
+              () => { 
                 this.transformControls.attach(
                   this.objPresent[this.state.activeObj]
                 );
@@ -336,13 +339,9 @@ document.getElementById('${name}')
     });
   };
   deleteAnimate = index => {
-    console.log(index);
-
     const newAnimate = _.filter(this.active.objAnimate, (anim, i) => {
       return i !== Number(index);
     });
-    console.log(newAnimate);
-
     this.active.objAnimate = newAnimate;
     this.setState({
       active: this.active
@@ -482,7 +481,7 @@ document.getElementById('${name}')
     this.active.children[0].geometry.dispose();
     this.active.children[0].geometry = geometry;
     if (type) {
-      this.active.objName = type;
+      // this.active.objName = type;
       this.active.objPrimitive = type.toLowerCase();
       this.setState({
         active: this.active
@@ -856,8 +855,6 @@ document.getElementById('${name}')
       case "colorLight":
         if (this.active) {
           let lighthex = parseInt(value.replace(/^#/, ""), 16);
-          // console.log(this.active);
-
           this.active.children[0][prop].setHex(lighthex);
           this.active.hashColor = value;
         }

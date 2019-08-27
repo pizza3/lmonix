@@ -11,8 +11,8 @@ const textureLoader = (path)=>{
         function ( xhr ) {
             console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
         },
-        function ( xhr ) {
-            console.log( 'An error happened' );
+        function ( error ) {
+            console.error( 'An error happened',error );
         }
     );
     const point = new THREE.Vector2( 0.5, 0.5 );

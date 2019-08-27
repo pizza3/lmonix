@@ -14,9 +14,7 @@ export default class ColorPicker extends Component {
     if (!_.isEqual(prevProps.active.uuid, this.props.active.uuid)) {
       this.onChange(this.props.active.hashColor);
     }
-    if(!_.isEqual(prevProps.active.hashColor, this.props.active.hashColor)){ 
-      console.log('color changed');
-           
+    if(!_.isEqual(prevProps.active.hashColor, this.props.active.hashColor)){            
       this.onChange(this.props.active.hashColor, false);
     }
   }

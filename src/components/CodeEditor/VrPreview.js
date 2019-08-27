@@ -27,8 +27,6 @@ export default class VrPreview extends Component {
     document
       .getElementById("webview")
       .getWebContents().capturePage(function(image){
-        console.log(image);
-
       })
     // document.getElementById("webview").getWebContents().printToPDF({}, (error, data) => {
     //   console.log(data, error)

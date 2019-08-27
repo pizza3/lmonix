@@ -40,9 +40,7 @@ export default class SceneLayer extends Component {
       this.setState({
         dragObj:obj,
         isDrag:true
-      }) 
-      console.log('setDragObj');
-      
+      })       
   }
 
   handleUp = ()=>{    

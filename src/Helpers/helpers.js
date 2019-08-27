@@ -302,7 +302,6 @@ const geomSelectedParams = {
 };
 
 const setGeometryAframe = (obj, type) => {
-  console.log(obj);
   let str = "";
   _.forEach(geomSelectedParams[type], val => {
     str += `${val}:${obj[val]};`;

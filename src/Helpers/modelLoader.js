@@ -28,7 +28,7 @@ const modelLoader = async (threeDobj, directory, changeObjectProp) => {
         },
         // called when loading has errors
         function(error) {
-          console.log("An error happened");
+          console.error("An error happened", error);
         }
       );
     });

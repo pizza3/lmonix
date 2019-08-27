@@ -57,8 +57,8 @@ export default class MenuDropdown extends Component {
           console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
         },
         // Function called when download errors
-        function(xhr) {
-          console.log("An error happened");
+        function(err) {
+          console.error("An error happened", err);
         }
       );
       const objTexture = {

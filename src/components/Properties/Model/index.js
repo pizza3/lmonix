@@ -22,12 +22,8 @@ export default class Model extends Component {
       });
     }
   }
-  componentDidUpdate(prevProps) {
-    console.log(prevProps.active.objModel,this.props.active.objModel);
-    
-    if (!_.isEqual(prevProps.active.objModel, this.props.active.objModel)) {
-      console.log('obj model');
-      
+  componentDidUpdate(prevProps) {    
+    if (!_.isEqual(prevProps.active.objModel, this.props.active.objModel)) {      
       if (
         this.props.active &&
         this.props.active.objModel &&

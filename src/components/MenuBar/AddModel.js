@@ -219,7 +219,6 @@ export const ApplyTexture = obj => {
   if (obj.objTexture && obj.objTexture.type === "image") {
     mapData = textureLoader(obj.objTexture.path);
   } else if (obj.objTexture && obj.objTexture.type === "video") {
-    console.log(obj.objTexture);
     mapData = videoLoader(obj.objTexture.path);
   }
   return mapData;
@@ -302,8 +301,6 @@ const AddGroupObj = (
       // object.matrixAutoUpdate = false
       return object;
     case "plane":
-      console.log(geometryParams);
-
       let geometryPlane = updateGeometry(
         "PlaneBufferGeometry",
         {},
@@ -442,7 +439,7 @@ const AddGroupObj = (
       object["hashColor"] = obj.hashColor || "#ffffff";
       let pointChild = obj.children?obj.children[0]:{}
       let pointLight = updateLights("PointLight", pointChild);
-      pointLight.castShadow = false;
+      pointLight.castShadow = obj.children?obj.children[0].castShadow: false;
       object.add(pointLight);
       object.visible = obj.visible;
       scene.add(object);
@@ -456,7 +453,7 @@ const AddGroupObj = (
       let spotChild = obj.children?obj.children[0]:{}
       let spotlight = updateLights("SpotLight", spotChild);
       spotlight.position.set(100, 1000, 100);
-      spotlight.castShadow = false;
+      spotlight.castShadow = obj.children?obj.children[0].castShadow: false;
       spotlight.shadow.mapSize.width = 1024;
       spotlight.shadow.mapSize.height = 1024;
       spotlight.shadow.camera.near = 500;
@@ -473,7 +470,7 @@ const AddGroupObj = (
       object["hashColor"] = obj.hashColor || "#ffffff";
       let hemisphereChild = obj.children?obj.children[0]:{}
       let hemispherelight = updateLights("HemisphereLight", hemisphereChild);
-      hemispherelight.castShadow = false;
+      hemispherelight.castShadow = obj.children?obj.children[0].castShadow: false;
       object.add(hemispherelight);
       scene.add(object);
       // object.matrixAutoUpdate = false
@@ -485,7 +482,7 @@ const AddGroupObj = (
       object["hashColor"] = obj.hashColor || "#ffffff";
       let directionalChild = obj.children?obj.children[0]:{}
       let lightdirectional = updateLights("DirectionalLight", directionalChild);
-      lightdirectional.castShadow = false;
+      lightdirectional.castShadow = obj.children?obj.children[0].castShadow: false;
       object.add(lightdirectional);
       scene.add(object);
       // object.matrixAutoUpdate = false
@@ -498,7 +495,7 @@ const AddGroupObj = (
       // var ambientlight = new THREE.AmbientLight(obj.hashColor,1);
       let ambientChild = obj.children?obj.children[0]:{}
       const ambientlight = updateLights("AmbientLight", ambientChild);
-      ambientlight.castShadow = false;
+      ambientlight.castShadow =obj.children?obj.children[0].castShadow: false;
       object.add(ambientlight);
       scene.add(object);
       // object.matrixAutoUpdate = false
