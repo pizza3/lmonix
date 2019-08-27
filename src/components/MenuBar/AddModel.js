@@ -27,7 +27,7 @@ const AddCube = (
   obj["objName"] = "Mesh";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "box";
-  obj["hashColor"] = "#ef2d5e";
+  obj["hashColor"] = "#feb3c7";
   obj["objAnimate"] = [];
   obj.add(new THREE.Mesh(geometry, material));
   return obj;
@@ -118,7 +118,7 @@ const AddCurvedImage = scene => {
   obj["objName"] = "CurvedImage";
   obj["objType"] = "Mesh";
   obj["objPrimitive"] = "curvedimage";
-  obj["hashColor"] = "#ef2d5e";
+  obj["hashColor"] = "#feb3c7";
   obj.add(new THREE.Mesh(geometryCylinder, material));
   return obj;
 };
@@ -270,7 +270,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "box";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometry, material));
       scene.add(object);
       object["objTexture"] = obj.objTexture ? obj.objTexture : {};
@@ -291,7 +291,7 @@ const AddGroupObj = (
       );
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object["objPrimitive"] = "sphere";
       object.add(new THREE.Mesh(geometrySphere, material));
       scene.add(object);
@@ -312,7 +312,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "plane";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometryPlane, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
@@ -330,7 +330,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "cone";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometryCylinder, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
@@ -348,7 +348,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "cone";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometryCone, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
@@ -366,7 +366,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "ring";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometryRing, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
@@ -384,7 +384,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "circle";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometryCircle, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
@@ -538,7 +538,7 @@ const AddGroupObj = (
       object["objName"] = obj.objName ? obj.objName : "CurvedImage";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "curvedimage";
-      object["hashColor"] = obj.hashColor || "#ef2d5e";
+      object["hashColor"] = obj.hashColor || "#feb3c7";
       object.objTexture = obj.objTexture;
       material.side = THREE.DoubleSide;
       object.add(new THREE.Mesh(geometryCurvedimage, material));
