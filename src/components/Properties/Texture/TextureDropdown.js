@@ -146,7 +146,7 @@ const Container = styled.div`
 `;
 
 const Span = styled.span`
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 700;
   float: left;
   margin-right: 5px;

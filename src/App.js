@@ -127,6 +127,7 @@ class App extends Component {
             let parsedObj = JSON.parse(val["obj"]);
             const data = this.reloadProject(parsedObj["data"], 0);
             const { isDefaultLights, code, isCursor } = parsedObj["state"];
+            console.log(parsedObj["state"]);
             this.objPresent = data;
             this.setState(
               {
@@ -145,7 +146,11 @@ class App extends Component {
                 this.active = data[0];
                 this.scene.add(this.transformControls);
                 this.handleResize();
-                this.setDefaultLights();
+                if(this.ambientLight)
+                this.ambientLight.visible = isDefaultLights;
+        
+                if(this.directionalLight)
+                this.directionalLight.visible = isDefaultLights;
                 message.success("Project Loaded", 3);
               }
             );
@@ -165,8 +170,8 @@ class App extends Component {
             break;
           case "addGroupObj":
             let a = AddGroupObj({}, val["obj"], this.active);
-            const entityNumber = this.setNumberOfObj(a);
-            a.objName = `${a.objName}_${entityNumber}`;
+            // const entityNumber = this.setNumberOfObj(a);
+            // a.objName = `${a.objName}_${entityNumber}`;
             this.updateActiveDrilldown(this.active.uuid, true);
             this.active = a;
             this.setState({
@@ -366,8 +371,8 @@ document.getElementById('${name}')
     const activeObj = objPresent.length;
     this.objPresent.push(obj);
     this.active = obj;
-    const entityNumber = this.setNumberOfObj(obj);
-    obj.objName = `${obj.objName}_${entityNumber}`;
+    // const entityNumber = this.setNumberOfObj(obj);
+    // obj.objName = `${obj.objName}_${entityNumber}`;
     this.scene.add(obj);
     this.setState(
       {
@@ -571,14 +576,17 @@ document.getElementById('${name}')
     });
   };
   setDefaultLights = () => {
-    const { isDefaultLights, scene } = this.state;
+    const { isDefaultLights } = this.state;
     this.setState(
       {
         isDefaultLights: !isDefaultLights
       },
       () => {
-        scene.children[1].visible = !isDefaultLights;
-        scene.children[2].visible = !isDefaultLights;
+        if(this.ambientLight)
+        this.ambientLight.visible = !isDefaultLights;
+
+        if(this.directionalLight)
+        this.directionalLight.visible = !isDefaultLights;
       }
     );
   };

@@ -20,6 +20,10 @@ Drag/Drop | Copy/Paste | Group In
 ## Entity Properties
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
+Add Texture | Add Models 
+--- | ---
+<img src="demoImages/texture.gif" alt="draging entities" width="100%" style="float:left; border-radius:4px;"/> |<img src="demoImages/models.gif" alt="draging entities" width="100%" style="float:left; border-radius:4px;"/> 
+
 ## Adding Assets
 Currently the type of assets which are being supported are images(jpg, mpg, jpeg, wepb), video(mp4, webm), sound(mp3), 3D models(gtlf & obj) only. Assets are available on mesh based entities as `Texture` or `3D Model`. To add a new asset you would get the option on the properties section as `Add Texture` or `Add Models`. Google Poly Models can be accessed by clicking on the poly logo, which provides you whole bunch of low poly models.
 
