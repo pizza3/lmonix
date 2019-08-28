@@ -101,6 +101,8 @@ export default class PropertiesEditor extends Component {
   updateGeometry = (value, prop) => {
     const { replaceGeometry, active } = this.props;
     const geometryType = active.children[0].geometry.type;
+    // console.log(geometry);
+    
     let geometry = updateGeometry(
       geometryType,
       active.children[0].geometry.parameters,

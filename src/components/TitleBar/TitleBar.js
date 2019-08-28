@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { run, info } from "../../assets/icon";
 import LocalServer from "./LocalServer";
+import Docs from "./Docs";
 import { Link } from "react-router-dom";
 import Trigger from "rc-trigger";
 import Tooltip from "../../designLib/Tooltip";
@@ -26,12 +27,24 @@ export default class TitleBar extends Component {
         </Link>
         <Title>{this.props.title}</Title>
         <Tooltip name="Docs" align="bottom">
-          <SvgContainer
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
+          <Trigger
+            action={["click"]}
+            popup={
+              <Docs/>
+            }
+            prefixCls="dropdown"
+            popupAlign={{
+              points: ["bc", "tl"],
+              offset: [-230, 30]
+            }}
           >
-            {info()}
-          </SvgContainer>
+            <SvgContainer
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              {info()}
+            </SvgContainer>
+          </Trigger>
         </Tooltip>
         <Tooltip name="Preview" align="bottom">
           <Trigger
@@ -121,33 +134,4 @@ const TitleLinkCode = styled.div`
   border-bottom: ${props => props.active + "px solid #707070"};
   margin-top: 10px;
   margin-left: 1px;
-`;
-
-const TooltipBody = styled.div`
-  width: auto;
-  height: auto;
-  padding: 7px;
-  box-sizing: content-box;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-  font-weight: 600;
-  font-size: 10px;
-`;
-
-const TooltipOverlay = styled.div`
-  background: #000;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-  left: 0%;
-  top: 0%;
-  z-index: -1;
-`;
-
-const TooltipText = styled.div`
-  z-index: 1;
-  color: white;
-  position: relative;
 `;

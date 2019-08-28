@@ -1,6 +1,6 @@
 import React ,{Component} from 'react'
 import styled from 'styled-components'
-import {vrLogo} from '../../assets/icon'
+import { vrLogo, devices } from '../../assets/icon'
 import message from "antd/lib/message/index";
 const electron =  window.require('electron');
 
@@ -33,7 +33,9 @@ export default class LocalServer extends Component{
         return(
             <PopContainer>
                 <Header>Preview</Header>
-                <Logo src={vrLogo}/>
+                <Logo xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125">
+                    {devices()}
+                </Logo>
                 {status?
                 <Cont>
                 <Desc>To preview your creation's you can start the localhost server and access it on any device within the same network.</Desc>
@@ -76,17 +78,18 @@ const Desc = styled.div`
     margin-top: 31px;
 `
 
-const Logo = styled.img`
-    width: 86px;
-    position: relative;
-    margin-left: 32%;
-    margin-top: 15px;
+const Logo = styled.svg`
+    width: 128px;
+    position: absolute;
+    margin-left: 40px;
+    margin-top: -5px;
 `
 
 const Cont = styled.div`
     position: relative;
     height: 41px;
     padding: 0px 11px 0px 11px;
+    margin-top: 113px
 `
 
 const Url = styled.div`

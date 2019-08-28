@@ -8,10 +8,10 @@ export default class Transparent extends Component {
     transparent: false
   };
   componentDidUpdate(prevProps) {
-    if (!_.isEqual(prevProps.active, this.props.active)) {
+    if (!_.isEqual(prevProps.active.uuid, this.props.active.uuid)) {
       let val = this.props.active.children[0].material.transparent || false;
       this.setState({
-        transparent: val
+        transparent: this.props.active.children[0].material.transparent
       });
     }
   }

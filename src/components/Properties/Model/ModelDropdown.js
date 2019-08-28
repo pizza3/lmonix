@@ -127,7 +127,7 @@ export default class MenuDropdown extends Component {
             <>
               <TextureIcon>{texture}</TextureIcon>
               <Message>
-                No Model's available. Add them from General > Assets > Images.
+                No Model's available. Add them by clicking "+" button.
               </Message>
             </>
           )

@@ -17,6 +17,7 @@ import { PropertyName, PropertyContainer } from "./styled";
 import {
   genericProperties,
   genericPropertiesLights,
+  genericPropertiesModels,
   directions,
   easeFuncsList,
   basicAnimationsConfig,
@@ -187,6 +188,20 @@ export default class AnimDropdown extends Component {
     let fromData, toData, propoptions;
     if (active.objType === "Light") {
       propoptions = _.map(genericPropertiesLights, (prop, index) => {
+        return (
+          <optgroup key={index} label={index}>
+            {_.map(prop, (val, i) => {
+              return (
+                <option key={i} value={val}>
+                  {val}
+                </option>
+              );
+            })}
+          </optgroup>
+        );
+      });
+    } else if(active.objPrimitive === "3DModel") {
+      propoptions = _.map(genericPropertiesModels, (prop, index) => {
         return (
           <optgroup key={index} label={index}>
             {_.map(prop, (val, i) => {

@@ -17,9 +17,8 @@ export default class Visible extends Component {
 
   componentDidUpdate(prevProps) {
     if (!_.isEqual(prevProps.active, this.props.active)) {
-        let val = this.props.active.visible || false;
         this.setState({
-          visible: val
+          visible: this.props.active.visible
         });
     }
   }

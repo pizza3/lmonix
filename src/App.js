@@ -43,7 +43,7 @@ class App extends Component {
     copyObj: null,
     editState: [],
     setMode: true,
-    codeTab: 2,
+    codeTab: 1,
     config: {
       camera: {
         far: 10000,
@@ -130,7 +130,7 @@ class App extends Component {
             // when opening a project
             let parsedObj = JSON.parse(val["obj"]);
             const data = this.reloadProject(parsedObj["data"], 0);
-            const { isDefaultLights, code, isCursor } = parsedObj["state"];
+            const { isDefaultLights, code, isCursor, config } = parsedObj["state"];
             this.objPresent = data;
             this.setState(
               {
@@ -140,7 +140,8 @@ class App extends Component {
                 active: data[0],
                 objPresent: data,
                 activeObj: "00",
-                title: val["title"][0]
+                title: val["title"][0],
+                config
               },
               () => { 
                 this.transformControls.attach(
@@ -480,6 +481,8 @@ document.getElementById('${name}')
   replaceGeometry = (geometry, type) => {
     this.active.children[0].geometry.dispose();
     this.active.children[0].geometry = geometry;
+    console.log(geometry, type);
+    
     if (type) {
       // this.active.objName = type;
       this.active.objPrimitive = type.toLowerCase();

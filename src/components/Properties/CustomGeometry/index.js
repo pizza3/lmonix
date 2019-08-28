@@ -47,14 +47,15 @@ export default class CustomGeometry extends Component {
   };
 
   updateValue = e => {
+    e.persist()
     const { updateGeometry, title, type } = this.props;
-    if (type === "boolean") {
+    if (type === "boolean") {      
       this.setState(
         {
-          valueBool: e.target.value
+          valueBool: e.target.checked
         },
         () => {
-          updateGeometry(this.state.valueBool, title);
+          updateGeometry(e.target.checked, title);
         }
       );
     } else if (type === "range") {

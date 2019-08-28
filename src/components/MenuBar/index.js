@@ -67,7 +67,8 @@ export default class MenuBar extends Component {
         <Tooltip align="right" name="Text">
           <ImgContainer
             onClick={() => {
-              AddText(scene, addInScene);
+              this.addModel(AddText(scene));
+              // AddText(scene, addInScene);
             }}
           >
             <Text>T</Text>

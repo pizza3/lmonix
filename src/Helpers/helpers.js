@@ -32,7 +32,7 @@ export const updateGeometry = (type, obj, value) => {
         value.height || obj.height || 1,
         value.radialSegments || obj.radialSegments || 36,
         value.heightSegments || obj.heightSegments || 18,
-        value.openEnded || obj.openEnded || false,
+        !_.isUndefined(value.openEnded)?value.openEnded:obj.openEnded || false,
         value.thetaStart || obj.thetaStart || 0,
         value.thetaLength || obj.thetaLength || 2 * Math.PI
       );
@@ -42,23 +42,23 @@ export const updateGeometry = (type, obj, value) => {
         value.height || obj.height || 1,
         value.radialSegments || obj.radialSegments || 36,
         value.heightSegments || obj.heightSegments || 18,
-        value.openEnded || obj.openEnded || false
+        !_.isUndefined(value.openEnded)?value.openEnded:obj.openEnded || false,
       );
     case "RingBufferGeometry":
       return new THREE.RingBufferGeometry(
-        value.innerRadius || obj.innerRadius || 1.2,
-        value.outerRadius || obj.outerRadius || 0.8,
+        value.innerRadius || obj.innerRadius || 0.5,
+        value.outerRadius || obj.outerRadius || 1,
         32,
-        10,
+        1,
         0,
-        360
+        Math.PI * 2
       );
     case "CircleBufferGeometry":
       return new THREE.CircleBufferGeometry(
         value.radius || obj.radius || 1,
         32,
         0,
-        360
+        Math.PI * 2
       );
     default:
   }
@@ -292,19 +292,20 @@ const generateLigtProps = object => {
 };
 
 const geomSelectedParams = {
-  box: ["width", "height", "depth"],
-  sphere: ["radius"],
-  plane: ["width", "height"],
-  cylinder: ["radiusTop", "radiusBottom", "height", "openEnded"],
-  cone: ["height", "radius", "openEnded"],
-  circle: ["radius"],
-  ring: ["innerRadius", "outerRadius"]
+  box: [{param:"width"}, {param:"height"}, {param:"depth"}],
+  sphere: [{param:"radius"}],
+  plane: [{param:"width"}, {param:"height"}],
+  cylinder: [{param:"radiusTop"}, {param:"radiusBottom"}, {param:"height"}, {param:"openEnded"}],
+  cone: [{param:"height"}, {param:"radius"}, {param:"openEnded"}],
+  circle: [{param:"radius"}],
+  ring: [{param:"innerRadius",name:"radiusInner"}, {param:"outerRadius",name:"radiusOuter"}]
 };
 
 const setGeometryAframe = (obj, type) => {
   let str = "";
   _.forEach(geomSelectedParams[type], val => {
-    str += `${val}:${obj[val]};`;
+    const name = val.name?val.name:val.param;
+    str += `${name}:${obj[val.param]};`;
   });
   return str;
 };
@@ -419,6 +420,10 @@ export const genericProperties = {
 export const genericPropertiesLights = {
   transform: ["position", "rotation", "scale"],
   light: ["intensity"]
+};
+
+export const genericPropertiesModels = {
+  transform: ["position", "rotation", "scale"],
 };
 
 export const directions = ["normal", "alternate", "reverse"];
@@ -579,7 +584,7 @@ export const createAnimaionAttr = (animData, name) => {
       data += ` 
       animation__${anim.name}="property: ${propertPrefix[anim.property]}${
         anim.property
-      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${
+      }; type:${anim.property}; to: ${to}; loop: ${
         anim.loop ? anim.loop : anim.loopvalue
       };delay:${anim.delay}; dur: ${anim.duration}; dir:${
         anim.direction
@@ -611,7 +616,8 @@ export const entityDataAttr = {
     "objModel",
     "position",
     "rotation",
-    "scale"
+    "scale",
+    "visible"
   ],
   box: ["parameters", "material"],
   sphere: ["parameters", "material"],
