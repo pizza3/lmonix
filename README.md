@@ -4,7 +4,9 @@ Lmonix is a desktop application for creating webVR prototype's, the tool consist
 # Design
 The design editor is used for building the static scene, you can add entities such as basic 3D objects, lighting, environments, images / videos, 3D models etc. After adding the entities they will be displayed under the scene. On the right hand side the properties of each individual entity will appear when you select them. 
 
-<img src="demoImages/scene.png" alt="draging entities" width="100%"/>
+| Design |
+|:----:|
+|<img src="demoImages/scene.png" alt="draging entities" width="100%"/>|
 
 
 ## Scene 
@@ -18,7 +20,9 @@ Drag/Drop | Copy/Paste | Group In
 
 
 ## Entity Properties
-<p align="center"><img src="demoImages/properties.gif" alt="draging entities" width="70%" /></p>
+| Edit Properties |
+|:----:|
+|<img src="demoImages/properties.gif" alt="draging entities" width="80%" />|
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
 ## Adding Assets
@@ -28,15 +32,44 @@ Currently the type of assets which are being supported are images(jpg, png, jpeg
 ### `Add Texture`
 We can add textures to basic models by selecting them from the local directory, the supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, `.webm`, & `.mp4`.
 Textures can be added by selecting the texture option inside the properties panel.
-<p align="center"><img src="demoImages/texture.gif" alt="draging entities" width="70%" /></p>
+| Add Textures |
+|:----:|
+|<img src="demoImages/texture.gif" alt="draging entities" width="80%" />|
+
 
 ### `Add Models`
 To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
-<p align="center"><img src="demoImages/models.gif" alt="draging entities" width="70%" /></p>
+| Add Models |
+|:----:|
+|<img src="demoImages/models.gif" alt="draging entities" width="80%" />|
 
 # Prototype
 The prototype editor is used for adding animations and interactions to our static scene, over here each individual element can be added multiple animation properties at the very same time. We can build also build a timeline across the animations we have added, inside prototype we also have a code editor where we can add our logic and interactions for each individual entity.
 
+
+# Project Structure
+
+When we create a new project, a folder directory will be created which will consist of `index.html`, `data.json`, `scripts` and `Assets` folder. It has been set up in such a way that you can just 
+
+```
+my-app
+├── index.html
+├── data.json
+├── scripts
+│   └──index.js
+└── Assets
+    ├── image.png
+    ├── video.mp4
+    └── gltfModel
+    │   ├── scene.gltf
+    │   ├── scene.bin
+    │   └── textures
+    │       └── image0.png
+    ├── image2.jpeg
+    ├── objModel
+    ├── logo.svg
+    └── serviceWorker.js
+```
 
 # Available Scripts
 
