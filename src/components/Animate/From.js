@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { PropertyName, PropertyContainer } from "./styled";
 import Range from "../../designLib/Range";
 import styled from "styled-components";
-import ColorPickerDropdown from "../../designLib/ColorPicker";
+import ColorPickerDropdown, { HexToRgb } from "../../designLib/ColorPicker";
 import Trigger from "rc-trigger";
 export default class From extends Component {
   state = {
@@ -57,28 +57,35 @@ export default class From extends Component {
     );
   };
 
+  getTextColor = (r, g, b) => {
+    // check calculates Luminance
+    var check = 1 - (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return check < 0.5 ? 'black' : 'white';
+  }
+
   colorComp = (name, data, onChange) => {
+    let color = HexToRgb(typeof(data)==='string'?data:"#eeeeee")
+    const colorText = this.getTextColor(color[0],color[1],color[2])
     return (
       <Trigger
         action={["click"]}
         popup={
-          <div>
             <ColorPickerDropdown
               onChange={color => {
                 onChange({ value: color, name: `${name}color` });
               }}
               currentColor={data}
             />
-          </div>
         }
         prefixCls="dropdown"
         popupAlign={{
           points: ["tr", "bl"],
-          offset: [-345, -30]
         }}
         destroyPopupOnHide={true}
       >
-        <ColorInput style={{ background: data }} />
+        <ColorInput style={{ background: data }}>
+          <Text color={colorText}>{typeof(data)==='string'?data:null}</Text>
+        </ColorInput>
       </Trigger>
     );
   };
@@ -160,3 +167,11 @@ const ColorInput = styled.div`
   color: #969696;
   cursor: pointer;
 `;
+
+const Text = styled.div`
+  /* -webkit-text-stroke-color: #000;
+  -webkit-text-stroke-width: 0.02pc; */
+  font-size: 12px;
+  font-weight: 900;
+  color: ${props=>props.color};
+`

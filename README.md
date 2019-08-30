@@ -49,29 +49,35 @@ Currently the type of assets which are being supported are images(jpg, png, jpeg
 The prototype editor is used for adding animations and interactions to our static scene, over here each individual element can be added multiple animation properties at the very same time. We can build also build a timeline across the animations we have added, inside prototype we also have a code editor where we can add our logic and interactions for each individual entity.
 
 
-# Project Structure
+# Project Directory Structure
 
-When we create a new project, a folder directory will be created which will consist of `index.html`, `data.json`, `scripts` and `Assets` folder. It has been set up in such a way that you can just 
+When we create a new project, a folder directory will be created which will consist of `index.html`, `data.json`, `scripts` and `Assets` folder. It has been set up in such a way that you can just .
 
 ```
-my-app
+📁my-app
 ├── index.html
 ├── data.json
-├── scripts
+├── 📁scripts
 │   └──index.js
-└── Assets
+└── 📁Assets
     ├── image.png
     ├── video.mp4
-    ├── gltfModel
+    ├── 📁gltfModel
     │   ├── scene.gltf
     │   ├── scene.bin
-    │   └── textures
+    │   └── 📁textures
     │       └── image0.png
     ├── image2.jpeg
-    └── objModel
+    └── 📁objModel
         ├── model.obj
         └── model.mtl
 ```
+
+# Preview
+
+You can start the local server by clicking on the play button logo on the top right corner of the, and then click on `Start Server`. It will display the url which you can access on any device through the web browser, connected on the same wifi network.
+
+# Deployed Examples
 
 # Available Scripts
 
