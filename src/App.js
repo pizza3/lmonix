@@ -481,9 +481,7 @@ document.getElementById('${name}')
   };
   replaceGeometry = (geometry, type) => {
     this.active.children[0].geometry.dispose();
-    this.active.children[0].geometry = geometry;
-    console.log(geometry, type);
-    
+    this.active.children[0].geometry = geometry;    
     if (type) {
       // this.active.objName = type;
       this.active.objPrimitive = type.toLowerCase();
@@ -657,7 +655,6 @@ document.getElementById('${name}')
     //sets the scene obj to the root parent "<App/>", making it available thoughout the app.
     this.setSceneObject(this.scene, this.transformControls);
   };
-
   defaultLights(visible = true) {
     //default lights which are present in the aframe scene
     this.ambientLight = new THREE.AmbientLight(0xbbbbbb, 1);
@@ -675,11 +672,9 @@ document.getElementById('${name}')
     this.directionalLight.shadow.camera.near = 0.5; // default
     this.directionalLight.shadow.camera.far = 5000; // default
   }
-
   startanimateScene() {
     this._frameId = window.requestAnimationFrame(this.animateScene);
   }
-
   animateScene = () => {
     this.trackballControls.update();
     if (this.active) {
@@ -689,14 +684,15 @@ document.getElementById('${name}')
     this.renderer.render(this.scene, this.camera);
     this._frameId = window.requestAnimationFrame(this.animateScene.bind(this));
   };
-
   stopanimateScene = () => {
+    console.log('stopanimateScene');
+    
     this.renderer.forceContextLoss();
     this.renderer.context = null;
     this.renderer.domElement = null;
     this.renderer = null;
 
-    window.cancelAnimationFrame(this._fram3eId);
+    window.cancelAnimationFrame(this._frameId);
     // Note: no need to worry if the loop has already been cancelled
     // cancelAnimationFrame() won't throw an error
   };
@@ -735,20 +731,16 @@ document.getElementById('${name}')
       loaded: true
     });
   };
-
   handleLeave = () => {
     this.trackballControls.enabled = false;
   };
-
   handleOver = () => {
     this.trackballControls.enabled = true;
   };
-
   renderSceneOnMount = () => {
     this.initScene();
     this.startanimateScene();
   };
-
   updateActiveDrilldown = (obj, bool) => {
     const { activeDrilldown } = this.state;
     this.setState({
