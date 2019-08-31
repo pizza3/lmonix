@@ -8,6 +8,7 @@ export default class SceneRenderer extends Component {
       .getElementById("SceneRenderer")
       .addEventListener("resize", this.props.handleResize, false);
   }
+  
   render() {
     return (
       <SceneRendererContainer

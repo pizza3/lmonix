@@ -162,7 +162,7 @@ export const createAssets = (arr = []) => {
         val.gltfPath
       }`}"></a-asset-item> \n`;
     } else if (VideoExt.includes(val.ext)) {
-      assetString += `<video id="${name}" autoplay loop="true" src="http://localhost:9889/Assets/${
+      assetString += `<video id="${name}" autoplay loop="true" muted src="http://localhost:9889/Assets/${
         val.name
       }"></video> \n`;
     }
