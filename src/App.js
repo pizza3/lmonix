@@ -144,6 +144,7 @@ class App extends Component {
                 config
               },
               () => { 
+                if(this.transformControls)
                 this.transformControls.attach(
                   this.objPresent[this.state.activeObj]
                 );
@@ -684,6 +685,7 @@ document.getElementById('${name}')
     if (this.active) {
       this.active.updateMatrix();
     }
+    if(this.renderer)
     this.renderer.render(this.scene, this.camera);
     this._frameId = window.requestAnimationFrame(this.animateScene.bind(this));
   };

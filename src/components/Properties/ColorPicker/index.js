@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import Trigger from "rc-trigger";
-import ColorPickerDropdown, { HexToRgb} from "../../../designLib/ColorPicker";
+import ColorPickerDropdown, { HexToRgb } from "../../../designLib/ColorPicker";
 import _ from "lodash";
 export default class ColorPicker extends Component {
   state = {

@@ -11,7 +11,8 @@ export default class From extends Component {
     z: 0,
     color: "",
     opacity: 1,
-    intensity:1
+    intensity:1,
+    visible: true
   };
 
   transformComp = (name, data, onChange) => {

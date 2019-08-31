@@ -1,7 +1,9 @@
 # Introduction
+
 Lmonix is a desktop application for creating webVR prototype's, the tool consist's of a simple design editor for creating the static scene and a prototype editor for creating animation's and adding logic using script's. The following scene can been exported out as aframe component's, with all the necessary script's and asset's. The main goal of this project was to create a simple prototyping tool for designers and developers. The current build only support macOS.
 
 # Design
+
 The design editor is used for building the static scene, you can add entities such as basic 3D objects, lighting, environments, images / videos, 3D models etc. After adding the entities they will be displayed under the scene section where you can group multiple entities and create a hierarchy in between entites. On the right hand side the properties of each individual entity will appear when you select them. You can edit different form of properties associated with the entity you selected, Mesh based entities will generally will be having properties such as geometry, material etc., whereas with light based entities it will be intensity, angle etc.
 
 | Design |
@@ -27,6 +29,7 @@ Drag/Drop | Copy/Paste | Group In
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
 ## Adding Assets
+
 Currently the type of assets which are being supported are images(jpg, png, jpeg, webp), video(mp4, webm), sound(mp3), 3D models(gtlf & obj) only. Assets are available on mesh based entities as `Texture` or `3D Model`. To add a new asset you would get the option on the properties section as `Add Texture` or `Add Models`. Google Poly Models can be accessed by clicking on the poly logo, which provides you whole bunch of low poly models.
 
 
@@ -51,7 +54,7 @@ The prototype editor is used for adding animations and interactions to our stati
 
 # Project Directory Structure
 
-When we create a new project, a folder directory will be created which will consist of `index.html`, `data.json`, `scripts` and `Assets` folder. It has been set up in such a way that you can just .
+When we create a new project, a folder directory will be created which will consist of `index.html`, `data.json`, `scripts` and `Assets` folder. It has been set up in such a way that you can just. To run the project you can run a local host server inside the project directory.
 
 ```
 📁my-app
