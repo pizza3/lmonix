@@ -27,6 +27,7 @@ export default class AnimDropdown extends Component {
   // over here we have basic/common props needed for animation
   state = {
     index: 0,
+    type:'',
     name: "",
     property: "rotation",
     delay: 0,
@@ -171,6 +172,7 @@ export default class AnimDropdown extends Component {
   render() {
     const {
       index,
+      type,
       property,
       delay,
       direction,
@@ -243,7 +245,7 @@ export default class AnimDropdown extends Component {
         </option>
       );
     });
-    const eventOptions = _.map(animEvents, prop => {
+    const eventOptions = (eventType) => _.map([...animEvents, `${type}-${eventType}`], prop => {
       return (
         <option key={prop} value={prop}>
           {prop}
@@ -282,9 +284,13 @@ export default class AnimDropdown extends Component {
         >
           {cross()}
         </AnimConfigIcon>
-        <div>
+        <div 
+          
+          style={{
+            height:`calc(100vh - 80px)`
+          }}>
           {showConfig ? (
-            <AnimConfigDropdown>
+            <AnimConfigDropdown id="customScrollbar">
               <Icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 {switchProp("#698bff")}
               </Icon>
@@ -408,7 +414,7 @@ export default class AnimDropdown extends Component {
                   <Select
                     value={startevent}
                     onChange={this.handleChange}
-                    options={eventOptions}
+                    options={eventOptions('start')}
                     name={"startevent"}
                   />
                 </PropertyContainer>
@@ -417,7 +423,7 @@ export default class AnimDropdown extends Component {
                   <Select
                     value={pauseevent}
                     onChange={this.handleChange}
-                    options={eventOptions}
+                    options={eventOptions('pause')}
                     name={"pauseevent"}
                   />
                 </PropertyContainer>
@@ -426,7 +432,7 @@ export default class AnimDropdown extends Component {
                   <Select
                     value={resumeevent}
                     onChange={this.handleChange}
-                    options={eventOptions}
+                    options={eventOptions('resume')}
                     name={"resumeevent"}
                   />
                 </PropertyContainer>
@@ -483,7 +489,7 @@ const AnimConfigIcon = styled.svg`
 const AnimConfigDropdown = styled.div`
   width: 103%;
   position: relative;
-  height: 100%;
+  height: 96%;
   top: 5px;
   background: #151515;
   z-index: 100;

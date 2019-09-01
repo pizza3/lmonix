@@ -60,7 +60,7 @@ export default class Animate extends Component {
     return (
       <AnimGraphContainer>
         <AnimGraphTitle>Animation</AnimGraphTitle>
-        <Container id="customScrollbar">{animInfos}</Container>
+        <Container>{animInfos}</Container>
       </AnimGraphContainer>
     );
   }

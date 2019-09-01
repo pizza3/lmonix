@@ -153,7 +153,9 @@ export default class SceneTree extends Component {
 
   contextMenu = event => {
     this.props.resetState();
-    electron.ipcRenderer.send("show-context-menu");
+    const type = this.props.active.objType
+    const primitive = this.props.active.objPrimitive
+    electron.ipcRenderer.send("show-context-menu",{type,primitive});
   };
 
   // scene graph renderig control

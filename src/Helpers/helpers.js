@@ -493,6 +493,7 @@ export const basicAnimationsConfig = {
   },
   position: {
     name: "",
+    type:"",
     property: "position",
     from: { x: 0, y: 0, z: 0 },
     to: { x: 0, y: 4, z: 0 },
@@ -509,6 +510,7 @@ export const basicAnimationsConfig = {
   },
   color: {
     name: "",
+    type:"",
     property: "color",
     from: "#E21F29",
     to: "#ffffff",
@@ -525,6 +527,7 @@ export const basicAnimationsConfig = {
   },
   opacity: {
     name: "",
+    type:"",
     property: "opacity",
     from: "1",
     to: "0",
@@ -539,8 +542,43 @@ export const basicAnimationsConfig = {
     resumeevent: "",
     pauseevent: ""
   },
+  fadeIn: {
+    name: "",
+    type:"",
+    property: "opacity",
+    from: "1",
+    to: "0",
+    delay: 0,
+    duration: 1200,
+    direction: "normal",
+    easing: "linear",
+    loop: false,
+    loopvalue: 0,
+    elasticity: 0,
+    startevent: "",
+    resumeevent: "",
+    pauseevent: ""
+  },
+  fadeOut: {
+    name: "",
+    type:"",
+    property: "opacity",
+    from: "0",
+    to: "1",
+    delay: 0,
+    duration: 1200,
+    direction: "normal",
+    easing: "linear",
+    loop: false,
+    loopvalue: 0,
+    elasticity: 0,
+    startevent: "",
+    resumeevent: "",
+    pauseevent: ""
+  },
   intensity: {
     name: "",
+    type:"",
     property: "intensity",
     from: "1",
     to: "0",
@@ -584,7 +622,7 @@ export const createAnimaionAttr = (animData, name) => {
       data += ` 
       animation__${anim.name}="property: ${propertPrefix[anim.property]}${
         anim.property
-      }; type:${anim.property}; to: ${to}; loop: ${
+      }; type:${anim.property}; from: ${from}; to: ${to}; loop: ${
         anim.loop ? anim.loop : anim.loopvalue
       };delay:${anim.delay}; dur: ${anim.duration}; dir:${
         anim.direction

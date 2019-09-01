@@ -182,8 +182,8 @@ const Img = styled.img`
 `;
 
 const Video = styled.video`
-  width: auto;
-  height: 62px;
+  width: 62px;
+  height: auto;
   float: left;
   position: relative;
 `;

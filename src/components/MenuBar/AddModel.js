@@ -421,7 +421,9 @@ const AddGroupObj = (
           ? parseInt(obj.hashColor.replace(/^#/, ""), 16)
           : 0xceecf0,
         side: THREE.BackSide,
-        map: mapData
+        map: mapData,
+        opacity:  obj.children[0].material ? obj.children[0].material.opacity : 1,
+        transparent: obj.children[0].material?obj.children[0].material.transparent:false
       });
       object["objName"] = obj.objName ? obj.objName : "Sky";
       object["objType"] = "Mesh";

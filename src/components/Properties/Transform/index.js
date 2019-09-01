@@ -204,7 +204,7 @@ export default class Transform extends Component {
       <Fragment>
         <Overlay>
           <Container>
-            <Title>Translate</Title>
+            <Title>Position</Title>
             <Prop>
               Z:
               <Input

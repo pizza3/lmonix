@@ -81,7 +81,6 @@ When we create a new project, a folder directory will be created which will cons
 |:----:|
 |<img src="demoImages/dirEditor.png" alt="draging entities" width="100%"/>|
 
-
 # Preview
 
 You can start the local server by clicking on the play button logo on the top right corner of the, and then click on `Start Server`. It will display the url which you can access on any device through the web browser, connected on the same wifi network.

@@ -31,7 +31,7 @@ export default class VrRenderer extends Component {
     const { codeTab } = this.props;
     this.editor = null;
     this.typingTimer = null;
-    this.doneTypingInterval = 500;
+    this.doneTypingInterval = 1250;
     if (codeTab === 1 || codeTab === 2) {
       setTimeout(() => {
         this.createEditor();

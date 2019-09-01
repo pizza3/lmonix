@@ -227,7 +227,7 @@ class App extends Component {
             });
             break;
           case "animate":
-            this.setAnimate();
+            this.setAnimate(val["type"]);
             break;
           case "routeDesign":
             history.push("/");
@@ -325,10 +325,11 @@ document.getElementById('${name}')
       };
     });
   };
-  setAnimate = () => {
+  setAnimate = (type) => {
     const { active } = this.state;
-    let copy = _.clone(basicAnimationsConfig.rotation);
+    let copy = _.clone(basicAnimationsConfig[type]);
     copy.name = `Animation_${active.objAnimate.length + 1}`;
+    copy.type = type
     this.active.objAnimate = [...active.objAnimate, copy];
     this.setState({
       active: this.active
