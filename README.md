@@ -8,7 +8,7 @@ The design editor is used for building the static scene, you can add entities su
 
 
 <p align='center'>
-<img src="demoImages/scene.png" alt="draging entities" width="70%"/></p>
+<img src="demoImages/scene.png" alt="draging entities" width="80%"/></p>
 
 
 ## Scene 
@@ -36,14 +36,14 @@ Currently the type of assets which are being supported are images(jpg, png, jpeg
 ### `Add Texture`
 
 <p align='center'>
-<img src="demoImages/texture.gif" alt="draging entities" width="70%" /></p>
+<img src="demoImages/texture.gif" alt="draging entities" width="80%" /></p>
 
 We can add textures to basic models by selecting them from the local directory, the supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, `.webm`, & `.mp4`. Textures can be added by selecting the texture option inside the properties panel.
 
 ### `Add Models`
 
 <p align='center'>
-<img src="demoImages/models.gif" alt="draging entities" width="70%" /></p>
+<img src="demoImages/models.gif" alt="draging entities" width="80%" /></p>
 
 To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
 
@@ -52,7 +52,7 @@ To add 3D models inside the scene, we can select the directory containing the mo
 The prototype editor is used for adding animations and interactions to our static scene, over here each individual element can be added multiple animation properties at the very same time. We can build also build a timeline across the animations we have added, inside prototype we also have a code editor where we can add our logic and interactions for each individual entity.
 
 <p align='center'>
-<img src="demoImages/prototype.png" alt="draging entities" width="70%"/></p>
+<img src="demoImages/prototype.png" alt="draging entities" width="80%"/></p>
 
 
 # Project Directory Structure
