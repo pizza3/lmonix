@@ -23,9 +23,9 @@ Drag/Drop | Copy/Paste | Group In
 
 ## Entity Properties
 
-| Edit Properties |
-|:----:|
-|<img src="demoImages/properties.gif" alt="draging entities" width="60%" />|
+<p align='center'>
+<img src="demoImages/properties.gif" alt="draging entities" width="80%"/></p>
+
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
 ## Adding Assets
@@ -79,10 +79,10 @@ When we create a new project, a folder directory will be created which will cons
         └── model.mtl
 ```
 
+## Open project in any editor 
 
-| Open project in any choice of editor |
-|:----:|
-|<img src="demoImages/dirEditor.png" alt="draging entities" width="100%"/>|
+<p align='center'>
+<img src="demoImages/dirEditor.png" alt="draging entities" width="80%"/></p>
 
 # Preview
 
