@@ -203,7 +203,24 @@ export const createScene = (threeData = []) => {
         >
         ${createScene(mesh.children.slice(1))}
         </a-sky> \n`;
-    } else if (mesh.objPrimitive === "curvedimage") {
+    } 
+    else if(mesh.objPrimitive === "text"){
+      dataString += `<a-text id="${id}" 
+      ${createAnimaionAttr(mesh.objAnimate, id)}
+      value="Hello three.js!" 
+      color="${color}" src="${texture}"
+      position="${mesh.position.x} ${mesh.position.y} ${
+        mesh.position.z
+      }" scale="${mesh.scale.x} ${mesh.scale.y} ${
+        mesh.scale.z
+      }" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh.rotation._y *
+        (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}" 
+        visible="${mesh.visible}" 
+        >
+        ${createScene(mesh.children.slice(1))}
+        </a-text> \n`;
+    }
+    else if (mesh.objPrimitive === "curvedimage") {
       const params = mesh.children[0].geometry.parameters;
       dataString += `<a-curvedimage id="${id}" 
       ${createAnimaionAttr(mesh.objAnimate, id)}
