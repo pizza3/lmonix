@@ -60,32 +60,30 @@ The prototype editor is used for adding animations and interactions to our stati
 By adding animations it helps us to make the scene a bit more lively, especially when interacting with them or other entities . You can add multiple animation instances to a single entity ( i.e the entity can rotate and scale at the same time) . The animations of a entity will appear on the right-hand side of the editor. To add a new animation `right-click on the  entity under scene -> Add animations -> select your property`.
 
 Under the animation panel the available options will be: 
-- `property`: 
-- `Timing`: Change the duration for animation or delay.
-- `Order`: Control which way the animation should flow such as direction or looping.
-- `Easing`: Apply Easing functions (i.e specify the rate of change of a parameter over time) to the animation.
-- `Trigger Event`: Mention Start, Resume or Pause events for the animation. (Note: if start event is mentioned the animation will not start on scene load.)
+- `Property` : 
+- `Timing` : Change the duration for animation or delay.
+- `Order` : Control which way the animation should flow such as direction or looping.
+- `Easing` : Apply Easing functions (i.e specify the rate of change of a parameter over time) to the animation.
+- `Trigger Event` : Mention Start, Resume or Pause events for the animation. ( Note: if start event is mentioned the animation will not start on scene load.)
 
 <p align='center'>
 <img src="demoImages/animate.gif" alt="draging entities" width="74%"/></p>
 
-
 ## Code
 
-Inside the code editor we can write our logic for interactions. As the final render produces a Aframe based vr scene, each entity .
-
+Inside the code editor we can write our logic for interactions. As the final render produces a Aframe based components, each entity can be accessed by their name (`Note: The name of each entity under the scene panel will be used as DOM "id" for Aframe components`). It will be better if you rename the one's you are going to be using inside the code editor .
 
 # Project Directory Structure
 
 When we create a new project, a folder directory will be created which will consist of `index.html`, `data.json`, `scripts` and `Assets` folder. It has been set up in such a way that you can just. To run the project you can run a local host server inside the project directory.
 
-```
+```js
 📁my-app
 ├── index.html
-├── data.json
-├── 📁scripts
+├── data.json // Data of the whole scene and project
+├── 📁scripts // Script's are added over here
 │   └──index.js
-└── 📁Assets
+└── 📁Assets // All the assets will be present under Assets
     ├── image.png
     ├── video.mp4
     ├── 📁gltfModel
@@ -109,6 +107,7 @@ When we create a new project, a folder directory will be created which will cons
 You can start the local server by clicking on the play button logo on the top right corner of the, and then click on `Start Server`. It will display the url which you can access on any device through the web browser, connected on the same wifi network.
 
 # Deployed Examples
+You can download these examples and open the folder inside Lmonix App .
 
 # Available Scripts
 

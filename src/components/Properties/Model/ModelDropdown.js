@@ -121,7 +121,7 @@ export default class MenuDropdown extends Component {
         {showPoly?
           <Poly applyPolyTexture={this.applyPolyTexture}/>
           :
-        Textures.length ? (
+        Textures.length>0 ? (
             Textures
           ) : (
             <>
