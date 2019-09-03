@@ -43,7 +43,8 @@ We can add textures to basic models by selecting them from the local directory, 
 ### `Add Models`
 
 <p align='center'>
-<img src="demoImages/models.gif" alt="draging entities" width="74%" /></p>
+<img src="demoImages/models.gif" alt="draging entities" width="74%"
+ style="border-radius:2px"/></p>
 
 To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
 
@@ -53,6 +54,8 @@ The prototype editor is used for adding animations and interactions to our stati
 
 <p align='center'>
 <img src="demoImages/prototype.png" alt="draging entities" width="80%"/></p>
+
+## Animation
 
 
 # Project Directory Structure
