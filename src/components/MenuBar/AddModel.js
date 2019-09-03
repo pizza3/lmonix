@@ -7,8 +7,6 @@ import _ from "lodash";
 import { updateGeometry, updateLights } from "../../helpers/helpers";
 import { modelLoaderGltf } from "../../helpers/modelLoaderGltf";
 import { helvetiker } from '../../assets/fonts'
-// import Lato from "../../assets/Lato-Regular-16.fnt"
-// const loader = new THREE.FontLoader();
 const createGeometry = require("three-bmfont-text");
 const loadFont = require("load-bmfont");
 var MSDFShader = require("three-bmfont-text/shaders/msdf");
@@ -127,72 +125,9 @@ const AddCurvedImage = scene => {
 
 const AddText = (scene, addInScene) => {
   let object = new THREE.Object3D();
-  // object.matrixAutoUpdate = false;
-  object["objName"] = "Text";
-  object["objType"] = "Mesh";
-  object["objPrimitive"] = "text";
-  object["hashColor"] = "#ceecf0";
-  let mesh;
-  let geometry;
-  let textureLoader;
-
-  // loadFont(
-  //   "https://raw.githubusercontent.com/Jam3/three-bmfont-text/master/test/fnt/Roboto-msdf.json",
-  //   function(err, font) {
-  //     var geometry = createGeometry({
-  //       width: 300,
-  //       align: "center",
-  //       font: font,
-  //       text: "Hey It works",
-  //       flipY: false
-  //     });
-  //     // geometry.update('Lorem ipsum\nDolor sit amet.')
-  //     console.log(geometry.layout.height);
-  //     console.log(geometry.layout.descender);
-
-  //     var textureLoader = new THREE.TextureLoader();
-  //     textureLoader.load(
-  //       "https://raw.githubusercontent.com/Jam3/three-bmfont-text/master/test/fnt/Roboto-msdf.png",
-  //       function(texture) {
-  //         texture.needsUpdate = true;
-  //         texture.minFilter = THREE.LinearMipMapLinearFilter;
-  //         texture.magFilter = THREE.LinearFilter;
-
-  //         // var material = new THREE.MeshBasicMaterial({
-  //         //   map: texture,
-  //         //   transparent: true,
-  //         //   color: 0xaaffff
-  //         // })
-  //         var material = new THREE.RawShaderMaterial(
-  //           MSDFShader({
-  //             map: texture,
-  //             transparent: true,
-  //             color: 0xaaffff
-  //           })
-  //         );
-
-  //         var mesh = new THREE.Mesh(geometry, material);
-  //         mesh.position.set(
-  //           0,
-  //           -geometry.layout.descender + geometry.layout.height,
-  //           0
-  //         );
-  //         mesh.scale.multiplyScalar(Math.random() * 0.5 + 0.5);
-
-  //         // mesh.scale.multiplyScalar(-0.005)
-  //         console.log("mesh", mesh);
-  //         obj.add(mesh);
-  //         scene.add(obj);
-  //         addInScene(obj);
-  //         // return obj;
-  //       }
-  //     );
-  //   }
-  // );
-  let material = new THREE.MeshPhongMaterial({
+  let material = new THREE.MeshBasicMaterial({
     color: 0xef2d5e,
   })
-
   const testFont = new THREE.Font(helvetiker);
   const textgeometry = new THREE.TextBufferGeometry("Hello three.js!", {
     font: testFont,
@@ -212,30 +147,8 @@ const AddText = (scene, addInScene) => {
   object["objAnimate"] = [];
   object["objPrimitive"] = "text";
   object["hashColor"] = "#ceecf0";
-  // scene.add(object);
   object.position.set(0, 0, 0);
   return object;
-
-  //  const testFont = new THREE.Font(helvetiker);
-  //     const textgeometry = new THREE.TextBufferGeometry("Hello three.js!", {
-  //       font: testFont,
-  //       size: 10,
-  //       height: 1,
-  //       curveSegments: 1,
-  //       bevelEnabled: true,
-  //       bevelThickness: 1,
-  //       bevelSize: 1,
-  //       bevelOffset: 0,
-  //       bevelSegments: 1
-  //     });
-  //     object = new THREE.Object3D();
-  //     object.add(new THREE.Mesh(textgeometry, material));
-  //     object["objName"] ="Text";
-  //     object["objType"] = "Mesh";
-  //     object["objPrimitive"] = "text";
-  //     object["hashColor"] = "#ceecf0";
-  //     scene.add(object);
-      // object.matrixAutoUpdate = false
 };
 
 export const ApplyTexture = obj => {
@@ -527,34 +440,9 @@ const AddGroupObj = (
       // object.matrixAutoUpdate = false
       return object;
     case "text":
-      // const testFont = new THREE.Font(helvetikerBold);
-      // const textgeometry = new THREE.TextBufferGeometry("Hello three.js!", {
-      //   font: testFont,
-      //   size: 90,
-      //   height: 1,
-      //   curveSegments: 12,
-      //   bevelEnabled: true,
-      //   bevelThickness: 1,
-      //   bevelSize: 8,
-      //   bevelOffset: 0,
-      //   bevelSegments: 5
-      // });
-      // object = new THREE.Object3D();
-      // object.add(new THREE.Mesh(textgeometry, material));
-      // object["objName"] =obj.objName? obj.objName:"Text";
-      // object["objType"] = "Mesh";
-      // object["objPrimitive"] = "text";
-      // object["hashColor"] = "#ceecf0";
-      // scene.add(object);
-      // object.position.set(pos.x, pos.y, pos.z);
-      // object.rotation._x = rot.x;
-      // object.rotation._y = rot.y;
-      // object.rotation._z = rot.z;
-      // object.matrixAutoUpdate = false
-      let material = new THREE.MeshPhongMaterial({
+      let material = new THREE.MeshBasicMaterial({
         color: 0xef2d5e,
       })
-    
       const testFont = new THREE.Font(helvetiker);
       const textgeometry = new THREE.TextBufferGeometry("Hello three.js!", {
         font: testFont,

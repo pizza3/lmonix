@@ -24,7 +24,7 @@ Drag/Drop | Copy/Paste | Group In
 ## Entity Properties
 
 <p align='center'>
-<img src="demoImages/properties.gif" alt="draging entities" width="80%"/></p>
+<img src="demoImages/properties.gif" alt="draging entities" width="74%"/></p>
 
 You can edit each individual entity properties, which are displayed on the right hand side of the application window. Over here we can edit common properties such as rotation, scale, position, change material based attributes, add assets, add shadow's etc. 
 
@@ -36,14 +36,14 @@ Currently the type of assets which are being supported are images(jpg, png, jpeg
 ### `Add Texture`
 
 <p align='center'>
-<img src="demoImages/texture.gif" alt="draging entities" width="80%" /></p>
+<img src="demoImages/texture.gif" alt="draging entities" width="74%" /></p>
 
 We can add textures to basic models by selecting them from the local directory, the supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, `.webm`, & `.mp4`. Textures can be added by selecting the texture option inside the properties panel.
 
 ### `Add Models`
 
 <p align='center'>
-<img src="demoImages/models.gif" alt="draging entities" width="80%" /></p>
+<img src="demoImages/models.gif" alt="draging entities" width="74%" /></p>
 
 To add 3D models inside the scene, we can select the directory containing the model as well as the texture's and other files related to that particular model, the supported formats are `gtlf models` & `obj models`. Models can be added by selecting the model option inside the properties panel.
 
