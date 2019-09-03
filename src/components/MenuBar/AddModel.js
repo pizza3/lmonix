@@ -176,10 +176,11 @@ const AddGroupObj = (
     object.rotation.set(rot._x, rot._y, rot._z);
     object.scale.set(sca.x, sca.y, sca.z);
   }
+
+  let geometryParams = {};
   let material = new THREE.MeshPhongMaterial({
     color: 0xef2d5e
   });
-  let geometryParams = {};
   if (
     !_.isEmpty(obj) &&
     !_.isEmpty(obj.children) &&
@@ -203,11 +204,12 @@ const AddGroupObj = (
   switch (type) {
     case "box":
       const geometry = updateGeometry("BoxBufferGeometry", {}, geometryParams);
+      const boxMaterial = material
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
       object["objPrimitive"] = "box";
       object["hashColor"] = obj.hashColor || "#feb3c7";
-      object.add(new THREE.Mesh(geometry, material));
+      object.add(new THREE.Mesh(geometry, boxMaterial));
       scene.add(object);
       object["objTexture"] = obj.objTexture ? obj.objTexture : {};
       object.visible = !_.isUndefined(obj.visible) ? obj.visible : true;
@@ -440,7 +442,7 @@ const AddGroupObj = (
       // object.matrixAutoUpdate = false
       return object;
     case "text":
-      let material = new THREE.MeshBasicMaterial({
+      let textmaterial = new THREE.MeshBasicMaterial({
         color: 0xef2d5e,
       })
       const testFont = new THREE.Font(helvetiker);
@@ -456,7 +458,7 @@ const AddGroupObj = (
         bevelSegments: 1
       });
       object = new THREE.Object3D();
-      object.add(new THREE.Mesh(textgeometry, material));
+      object.add(new THREE.Mesh(textgeometry, textmaterial));
       object["objName"] ="Text";
       object["objType"] = "Mesh";
       object["objAnimate"] = [];
@@ -474,7 +476,7 @@ const AddGroupObj = (
       object["objPrimitive"] = "curvedimage";
       object["hashColor"] = obj.hashColor || "#feb3c7";
       object.objTexture = obj.objTexture;
-      material.side = THREE.DoubleSide;
+      // material.side = THREE.DoubleSide;
       object.add(new THREE.Mesh(geometryCurvedimage, material));
       scene.add(object);
       // object.matrixAutoUpdate = false

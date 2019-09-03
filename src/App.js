@@ -327,9 +327,24 @@ document.getElementById('${name}')
   };
   setAnimate = (type) => {
     const { active } = this.state;
-    let copy = _.clone(basicAnimationsConfig[type]);
-    copy.name = `Animation_${active.objAnimate.length + 1}`;
+    let copy = _.clone(basicAnimationsConfig[type]);    
+    let from = copy.from;
+    let to = copy.to;
+
+    copy.name = `Animation_${type}`;
+    if (type === "position" || type === "rotation" || type === "scale") {
+      from = active[type];
+      to = {
+        ...active[type],
+        y: active[type].y + 1
+      };
+    } else if (type === "color") {
+      from = active.hashColor;
+    } else if (type === "opacity") {
+      from = active.children[0].material.opacity;
+    }
     copy.type = type
+    copy={...copy,from,to}
     this.active.objAnimate = [...active.objAnimate, copy];
     this.setState({
       active: this.active

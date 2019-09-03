@@ -57,6 +57,16 @@ The prototype editor is used for adding animations and interactions to our stati
 
 ## Animation
 
+By adding animations it helps us to make the scene a bit more lively, especially when interacting with them or other entities . You can add multiple animation instances to a single entity ( i.e the entity can rotate and scale at the same time) . The animations of a entity will appear on the right-hand side of the editor. To add a new animation `right-click on the  entity under scene -> Add animations -> select your property`.
+
+<p align='center'>
+<img src="demoImages/animate.gif" alt="draging entities" width="74%"/></p>
+
+
+## Code
+
+Inside the code editor we can write our logic for interactions. As the final render produces a Aframe based vr scene, each entity .
+
 
 # Project Directory Structure
 
