@@ -209,7 +209,7 @@ export const createScene = (threeData = []) => {
       ${createAnimaionAttr(mesh.objAnimate, id)}
       value="Hello three.js!" 
       color="${color}" src="${texture}"
-      position="${mesh.position.x} ${mesh.position.y} ${
+      position="${mesh.position.x} ${mesh.position.y+0.1021} ${
         mesh.position.z
       }" scale="${mesh.scale.x} ${mesh.scale.y} ${
         mesh.scale.z

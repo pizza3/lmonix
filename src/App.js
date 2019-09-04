@@ -252,15 +252,25 @@ class App extends Component {
         const name = this.active.name.length
           ? this.active.name
           : this.active.objName;
-        let eventcode = `
-document.getElementById('${name}')
-.addEventListener('${option}',function(e){
-
-})`;
+        let eventcode = this.generateSnippet(option,name)
         let newCode = code + eventcode;
         this.updateCode(newCode);
       }.bind(this)
     );
+  }
+  generateSnippet = (option,name)=>{
+    if(option==='entityObject'){
+      return `
+    const ${name} = document.getElementById('${name}')`;
+    }else if(option==='entityEmit'){
+      return `
+    ${name}.emit( )`;
+    }
+    return `
+    document.getElementById('${name}')
+    .addEventListener('${option}',function(e){
+    
+    })`;
   }
   generateFinalJson = object => {
     let finalArr = [];
@@ -332,13 +342,22 @@ document.getElementById('${name}')
     let to = copy.to;
 
     copy.name = `Animation_${type}`;
-    if (type === "position" || type === "rotation" || type === "scale") {
+    if (type === "position" || type === "scale") {
       from = active[type];
       to = {
         ...active[type],
         y: active[type].y + 1
       };
-    } else if (type === "color") {
+    } 
+    else if(type === "rotation"){
+      from = {x:active[type]._x,y:active[type]._y,z:active[type]._z};
+      to = {
+        x:active[type]._x,
+        z:active[type]._z,
+        y: active[type]._y + 6.3
+      };        
+    }
+    else if (type === "color") {
       from = active.hashColor;
     } else if (type === "opacity") {
       from = active.children[0].material.opacity;
