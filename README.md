@@ -74,7 +74,20 @@ Under the animation panel the available options will be:
 Inside the code editor we can write our logic for interactions. As the final render produces a Aframe based components, each entity can be accessed by their name ( `Note: The name of each entity under the scene panel will be used as DOM "id" for Aframe components`) . It will be better if you rename the one's you are going to be using inside the code editor . You can use usual javascript API's and Aframe API's over here too . 
 
 ## Adding Snippets
-Snippet's consists of event listeners for entities, object & methods.
+
+Snippet's consists of event listeners for entities, entity object & other methods. To add a new snippet `right-click on entity under scene -> Add Snippet`.
+
+The options available are:
+- `Cursor` : Cursor events occured on the entity such as `click`,`mouseEnter` & `mouseLeave`,Note: To enable cursor go to the settings .
+- `Object` : Gives the entity DOM node.
+- `Emit` : Used for trigger animation events such as start, pause, resume or any other custom events.
+- `Set Attribute`: Used for changing DOM entity attribute's.
+- `Get Attribute`: Used for getting DOM entity attribute's value.
+
+<p align='center'>
+<img src="demoImages/code.gif" alt="draging entities" width="74%"/></p>
+
+
 
 # Project Directory Structure
 
@@ -110,6 +123,7 @@ When we create a new project, a folder directory will be created which will cons
 You can start the local server by clicking on the play button logo on the top right corner of the, and then click on `Start Server`. It will display the url which you can access on any device through the web browser, connected on the same wifi network.
 
 # Deployed Examples
+
 You can download these examples and open the folder inside Lmonix App .
 
 # Available Scripts
@@ -118,23 +132,10 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the app in the development mode.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### `yarn build`
 
-### `npm test`
+Builds the react app for production to the `build` folder.<br>
+Bundles the final distribution inside the `dist` folder.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.

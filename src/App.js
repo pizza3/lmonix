@@ -5,7 +5,7 @@ import SceneEditor from "./components/SceneEditor/SceneEditor";
 import _ from "lodash";
 import { AddGroupObj, ApplyTexture } from "./components/MenuBar/AddModel";
 import { Route, withRouter } from "react-router-dom";
-import { basicAnimationsConfig, entityDataAttr } from "./helpers/helpers";
+import { basicAnimationsConfig, entityDataAttr, generateSnippet } from "./helpers/helpers";
 import * as THREE from "./helpers/ThreeLibManager";
 import TransformControls from "./helpers/Transform";
 import TrackballControls from "./helpers/TrackballControls";
@@ -252,41 +252,11 @@ class App extends Component {
         const name = this.active.name.length
           ? this.active.name
           : this.active.objName;
-        let eventcode = this.generateSnippet(option,name, property)
+        let eventcode = generateSnippet(option,name, property)
         let newCode = code + eventcode;
         this.updateCode(newCode);
       }.bind(this)
     );
-  }
-  generateSnippet = (option,name, property)=>{
-    if(option==='entityObject'){
-      return `
-const ${name} = document.getElementById('${name}')`;
-    }else if(option==='entityEmit'){
-      return `
-${name}.emit( )`;
-    }
-    else if(option==='setAttribute'){
-      if(property){
-        return `
-${name}.setAttribute("${property}","0 0 0")`;
-      }
-      return `
-${name}.setAttribute("","")`;      
-    }
-    else if(option==='getAttribute'){
-      if(property){
-        return `
-const ${name}_${property} = ${name}.getAttribute("${property}")`;
-      }
-      return `
-const ${name}_${property} = ${name}.getAttribute("")`;      
-    }
-    return `
-    document.getElementById('${name}')
-    .addEventListener('${option}',function(e){
-    
-    })`;
   }
   generateFinalJson = object => {
     let finalArr = [];

@@ -723,3 +723,31 @@ export const entityDataAttr = {
     "castShadow"
   ]
 };
+
+
+export const generateSnippet = (option, name, property)=>{
+  if(option==='entityObject'){
+    return `
+const ${name} = document.getElementById('${name}')`;
+  }else if(option==='entityEmit'){
+    return `
+${name}.emit( )`;
+  }
+  else if(option==='setAttribute'){
+    if(property){
+      return `
+${name}.setAttribute("${property}","0 0 0")`;
+    }
+    return `
+${name}.setAttribute("","")`;      
+  }
+  else if(option==='getAttribute'){
+    if(property){
+      return `
+const ${name}_${property} = ${name}.getAttribute("${property}")`;
+    }
+    return `
+const ${name}_${property} = ${name}.getAttribute("")`;      
+  }
+  return `${name}.addEventListener('${option}',function(e){})`
+}
