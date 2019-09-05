@@ -71,7 +71,10 @@ Under the animation panel the available options will be:
 
 ## Code
 
-Inside the code editor we can write our logic for interactions. As the final render produces a Aframe based components, each entity can be accessed by their name ( `Note: The name of each entity under the scene panel will be used as DOM "id" for Aframe components`) . It will be better if you rename the one's you are going to be using inside the code editor . You can use your usual javascript API's and Aframe API's over here .
+Inside the code editor we can write our logic for interactions. As the final render produces a Aframe based components, each entity can be accessed by their name ( `Note: The name of each entity under the scene panel will be used as DOM "id" for Aframe components`) . It will be better if you rename the one's you are going to be using inside the code editor . You can use usual javascript API's and Aframe API's over here too . 
+
+## Adding Snippets
+Snippet's consists of event listeners for entities, object & methods.
 
 # Project Directory Structure
 

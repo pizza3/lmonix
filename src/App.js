@@ -247,24 +247,40 @@ class App extends Component {
     electron.ipcRenderer.on(
       "addSnippet",
       function(e, params) {
-        const { option } = params;
+        const { option, property } = params;
         const { code } = this.state;
         const name = this.active.name.length
           ? this.active.name
           : this.active.objName;
-        let eventcode = this.generateSnippet(option,name)
+        let eventcode = this.generateSnippet(option,name, property)
         let newCode = code + eventcode;
         this.updateCode(newCode);
       }.bind(this)
     );
   }
-  generateSnippet = (option,name)=>{
+  generateSnippet = (option,name, property)=>{
     if(option==='entityObject'){
       return `
-    const ${name} = document.getElementById('${name}')`;
+const ${name} = document.getElementById('${name}')`;
     }else if(option==='entityEmit'){
       return `
-    ${name}.emit( )`;
+${name}.emit( )`;
+    }
+    else if(option==='setAttribute'){
+      if(property){
+        return `
+${name}.setAttribute("${property}","0 0 0")`;
+      }
+      return `
+${name}.setAttribute("","")`;      
+    }
+    else if(option==='getAttribute'){
+      if(property){
+        return `
+const ${name}_${property} = ${name}.getAttribute("${property}")`;
+      }
+      return `
+const ${name}_${property} = ${name}.getAttribute("")`;      
     }
     return `
     document.getElementById('${name}')
@@ -573,6 +589,7 @@ class App extends Component {
         },
         () => {
           this.objPresent = newObjPresent;
+          if(this.transformControls)
           this.transformControls.detach(this.active);
           this.scene.remove(this.active);
           if (!_.isEmpty(newObjPresent)) {
