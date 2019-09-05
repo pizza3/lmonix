@@ -17,7 +17,7 @@ The scene represent the entities you added inside your render, over here you can
 
 Drag/Drop | Copy/Paste | Group In
 --- | --- | ---
-<img src="demoImages/drag.gif" alt="draging entities" width="100%" style="float:left; border-radius:4px;"/> | <img src="demoImages/paste.gif" alt="caopy/paste entities" width="100%" style="float:left; border-radius:4px;"/>| <img src="demoImages/paste.gif" alt="caopy/paste entities" width="100%" style="float:left; border-radius:4px;"/>
+<img src="demoImages/drag.gif" alt="draging entities" width="100%" style="float:left; border-radius:4px;"/> | <img src="demoImages/paste.gif" alt="caopy/paste entities" width="100%" style="float:left; border-radius:4px;"/>| <img src="demoImages/group.gif" alt="caopy/paste entities" width="100%" style="float:left; border-radius:4px;"/>
 
 
 
