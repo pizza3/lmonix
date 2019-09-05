@@ -60,7 +60,7 @@ The prototype editor is used for adding animations and interactions to our stati
 By adding animations it helps us to make the scene a bit more lively, especially when interacting with them or other entities . You can add multiple animation instances to a single entity ( i.e the entity can rotate and scale at the same time) . The animations of a entity will appear on the right-hand side of the editor. To add a new animation `right-click on the  entity under scene -> Add animations -> select your property`.
 
 Under the animation panel the available options will be: 
-- `Property` : 
+- `Property` : Assign `from` - animation starting point & `to` animation end point.
 - `Timing` : Change the duration for animation or delay.
 - `Order` : Control which way the animation should flow such as direction or looping.
 - `Easing` : Apply Easing functions (i.e specify the rate of change of a parameter over time) to the animation.
