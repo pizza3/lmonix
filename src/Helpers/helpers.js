@@ -220,9 +220,33 @@ export const createScene = (threeData = []) => {
         ${createScene(mesh.children.slice(1))}
         </a-text> \n`;
     }
+    else if(mesh.objPrimitive === "cylinder"){
+      const geometryParams = setGeometryAframe(
+        mesh.children[0].geometry.parameters,
+        'cylinder'
+      );
+      // const params = mesh.children[0].geometry.parameters;
+      dataString += `<a-entity id="${id}" 
+      geometry="primitive: ${"cone"};${geometryParams}" 
+      ${createAnimaionAttr(mesh.objAnimate, id)}
+      src="${texture}" position="${mesh.position.x} ${
+        mesh.position.y
+      } ${mesh.position.z}" rotation="${mesh.rotation._x * (180 / 3.14)} ${mesh
+        .rotation._y *
+        (180 / 3.14)} ${mesh.rotation._z * (180 / 3.14)}"
+        visible="${mesh.visible}" 
+        material="color: ${color}; 
+          ${mesh.objTexture ? "src:#" + mesh.objTexture.name : ""};
+          transparent:${mesh.children[0].material.transparent};
+          opacity:${mesh.children[0].material.opacity};
+        " 
+        >
+        ${createScene(mesh.children.slice(1))}
+        </a-entity> \n`;
+    }
     else if (mesh.objPrimitive === "curvedimage") {
       const params = mesh.children[0].geometry.parameters;
-      dataString += `<a-curvedimage id="${id}" 
+      dataString += `<a-curvedimage id="${id}"
       ${createAnimaionAttr(mesh.objAnimate, id)}
       color="${color}" src="${texture}" position="${mesh.position.x} ${
         mesh.position.y
@@ -234,9 +258,10 @@ export const createScene = (threeData = []) => {
         opacity:${mesh.children[0].material.opacity};
         transparent:${mesh.children[0].material.transparent};
         "
-        height="${params.height}" radius="${
-        params.radiusTop
-      }" theta-length="${(params.thetaLength * 180) / Math.PI}"
+        height="${params.height}" 
+        radius="${
+          params.radiusTop
+        }" theta-length="${(params.thetaLength * 180) / Math.PI}"
         >
         ${createScene(mesh.children.slice(1))}
         </a-curvedimage> \n`;

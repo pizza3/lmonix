@@ -235,9 +235,12 @@ const AddGroupObj = (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow;
-      // object.matrixAutoUpdate = false
+      object.children[0].receiveShadow = obj.children
+      ? obj.children[0].receiveShadow
+      : false;
+      object.children[0].castShadow = obj.children
+        ? obj.children[0].castShadow
+        : false;      // object.matrixAutoUpdate = false
       return object;
     case "plane":
       let geometryPlane = updateGeometry(
@@ -253,8 +256,12 @@ const AddGroupObj = (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow;
+      object.children[0].receiveShadow = obj.children
+      ? obj.children[0].receiveShadow
+      : false;
+      object.children[0].castShadow = obj.children
+        ? obj.children[0].castShadow
+        : false;
       // object.matrixAutoUpdate = false
       return object;
     case "cylinder":
@@ -265,14 +272,18 @@ const AddGroupObj = (
       );
       object["objName"] = obj.objName ? obj.objName : "Mesh";
       object["objType"] = "Mesh";
-      object["objPrimitive"] = "cone";
+      object["objPrimitive"] = "cylinder";
       object["hashColor"] = obj.hashColor || "#feb3c7";
       object.add(new THREE.Mesh(geometryCylinder, material));
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow || false;
+      object.children[0].receiveShadow = obj.children
+      ? obj.children[0].receiveShadow
+      : false;
+      object.children[0].castShadow = obj.children
+        ? obj.children[0].castShadow
+        : false;
       // object.matrixAutoUpdate = false
       return object;
     case "cone":
@@ -289,8 +300,12 @@ const AddGroupObj = (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow;
+      object.children[0].receiveShadow = obj.children
+        ? obj.children[0].receiveShadow
+        : false;
+      object.children[0].castShadow = obj.children
+        ? obj.children[0].castShadow
+        : false;
       // object.matrixAutoUpdate = false
       return object;
     case "ring":
@@ -307,8 +322,12 @@ const AddGroupObj = (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow;
+      object.children[0].receiveShadow = obj.children
+      ? obj.children[0].receiveShadow
+      : false;
+    object.children[0].castShadow = obj.children
+      ? obj.children[0].castShadow
+      : false;
       // object.matrixAutoUpdate = false
       return object;
     case "circle":
@@ -325,8 +344,12 @@ const AddGroupObj = (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow;
+      object.children[0].receiveShadow = obj.children
+      ? obj.children[0].receiveShadow
+      : false;
+      object.children[0].castShadow = obj.children
+        ? obj.children[0].castShadow
+        : false;
       // object.matrixAutoUpdate = false
       return object;
     case "sky":
@@ -349,8 +372,12 @@ const AddGroupObj = (
       scene.add(object);
       object.objTexture = obj.objTexture;
       object.visible = obj.visible;
-      object.children[0].receiveShadow = obj.children[0].receiveShadow || false;
-      object.children[0].castShadow = obj.children[0].castShadow;
+      object.children[0].receiveShadow = obj.children
+      ? obj.children[0].receiveShadow
+      : false;
+      object.children[0].castShadow = obj.children
+        ? obj.children[0].castShadow
+        : false;
       object.scale.set(-1, 1, 1);
       // object.matrixAutoUpdate = false
       return object;

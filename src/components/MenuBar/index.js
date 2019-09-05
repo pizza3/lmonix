@@ -96,7 +96,7 @@ export default class MenuBar extends Component {
             {model()}
           </ImgContainerSvg>
         </Tooltip>
-        <Tooltip align="right" name="General">
+        <Tooltip align="right" name="Settings">
           <ImgContainerAbsSvg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"

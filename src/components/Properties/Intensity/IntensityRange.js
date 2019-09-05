@@ -13,6 +13,7 @@ export default class Index extends Component {
   }
 
   handleRange = e => {
+    e.preventDefault()
     this.setState({
       value: e.target.value
     });

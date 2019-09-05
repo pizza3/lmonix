@@ -10,7 +10,7 @@ export default class Index extends Component {
   render() {
     return (
       <div>
-        <Title>Settings</Title>
+        <Title>General</Title>
         <Cursor/>
         <DefaultLights/>
         <Camera/>

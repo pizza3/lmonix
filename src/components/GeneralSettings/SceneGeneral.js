@@ -6,7 +6,7 @@ export default class SceneGeneral extends Component{
         return(
             <SceneGraphContainer>
                 <SceneGraphTitle>
-                    General
+                    Settings
                 </SceneGraphTitle>
                 <GeneralSettings/>
             </SceneGraphContainer>
