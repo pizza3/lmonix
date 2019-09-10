@@ -2,7 +2,7 @@
   "name": "Lmonix",
   "version": "1.0.0",
   "description": "",
-  "main": "public/build/electron.js",
+  "main": "public/electron.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pizza3/lmonix.git"
