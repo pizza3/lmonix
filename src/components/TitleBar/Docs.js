@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { book } from "../../assets/icon";
+const electron =  window.require('electron');
+const shell = electron.shell;
 
 export default class Docs extends Component {
+  handleClick=(event)=>{
+    event.preventDefault();
+    shell.openExternal('https://github.com/pizza3/lmonix/blob/master/README.md');
+  }
   render() {
     return (
       <PopContainer>
@@ -13,7 +19,7 @@ export default class Docs extends Component {
         <Cont>
           <Desc>Need Help? Try out the docs for any queries and issues.</Desc>
         </Cont>
-        <StartButton>Open Documentation</StartButton>
+        <StartButton onClick={this.handleClick}>Open Documentation</StartButton>
       </PopContainer>
     );
   }
