@@ -122,10 +122,6 @@ When we create a new project, a folder directory will be created which will cons
 
 You can start the local server by clicking on the play button logo on the top right corner of the, and then click on `Start Server`. It will display the url which you can access on any device through the web browser, connected on the same wifi network.
 
-# Deployed Examples
-
-You can download these examples and open the folder inside Lmonix App .
-
 # Available Scripts
 
 In the project directory, you can run:
